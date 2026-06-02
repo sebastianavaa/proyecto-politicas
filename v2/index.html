@@ -97,27 +97,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .eval-subtitle{font-size:.725rem;color:var(--accent-dark);font-weight:700;margin-bottom:.2rem;text-transform:uppercase;letter-spacing:.05em;}
 .eval-info p{font-size:.775rem;color:var(--gray);line-height:1.55;}
 
-/* THRESHOLDS */
-.threshold-grid{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:1rem;}
-.threshold-card{background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem;}
-.threshold-card label{font-size:.7rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:.5rem;}
-.threshold-input{display:flex;align-items:center;gap:.5rem;}
-.threshold-input span{font-size:.875rem;color:var(--gray);font-weight:600;}
-.threshold-input input{flex:1;padding:.5rem .75rem;border:2px solid var(--gray-border);border-radius:.5rem;
-  font-size:1rem;font-weight:700;color:var(--navy);outline:none;transition:border .2s;width:100%;}
-.threshold-input input:focus{border-color:var(--accent);}
-.threshold-card p{font-size:.75rem;color:var(--gray);margin-top:.5rem;line-height:1.5;}
-
-/* STEPS */
+/* STEPS — informational only, not interactive */
 .step-list{display:flex;flex-direction:column;gap:.4rem;}
 .step-row{display:flex;align-items:flex-start;gap:.75rem;background:var(--white);border:1px solid var(--gray-border);
-  border-radius:.75rem;padding:.8rem .9rem;transition:all .2s;cursor:pointer;}
-.step-row:hover{border-color:var(--blue-light);}
-.step-row.done{background:var(--success-bg);border-color:var(--success);}
-.step-check{width:1rem;height:1rem;cursor:pointer;accent-color:var(--success);flex-shrink:0;margin-top:.2rem;}
+  border-radius:.75rem;padding:.8rem .9rem;}
 .step-num{width:1.5rem;height:1.5rem;border-radius:50%;background:var(--navy);color:white;
-  font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;}
-.step-row.done .step-num{background:var(--success);}
+  font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .step-body h4{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:.125rem;}
 .step-body p{font-size:.775rem;color:var(--gray);line-height:1.5;}
 
@@ -186,6 +171,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .sev-alta{background:#FEE2E2;color:var(--danger);}
 .sev-media{background:var(--warn-bg);color:var(--accent-dark);}
 .sev-baja{background:var(--blue-light);color:var(--blue);}
+
+.area-alerts-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);
+  margin-bottom:.625rem;margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--gray-border);}
 
 /* REPORT */
 .report-areas{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:.625rem;margin-bottom:1rem;}
@@ -256,52 +244,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 4: DOCUMENTOS POR TIPO ── -->
+<!-- ── 4: TIPOS DE EVALUACIÓN ── -->
 <div class="slide slide-std" data-n="4">
-  <div class="s-head"><div class="s-tag">Documentos requeridos</div><h2>¿Qué le pedimos al proveedor?</h2>
-  <p>Cada tipo de evaluación tiene su propio conjunto de documentos. Esto es lo que el proveedor deberá entregar.</p></div>
-  <div class="s-body scrollable">
-    <div style="overflow-x:auto;">
-      <table class="dt" style="min-width:660px;">
-        <thead><tr>
-          <th style="min-width:210px;">Documento</th>
-          <th style="text-align:center;">Express</th>
-          <th style="text-align:center;">Completa</th>
-          <th style="text-align:center;">Subcontr.</th>
-          <th style="text-align:center;">Reforzada</th>
-          <th style="text-align:center;">Intl.</th>
-        </tr></thead>
-        <tbody>
-          <tr><td>Declaración jurada del proveedor</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
-          <tr><td>Declaración vínculo PEP</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
-          <tr><td>Declaración Conflicto de Interés</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Constitución de la Sociedad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>E-RUT</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Certificado de Vigencia de Sociedad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>DNI del Representante Legal</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Carpeta tributaria SII</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Certificado de Vigencia de Poderes</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Certificado cuenta bancaria</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>F-30</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>F-30-1</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Estado Financiero</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
-          <tr><td>Deuda Fiscal TGR</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Reporte Accidentabilidad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>DICOM</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div style="display:flex;gap:1rem;margin-top:.875rem;flex-wrap:wrap;align-items:center;">
-      <span style="font-size:.75rem;color:var(--gray);display:flex;align-items:center;gap:.375rem;"><span style="background:#DCFCE7;color:#166534;padding:.1rem .4rem;border-radius:.25rem;font-size:.7rem;font-weight:800;">✓</span> Requerido</span>
-      <span style="font-size:.75rem;color:var(--gray);display:flex;align-items:center;gap:.375rem;"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.1rem .4rem;border-radius:.25rem;font-size:.7rem;font-weight:700;">Opc</span> Opcional</span>
-      <span style="font-size:.75rem;color:var(--gray);display:flex;align-items:center;gap:.375rem;"><span style="color:#CBD5E1;font-size:1rem;">—</span> No aplica</span>
-    </div>
-  </div>
-</div>
-
-<!-- ── 5: TIPOS DE EVALUACIÓN ── -->
-<div class="slide slide-std" data-n="5">
-  <div class="s-head"><div class="s-tag">Configuración — paso 1 de 2</div><h2>Tipos de evaluación a activar</h2>
+  <div class="s-head"><div class="s-tag">Configuración</div><h2>Tipos de evaluación a activar</h2>
   <p>Selecciona qué tipos de evaluación aplicará tu empresa. Puedes activar o desactivar cada uno.</p></div>
   <div class="s-body scrollable">
     <div class="eval-cards">
@@ -349,29 +294,51 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 5: UMBRALES ── -->
-<div class="slide slide-std" data-n="6">
-  <div class="s-head"><div class="s-tag">Configuración — paso 2 de 2</div><h2>Umbrales de monto</h2>
-  <p>Define los montos que determinan qué tipo de evaluación aplica. Ajústalos según la realidad de tu negocio.</p></div>
-  <div class="s-body">
-    <div class="threshold-grid">
-      <div class="threshold-card">
-        <label>Umbral Express → Completa</label>
-        <div class="threshold-input"><span>USD</span><input type="number" id="thresh1" value="20000" min="1000" step="1000" oninput="updateThresholds()"></div>
-        <p>Contratos <strong>sobre</strong> este monto activan la Evaluación Completa.</p>
-      </div>
-      <div class="threshold-card">
-        <label>Umbral Completa → Reforzada</label>
-        <div class="threshold-input"><span>USD</span><input type="number" id="thresh2" value="100000" min="1000" step="1000" oninput="updateThresholds()"></div>
-        <p>Contratos <strong>sobre</strong> este monto activan la Evaluación Reforzada.</p>
-      </div>
+<!-- ── 5: DOCUMENTOS POR TIPO ── -->
+<div class="slide slide-std" data-n="5">
+  <div class="s-head"><div class="s-tag">Documentos requeridos</div><h2>¿Qué le pedimos al proveedor?</h2>
+  <p>Cada tipo de evaluación tiene su propio conjunto de documentos. Esto es lo que el proveedor deberá entregar.</p></div>
+  <div class="s-body scrollable">
+    <div style="overflow-x:auto;">
+      <table class="dt" style="min-width:660px;">
+        <thead><tr>
+          <th style="min-width:210px;">Documento</th>
+          <th style="text-align:center;">Express</th>
+          <th style="text-align:center;">Completa</th>
+          <th style="text-align:center;">Subcontr.</th>
+          <th style="text-align:center;">Reforzada</th>
+          <th style="text-align:center;">Intl.</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Declaración jurada del proveedor</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
+          <tr><td>Declaración vínculo PEP</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
+          <tr><td>Declaración Conflicto de Interés</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Constitución de la Sociedad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>E-RUT</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Certificado de Vigencia de Sociedad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>DNI del Representante Legal</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Carpeta tributaria SII</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Certificado de Vigencia de Poderes</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Certificado cuenta bancaria</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>F-30</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>F-30-1</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Estado Financiero</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
+          <tr><td>Deuda Fiscal TGR</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Reporte Accidentabilidad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>DICOM</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+        </tbody>
+      </table>
     </div>
-    <div class="warn-box">⚡ <strong>Criterio clave:</strong> el umbral de Reforzada debe cubrir los contratos donde un fallo del proveedor paraliza la operación. Los valores propuestos son el punto de partida recomendado por Plutto.</div>
+    <div style="display:flex;gap:1rem;margin-top:.875rem;flex-wrap:wrap;align-items:center;">
+      <span style="font-size:.75rem;color:var(--gray);display:flex;align-items:center;gap:.375rem;"><span style="background:#DCFCE7;color:#166534;padding:.1rem .4rem;border-radius:.25rem;font-size:.7rem;font-weight:800;">✓</span> Requerido</span>
+      <span style="font-size:.75rem;color:var(--gray);display:flex;align-items:center;gap:.375rem;"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.1rem .4rem;border-radius:.25rem;font-size:.7rem;font-weight:700;">Opc</span> Opcional</span>
+      <span style="font-size:.75rem;color:var(--gray);display:flex;align-items:center;gap:.375rem;"><span style="color:#CBD5E1;font-size:1rem;">—</span> No aplica</span>
+    </div>
   </div>
 </div>
 
 <!-- ── 6: ÁREA SOLICITANTE ── -->
-<div class="slide slide-std" data-n="7">
+<div class="slide slide-std" data-n="6">
   <div class="s-head"><div class="s-tag">Revisión por área — 1 de 6</div>
     <h2>Solicitante</h2>
     <p>Quien detecta la necesidad y abre el proceso. Puede ser cualquier área de la empresa.</p>
@@ -379,9 +346,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row" onclick="toggleStep('solicitante',0,this)"><div class="step-num">1</div><div class="step-body"><h4>Ingresar la solicitud en Plutto</h4><p>Completar el formulario con nombre, RUT, servicio, monto estimado anual y datos de contacto del proveedor.</p></div></div>
-      <div class="step-row" onclick="toggleStep('solicitante',1,this)"><div class="step-num">2</div><div class="step-body"><h4>Adjuntar contexto relevante</h4><p>Si ya conoces al proveedor o tienes información sobre posibles riesgos, agrégala como comentario en Plutto.</p></div></div>
-      <div class="step-row" onclick="toggleStep('solicitante',2,this)"><div class="step-num">3</div><div class="step-body"><h4>Enviar a Abastecimiento y esperar</h4><p>Recibirás notificación cuando el proveedor sea aprobado o rechazado. No se requiere seguimiento manual.</p></div></div>
+      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Ingresar la solicitud en Plutto</h4><p>Completar el formulario con nombre, RUT, servicio, monto estimado anual y datos de contacto del proveedor.</p></div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Adjuntar contexto relevante</h4><p>Si ya conoces al proveedor o tienes información sobre posibles riesgos, agrégala como comentario en Plutto.</p></div></div>
+      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Enviar a Abastecimiento y esperar</h4><p>Recibirás notificación cuando el proveedor sea aprobado o rechazado. No se requiere seguimiento manual.</p></div></div>
     </div>
     <div class="warn-box">⚠️ <strong>Importante:</strong> No se debe contratar a un proveedor ni solicitarle servicios antes de que el proceso esté completado y aprobado en Plutto.</div>
     <div class="divider"></div>
@@ -403,7 +370,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 </div>
 
 <!-- ── 7: ÁREA ABASTECIMIENTO ── -->
-<div class="slide slide-std" data-n="8">
+<div class="slide slide-std" data-n="7">
   <div class="s-head"><div class="s-tag">Revisión por área — 2 de 6</div>
     <h2>Abastecimiento</h2>
     <p>Coordina el proceso completo. Opera Plutto día a día y asegura que cada proveedor sea evaluado correctamente.</p>
@@ -411,10 +378,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row" onclick="toggleStep('abastecimiento',0,this)"><div class="step-num">1</div><div class="step-body"><h4>Validar la solicitud y responder el filtro</h4><p>Verificar que los datos estén completos y responder las 6 preguntas del filtro de clasificación.</p></div></div>
-      <div class="step-row" onclick="toggleStep('abastecimiento',1,this)"><div class="step-num">2</div><div class="step-body"><h4>Enviar el portal al proveedor</h4><p>Plutto genera y envía automáticamente el enlace al portal. Hacer seguimiento si no responde en 3 días hábiles.</p></div></div>
-      <div class="step-row" onclick="toggleStep('abastecimiento',2,this)"><div class="step-num">3</div><div class="step-body"><h4>Asignar revisores según tipo de evaluación</h4><p>Cumplimiento siempre participa. Finanzas y Legal se suman en evaluaciones Completa, Reforzada y Subcontratación.</p></div></div>
-      <div class="step-row" onclick="toggleStep('abastecimiento',3,this)"><div class="step-num">4</div><div class="step-body"><h4>Registrar la decisión y cerrar el proceso</h4><p>Con todas las revisiones completadas, registrar aprobación o rechazo. El informe se adjunta al contrato o ERP.</p></div></div>
+      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Validar la solicitud y responder el filtro</h4><p>Verificar que los datos estén completos y responder las 6 preguntas del filtro de clasificación.</p></div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Enviar el portal al proveedor</h4><p>Plutto genera y envía automáticamente el enlace al portal. Hacer seguimiento si no responde en 3 días hábiles.</p></div></div>
+      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Asignar revisores según tipo de evaluación</h4><p>Cumplimiento siempre participa. Finanzas y Legal se suman en evaluaciones Completa, Reforzada y Subcontratación.</p></div></div>
+      <div class="step-row"><div class="step-num">4</div><div class="step-body"><h4>Registrar la decisión y cerrar el proceso</h4><p>Con todas las revisiones completadas, registrar aprobación o rechazo. El informe se adjunta al contrato o ERP.</p></div></div>
     </div>
     <div class="warn-box">⏱ <strong>Tiempos objetivo:</strong> Express: máx. 5 días hábiles. Completa o Reforzada: máx. 10 días hábiles.</div>
     <div class="divider"></div>
@@ -436,7 +403,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 </div>
 
 <!-- ── 8: ÁREA CUMPLIMIENTO ── -->
-<div class="slide slide-std" data-n="9">
+<div class="slide slide-std" data-n="8">
   <div class="s-head"><div class="s-tag">Revisión por área — 3 de 6</div>
     <h2>Cumplimiento</h2>
     <p>Dueño del proceso normativo. Clasifica el riesgo y da la recomendación final en cada evaluación.</p>
@@ -444,16 +411,30 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row" onclick="toggleStep('cumplimiento',0,this)"><div class="step-num">1</div><div class="step-body"><h4>Revisar la declaración jurada y el formulario</h4><p>Verificar que el proveedor completó correctamente las declaraciones y que los beneficiarios finales estén identificados.</p></div></div>
-      <div class="step-row" onclick="toggleStep('cumplimiento',1,this)"><div class="step-num">2</div><div class="step-body"><h4>Analizar el screening automático de Plutto</h4><p>Revisar cada alerta, determinar si es falso positivo o riesgo real, y registrar la justificación.</p></div></div>
-      <div class="step-row" onclick="toggleStep('cumplimiento',2,this)"><div class="step-num">3</div><div class="step-body"><h4>Clasificar el nivel de riesgo y emitir recomendación</h4><p>Clasificar al proveedor como riesgo Alto, Medio o Bajo. Si es Alto, elevar al Comité de Excepción.</p></div></div>
-      <div class="step-row" onclick="toggleStep('cumplimiento',3,this)"><div class="step-num">4</div><div class="step-body"><h4>Gestionar el monitoreo continuo</h4><p>Revisar periódicamente las alertas automáticas. Las alertas de compliance requieren acción en máximo 48 horas.</p></div></div>
+      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Revisar la declaración jurada y el formulario</h4><p>Verificar que el proveedor completó correctamente las declaraciones y que los beneficiarios finales estén identificados.</p></div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Analizar el screening automático de Plutto</h4><p>Revisar cada alerta, determinar si es falso positivo o riesgo real, y registrar la justificación.</p></div></div>
+      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Clasificar el nivel de riesgo y emitir recomendación</h4><p>Clasificar al proveedor como riesgo Alto, Medio o Bajo. Si es Alto, elevar al Comité de Excepción.</p></div></div>
+      <div class="step-row"><div class="step-num">4</div><div class="step-body"><h4>Gestionar el monitoreo continuo</h4><p>Revisar periódicamente las alertas automáticas. Las alertas de compliance requieren acción en máximo 48 horas.</p></div></div>
     </div>
     <div class="exc-box">
       <div class="exc-title">🚨 Elevar al Comité de Excepción cuando:</div>
       <div class="exc-item" onclick="toggleExc(0,this)"><input type="checkbox" id="exc-0" onclick="event.stopPropagation()"><span>El proveedor tiene alertas de sanciones internacionales, insolvencia, corrupción o colusión.</span></div>
       <div class="exc-item" onclick="toggleExc(1,this)"><input type="checkbox" id="exc-1" onclick="event.stopPropagation()"><span>Se detecta conflicto de interés de nivel Alto.</span></div>
       <div class="exc-item" onclick="toggleExc(2,this)"><input type="checkbox" id="exc-2" onclick="event.stopPropagation()"><span>El área solicitante insiste en aprobar un proveedor que Cumplimiento recomienda rechazar.</span></div>
+    </div>
+    <div class="area-alerts-title">Alertas automáticas a monitorear</div>
+    <div class="alert-group">
+      <div class="alert-group-title">🔎 Cumplimiento <span class="ag-count">8</span></div>
+      <div class="alert-rows">
+        <div class="alert-row on" id="ar-15" onclick="toggleAlert(15)"><div class="a-toggle"></div><span class="a-label">Hallazgos listas OFAC, Interpol u otras</span><span class="sev sev-alta">Alta</span></div>
+        <div class="alert-row on" id="ar-16" onclick="toggleAlert(16)"><div class="a-toggle"></div><span class="a-label">Hallazgos listas Warning</span><span class="sev sev-alta">Alta</span></div>
+        <div class="alert-row on" id="ar-17" onclick="toggleAlert(17)"><div class="a-toggle"></div><span class="a-label">Hallazgos listas Sanciones</span><span class="sev sev-media">Media</span></div>
+        <div class="alert-row on" id="ar-18" onclick="toggleAlert(18)"><div class="a-toggle"></div><span class="a-label">Hallazgos posible Persona Políticamente Expuesta (PEP)</span><span class="sev sev-media">Media</span></div>
+        <div class="alert-row on" id="ar-19" onclick="toggleAlert(19)"><div class="a-toggle"></div><span class="a-label">Cuenta con hits de cumplimiento</span><span class="sev sev-baja">Baja</span></div>
+        <div class="alert-row on" id="ar-20" onclick="toggleAlert(20)"><div class="a-toggle"></div><span class="a-label">Hallazgos EAP</span><span class="sev sev-baja">Baja</span></div>
+        <div class="alert-row on" id="ar-21" onclick="toggleAlert(21)"><div class="a-toggle"></div><span class="a-label">Hallazgos posible Relacionado a PEP</span><span class="sev sev-baja">Baja</span></div>
+        <div class="alert-row on" id="ar-22" onclick="toggleAlert(22)"><div class="a-toggle"></div><span class="a-label">Tiene hallazgos de Adverse Media</span><span class="sev sev-baja">Baja</span></div>
+      </div>
     </div>
     <div class="divider"></div>
     <div class="decision-section">
@@ -474,7 +455,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 </div>
 
 <!-- ── 9: ÁREA FINANZAS ── -->
-<div class="slide slide-std" data-n="10">
+<div class="slide slide-std" data-n="9">
   <div class="s-head"><div class="s-tag">Revisión por área — 4 de 6</div>
     <h2>Finanzas</h2>
     <p>Revisor en evaluaciones Completa, Reforzada y Subcontratación. Analiza la solidez financiera del proveedor.</p>
@@ -482,14 +463,34 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row" onclick="toggleStep('finanzas',0,this)"><div class="step-num">1</div><div class="step-body"><h4>Revisar la carpeta tributaria y el informe DICOM</h4><p>Verificar ingresos de los últimos 24 meses, detectar meses sin facturación y revisar morosidades.</p></div></div>
-      <div class="step-row" onclick="toggleStep('finanzas',1,this)"><div class="step-num">2</div><div class="step-body"><h4>Proponer condiciones financieras según el riesgo</h4><p>Si hay fragilidad financiera, proponer: garantía bancaria, seguro de cumplimiento, anticipo cero o pagos por hito.</p></div></div>
+      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Revisar la carpeta tributaria y el informe DICOM</h4><p>Verificar ingresos de los últimos 24 meses, detectar meses sin facturación y revisar morosidades.</p></div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Proponer condiciones financieras según el riesgo</h4><p>Si hay fragilidad financiera, proponer: garantía bancaria, seguro de cumplimiento, anticipo cero o pagos por hito.</p></div></div>
     </div>
     <div class="sig-box">
       <div class="sig-title">🔴 Señales de alerta inmediata</div>
       <div class="sig-item" onclick="toggleSig(0,this)"><input type="checkbox" id="sig-0" onclick="event.stopPropagation()"><span><strong>Deuda bancaria vencida mayor a 60 días (CMF):</strong> elevar a Comité de Excepción.</span></div>
       <div class="sig-item" onclick="toggleSig(1,this)"><input type="checkbox" id="sig-1" onclick="event.stopPropagation()"><span><strong>Morosidad comercial severa en DICOM:</strong> solicitar historial ampliado.</span></div>
       <div class="sig-item" onclick="toggleSig(2,this)"><input type="checkbox" id="sig-2" onclick="event.stopPropagation()"><span><strong>Inicio de actividades menor a 12 meses:</strong> aplicar Evaluación Reforzada.</span></div>
+    </div>
+    <div class="area-alerts-title">Alertas automáticas a monitorear</div>
+    <div class="alert-group">
+      <div class="alert-group-title">🏛️ Tributario <span class="ag-count">5</span></div>
+      <div class="alert-rows">
+        <div class="alert-row on" id="ar-0" onclick="toggleAlert(0)"><div class="a-toggle"></div><span class="a-label">Entidad en nómina difícil de fiscalización</span><span class="sev sev-baja">Baja</span></div>
+        <div class="alert-row on" id="ar-1" onclick="toggleAlert(1)"><div class="a-toggle"></div><span class="a-label">Inició actividades hace menos de 6 meses</span><span class="sev sev-media">Media</span></div>
+        <div class="alert-row on" id="ar-2" onclick="toggleAlert(2)"><div class="a-toggle"></div><span class="a-label">No ha iniciado actividades</span><span class="sev sev-alta">Alta</span></div>
+        <div class="alert-row on" id="ar-3" onclick="toggleAlert(3)"><div class="a-toggle"></div><span class="a-label">Sociedad disuelta</span><span class="sev sev-alta">Alta</span></div>
+        <div class="alert-row on" id="ar-4" onclick="toggleAlert(4)"><div class="a-toggle"></div><span class="a-label">Término de giro</span><span class="sev sev-alta">Alta</span></div>
+      </div>
+    </div>
+    <div class="alert-group">
+      <div class="alert-group-title">💰 Financiero <span class="ag-count">4</span></div>
+      <div class="alert-rows">
+        <div class="alert-row on" id="ar-5" onclick="toggleAlert(5)"><div class="a-toggle"></div><span class="a-label">Cuenta con publicaciones concursales</span><span class="sev sev-alta">Alta</span></div>
+        <div class="alert-row on" id="ar-6" onclick="toggleAlert(6)"><div class="a-toggle"></div><span class="a-label">Cuenta con morosidades en boletines</span><span class="sev sev-media">Media</span></div>
+        <div class="alert-row on" id="ar-7" onclick="toggleAlert(7)"><div class="a-toggle"></div><span class="a-label">Puntaje riesgoso en Equifax</span><span class="sev sev-alta">Alta</span></div>
+        <div class="alert-row on" id="ar-8" onclick="toggleAlert(8)"><div class="a-toggle"></div><span class="a-label">Puntaje de riesgo moderado en Equifax</span><span class="sev sev-media">Media</span></div>
+      </div>
     </div>
     <div class="divider"></div>
     <div class="decision-section">
@@ -510,7 +511,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 </div>
 
 <!-- ── 10: ÁREA LEGAL ── -->
-<div class="slide slide-std" data-n="11">
+<div class="slide slide-std" data-n="10">
   <div class="s-head"><div class="s-tag">Revisión por área — 5 de 6</div>
     <h2>Legal</h2>
     <p>Revisor en evaluaciones Completa y Reforzada. Valida la constitución legal del proveedor.</p>
@@ -518,9 +519,19 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row" onclick="toggleStep('legal',0,this)"><div class="step-num">1</div><div class="step-body"><h4>Validar la personería y vigencia societaria</h4><p>Verificar en el Registro de Comercio que la empresa existe, el representante legal tiene poderes vigentes y no hay restricciones societarias.</p></div></div>
-      <div class="step-row" onclick="toggleStep('legal',1,this)"><div class="step-num">2</div><div class="step-body"><h4>Revisar cláusulas requeridas del contrato</h4><p>Cláusula anticorrupción, derecho de auditoría, terminación por incumplimiento de DD, protección de datos personales.</p></div></div>
-      <div class="step-row" onclick="toggleStep('legal',2,this)"><div class="step-num">3</div><div class="step-body"><h4>Registrar el visto bueno legal en Plutto</h4><p>Sin este registro el proceso no puede cerrarse como aprobado. Es un paso bloqueante.</p></div></div>
+      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Validar la personería y vigencia societaria</h4><p>Verificar en el Registro de Comercio que la empresa existe, el representante legal tiene poderes vigentes y no hay restricciones societarias.</p></div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Revisar cláusulas requeridas del contrato</h4><p>Cláusula anticorrupción, derecho de auditoría, terminación por incumplimiento de DD, protección de datos personales.</p></div></div>
+      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Registrar el visto bueno legal en Plutto</h4><p>Sin este registro el proceso no puede cerrarse como aprobado. Es un paso bloqueante.</p></div></div>
+    </div>
+    <div class="area-alerts-title">Alertas automáticas a monitorear</div>
+    <div class="alert-group">
+      <div class="alert-group-title">⚖️ Legal y Societario <span class="ag-count">4</span></div>
+      <div class="alert-rows">
+        <div class="alert-row on" id="ar-9" onclick="toggleAlert(9)"><div class="a-toggle"></div><span class="a-label">Demandas con procedimientos concursales</span><span class="sev sev-alta">Alta</span></div>
+        <div class="alert-row on" id="ar-10" onclick="toggleAlert(10)"><div class="a-toggle"></div><span class="a-label">Tiene demandas penales</span><span class="sev sev-alta">Alta</span></div>
+        <div class="alert-row on" id="ar-11" onclick="toggleAlert(11)"><div class="a-toggle"></div><span class="a-label">Demandas laborales en el último año</span><span class="sev sev-media">Media</span></div>
+        <div class="alert-row on" id="ar-12" onclick="toggleAlert(12)"><div class="a-toggle"></div><span class="a-label">Aparición en causas legales</span><span class="sev sev-baja">Baja</span></div>
+      </div>
     </div>
     <div class="divider"></div>
     <div class="decision-section">
@@ -541,7 +552,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 </div>
 
 <!-- ── 11: ÁREA SUBCONTRATACIÓN ── -->
-<div class="slide slide-std" data-n="12">
+<div class="slide slide-std" data-n="11">
   <div class="s-head"><div class="s-tag">Revisión por área — 6 de 6</div>
     <h2>Subcontratación</h2>
     <p>Revisor adicional cuando el servicio involucra personal en instalaciones propias (Ley 20.123).</p>
@@ -549,9 +560,17 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row" onclick="toggleStep('subcontratacion',0,this)"><div class="step-num">1</div><div class="step-body"><h4>Verificar F-30 y F-30-1 actualizados</h4><p>Formularios de la Dirección del Trabajo que acreditan cotizaciones previsionales al día. Deben ser del mes en curso.</p></div></div>
-      <div class="step-row" onclick="toggleStep('subcontratacion',1,this)"><div class="step-num">2</div><div class="step-body"><h4>Revisar SSOMA y certificado de siniestralidad</h4><p>Validar que el proveedor tiene protocolos de seguridad activos y tasa de accidentabilidad aceptable.</p></div></div>
-      <div class="step-row" onclick="toggleStep('subcontratacion',2,this)"><div class="step-num">3</div><div class="step-body"><h4>Autorizar el ingreso a faena en Plutto</h4><p>Sin este registro el acceso físico no debe autorizarse bajo ninguna circunstancia.</p></div></div>
+      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Verificar F-30 y F-30-1 actualizados</h4><p>Formularios de la Dirección del Trabajo que acreditan cotizaciones previsionales al día. Deben ser del mes en curso.</p></div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Revisar SSOMA y certificado de siniestralidad</h4><p>Validar que el proveedor tiene protocolos de seguridad activos y tasa de accidentabilidad aceptable.</p></div></div>
+      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Autorizar el ingreso a faena en Plutto</h4><p>Sin este registro el acceso físico no debe autorizarse bajo ninguna circunstancia.</p></div></div>
+    </div>
+    <div class="area-alerts-title">Alertas automáticas a monitorear</div>
+    <div class="alert-group">
+      <div class="alert-group-title">👷 Laboral <span class="ag-count">2</span></div>
+      <div class="alert-rows">
+        <div class="alert-row on" id="ar-13" onclick="toggleAlert(13)"><div class="a-toggle"></div><span class="a-label">Multas Dirección del Trabajo</span><span class="sev sev-media">Media</span></div>
+        <div class="alert-row on" id="ar-14" onclick="toggleAlert(14)"><div class="a-toggle"></div><span class="a-label">Registra sanciones de la SNIFA</span><span class="sev sev-media">Media</span></div>
+      </div>
     </div>
     <div class="divider"></div>
     <div class="decision-section">
@@ -571,72 +590,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 12: ALERTAS ── -->
-<div class="slide slide-std" data-n="13">
-  <div class="s-head"><div class="s-tag">Alertas recomendadas</div>
-    <h2>¿Qué alertas activamos?</h2>
-    <p>Plutto monitoreará estas señales automáticamente en todos los proveedores activos. Activa o desactiva según tu criterio.</p>
-  </div>
-  <div class="s-body scrollable">
-
-    <div class="alert-group">
-      <div class="alert-group-title">🏛️ Tributario <span class="ag-count">5</span></div>
-      <div class="alert-rows">
-        <div class="alert-row on" id="ar-0" onclick="toggleAlert(0)"><div class="a-toggle"></div><span class="a-label">Entidad en nómina difícil de fiscalización</span><span class="sev sev-baja">Baja</span></div>
-        <div class="alert-row on" id="ar-1" onclick="toggleAlert(1)"><div class="a-toggle"></div><span class="a-label">Inició actividades hace menos de 6 meses</span><span class="sev sev-media">Media</span></div>
-        <div class="alert-row on" id="ar-2" onclick="toggleAlert(2)"><div class="a-toggle"></div><span class="a-label">No ha iniciado actividades</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-3" onclick="toggleAlert(3)"><div class="a-toggle"></div><span class="a-label">Sociedad disuelta</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-4" onclick="toggleAlert(4)"><div class="a-toggle"></div><span class="a-label">Término de giro</span><span class="sev sev-alta">Alta</span></div>
-      </div>
-    </div>
-
-    <div class="alert-group">
-      <div class="alert-group-title">💰 Financiero <span class="ag-count">4</span></div>
-      <div class="alert-rows">
-        <div class="alert-row on" id="ar-5" onclick="toggleAlert(5)"><div class="a-toggle"></div><span class="a-label">Cuenta con publicaciones concursales</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-6" onclick="toggleAlert(6)"><div class="a-toggle"></div><span class="a-label">Cuenta con morosidades en boletines</span><span class="sev sev-media">Media</span></div>
-        <div class="alert-row on" id="ar-7" onclick="toggleAlert(7)"><div class="a-toggle"></div><span class="a-label">Puntaje riesgoso en Equifax</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-8" onclick="toggleAlert(8)"><div class="a-toggle"></div><span class="a-label">Puntaje de riesgo moderado en Equifax</span><span class="sev sev-media">Media</span></div>
-      </div>
-    </div>
-
-    <div class="alert-group">
-      <div class="alert-group-title">⚖️ Legal y Societario <span class="ag-count">4</span></div>
-      <div class="alert-rows">
-        <div class="alert-row on" id="ar-9" onclick="toggleAlert(9)"><div class="a-toggle"></div><span class="a-label">Demandas con procedimientos concursales</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-10" onclick="toggleAlert(10)"><div class="a-toggle"></div><span class="a-label">Tiene demandas penales</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-11" onclick="toggleAlert(11)"><div class="a-toggle"></div><span class="a-label">Demandas laborales en el último año</span><span class="sev sev-media">Media</span></div>
-        <div class="alert-row on" id="ar-12" onclick="toggleAlert(12)"><div class="a-toggle"></div><span class="a-label">Aparición en causas legales</span><span class="sev sev-baja">Baja</span></div>
-      </div>
-    </div>
-
-    <div class="alert-group">
-      <div class="alert-group-title">👷 Laboral <span class="ag-count">2</span></div>
-      <div class="alert-rows">
-        <div class="alert-row on" id="ar-13" onclick="toggleAlert(13)"><div class="a-toggle"></div><span class="a-label">Multas Dirección del Trabajo</span><span class="sev sev-media">Media</span></div>
-        <div class="alert-row on" id="ar-14" onclick="toggleAlert(14)"><div class="a-toggle"></div><span class="a-label">Registra sanciones de la SNIFA</span><span class="sev sev-media">Media</span></div>
-      </div>
-    </div>
-
-    <div class="alert-group">
-      <div class="alert-group-title">🔎 Cumplimiento <span class="ag-count">8</span></div>
-      <div class="alert-rows">
-        <div class="alert-row on" id="ar-15" onclick="toggleAlert(15)"><div class="a-toggle"></div><span class="a-label">Hallazgos listas OFAC, Interpol u otras</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-16" onclick="toggleAlert(16)"><div class="a-toggle"></div><span class="a-label">Hallazgos listas Warning</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-17" onclick="toggleAlert(17)"><div class="a-toggle"></div><span class="a-label">Hallazgos listas Sanciones</span><span class="sev sev-media">Media</span></div>
-        <div class="alert-row on" id="ar-18" onclick="toggleAlert(18)"><div class="a-toggle"></div><span class="a-label">Hallazgos posible Persona Políticamente Expuesta (PEP)</span><span class="sev sev-media">Media</span></div>
-        <div class="alert-row on" id="ar-19" onclick="toggleAlert(19)"><div class="a-toggle"></div><span class="a-label">Cuenta con hits de cumplimiento</span><span class="sev sev-baja">Baja</span></div>
-        <div class="alert-row on" id="ar-20" onclick="toggleAlert(20)"><div class="a-toggle"></div><span class="a-label">Hallazgos EAP</span><span class="sev sev-baja">Baja</span></div>
-        <div class="alert-row on" id="ar-21" onclick="toggleAlert(21)"><div class="a-toggle"></div><span class="a-label">Hallazgos posible Relacionado a PEP</span><span class="sev sev-baja">Baja</span></div>
-        <div class="alert-row on" id="ar-22" onclick="toggleAlert(22)"><div class="a-toggle"></div><span class="a-label">Tiene hallazgos de Adverse Media</span><span class="sev sev-baja">Baja</span></div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ── 13: REPORTE FINAL ── -->
-<div class="slide slide-std" data-n="14">
+<!-- ── 12: REPORTE FINAL ── -->
+<div class="slide slide-std" data-n="12">
   <div class="s-head"><div class="s-tag">Reporte final</div>
     <h2>Resumen de la sesión</h2>
     <p>Vista consolidada de todo lo acordado. Envía para registrar el acuerdo con el equipo Plutto.</p>
@@ -662,13 +617,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <div id="nav">
   <button class="nav-btn" id="prevBtn" onclick="prev()" disabled>←</button>
-  <span id="counter">1 / 13</span>
+  <span id="counter">1 / 12</span>
   <button class="nav-btn" id="nextBtn" onclick="next()">→</button>
 </div>
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 14;
+const TOTAL = 12;
 let cur = 1;
 
 const AREAS = ['solicitante','abastecimiento','cumplimiento','finanzas','legal','subcontratacion'];
@@ -677,10 +632,14 @@ const AREA_LABELS = { solicitante:'Solicitante', abastecimiento:'Abastecimiento'
 const st = {
   email:'', client:'',
   evalTypes:{ express:true, completa:true, subcontratacion:true, reforzada:true, internacional:true },
-  thresh1:20000, thresh2:100000,
-  areas:{ solicitante:{decision:null,notes:'',steps:{},extraDocs:[]}, abastecimiento:{decision:null,notes:'',steps:{},extraDocs:[]},
-    cumplimiento:{decision:null,notes:'',steps:{},extraDocs:[],exceptions:{}}, finanzas:{decision:null,notes:'',steps:{},extraDocs:[],signals:{}},
-    legal:{decision:null,notes:'',steps:{},extraDocs:[]}, subcontratacion:{decision:null,notes:'',steps:{},extraDocs:[]} },
+  areas:{
+    solicitante:{decision:null,notes:'',extraDocs:[]},
+    abastecimiento:{decision:null,notes:'',extraDocs:[]},
+    cumplimiento:{decision:null,notes:'',extraDocs:[],exceptions:{}},
+    finanzas:{decision:null,notes:'',extraDocs:[],signals:{}},
+    legal:{decision:null,notes:'',extraDocs:[]},
+    subcontratacion:{decision:null,notes:'',extraDocs:[]}
+  },
   alerts: Array(23).fill(true),
 };
 
@@ -697,7 +656,7 @@ function go(n, dir) {
   to.style.opacity = '0'; to.classList.add('active');
   requestAnimationFrame(() => requestAnimationFrame(() => { to.style.transform = ''; to.style.opacity = ''; }));
   cur = n;
-  if (n === 13) buildReport();
+  if (n === 12) buildReport();
   updateNav(); save();
 }
 function next() { go(cur+1,1); }
@@ -734,23 +693,6 @@ function toggleEval(type) {
   document.getElementById('et-'+type).classList.toggle('on', st.evalTypes[type]);
   document.getElementById('ec-'+type).classList.toggle('active', st.evalTypes[type]);
   document.getElementById('ec-'+type).classList.toggle('inactive', !st.evalTypes[type]);
-  save();
-}
-
-// ── THRESHOLDS ──
-function updateThresholds() {
-  st.thresh1 = parseInt(document.getElementById('thresh1').value)||20000;
-  st.thresh2 = parseInt(document.getElementById('thresh2').value)||100000;
-  save();
-}
-
-// ── STEPS ──
-function toggleStep(area, idx, row) {
-  const prefix = area==='subcontratacion'?'sub':area.substring(0,3);
-  st.areas[area].steps[idx] = !st.areas[area].steps[idx];
-  const cb = document.getElementById(`sc-${prefix}-${idx}`);
-  if (cb) cb.checked = st.areas[area].steps[idx];
-  row.classList.toggle('done', !!st.areas[area].steps[idx]);
   save();
 }
 
@@ -833,8 +775,6 @@ function buildReport() {
     cfg.innerHTML = `<strong style="color:var(--navy)">Empresa:</strong> ${st.client||'—'}<br>
       <strong style="color:var(--navy)">Email:</strong> ${st.email||'—'}<br>
       <strong style="color:var(--navy)">Evaluaciones activas:</strong> ${types||'Ninguna'}<br>
-      <strong style="color:var(--navy)">Umbral Express → Completa:</strong> USD ${(st.thresh1||20000).toLocaleString()}<br>
-      <strong style="color:var(--navy)">Umbral Completa → Reforzada:</strong> USD ${(st.thresh2||100000).toLocaleString()}<br>
       <strong style="color:var(--navy)">Alertas activadas:</strong> ${st.alerts.filter(Boolean).length} de 23`;
   }
 }
@@ -845,10 +785,11 @@ async function enviar() {
   if (btn) { btn.textContent='⏳ Enviando…'; btn.classList.add('saving'); }
   const payload = {
     email: st.email, client: st.client, timestamp: new Date().toISOString(),
-    evalTypes: st.evalTypes, thresholds: { thresh1: st.thresh1, thresh2: st.thresh2 },
+    evalTypes: st.evalTypes,
     areas: Object.fromEntries(AREAS.map(a => [a, {
-      decision: st.areas[a].decision, notes: st.areas[a].notes, extraDocs: st.areas[a].extraDocs,
-      stepsCompleted: Object.values(st.areas[a].steps||{}).filter(Boolean).length,
+      decision: st.areas[a].decision,
+      notes: st.areas[a].notes,
+      extraDocs: st.areas[a].extraDocs,
       ...(a==='cumplimiento' ? { exceptions: st.areas[a].exceptions } : {}),
       ...(a==='finanzas' ? { signals: st.areas[a].signals } : {}),
     }])),
@@ -872,12 +813,9 @@ function load() {
     if (d.email) { st.email=d.email; const el=document.getElementById('emailInput'); if(el) el.value=d.email; }
     if (d.client) { st.client=d.client; const cl=document.getElementById('clientInput'); if(cl) cl.value=d.client; }
     if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
-    if (d.thresh1) { st.thresh1=d.thresh1; const t=document.getElementById('thresh1'); if(t) t.value=d.thresh1; }
-    if (d.thresh2) { st.thresh2=d.thresh2; const t=document.getElementById('thresh2'); if(t) t.value=d.thresh2; }
     if (d.areas) AREAS.forEach(a => { if(d.areas[a]) Object.assign(st.areas[a], d.areas[a]); });
     if (d.alerts) st.alerts = d.alerts;
 
-    // Restore UI
     Object.entries(st.evalTypes).forEach(([type, active]) => {
       document.getElementById('et-'+type)?.classList.toggle('on', active);
       document.getElementById('ec-'+type)?.classList.toggle('active', active);
@@ -888,6 +826,8 @@ function load() {
       if (area.decision) {
         const badge = document.getElementById('badge-'+a);
         if (badge) { badge.className='area-status '+area.decision; badge.textContent=area.decision==='aprobado'?'✅ Aprobado':area.decision==='rechazado'?'❌ Rechazado':'✏️ Con observaciones'; }
+        const btns = document.querySelectorAll(`[onclick*="setDecision('${a}'"]`);
+        btns.forEach(b => { if(b.onclick?.toString().includes(area.decision)) b.classList.add('sel-'+area.decision); });
       }
       if (area.notes) { const ta=document.getElementById('notes-'+a); if(ta) ta.value=area.notes; }
       renderTags(a);
