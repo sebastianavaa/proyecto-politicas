@@ -379,9 +379,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row" onclick="toggleStep('solicitante',0,this)"><input type="checkbox" class="step-check" id="sc-sol-0" onclick="event.stopPropagation()"><div class="step-num">1</div><div class="step-body"><h4>Ingresar la solicitud en Plutto</h4><p>Completar el formulario con nombre, RUT, servicio, monto estimado anual y datos de contacto del proveedor.</p></div></div>
-      <div class="step-row" onclick="toggleStep('solicitante',1,this)"><input type="checkbox" class="step-check" id="sc-sol-1" onclick="event.stopPropagation()"><div class="step-num">2</div><div class="step-body"><h4>Adjuntar contexto relevante</h4><p>Si ya conoces al proveedor o tienes información sobre posibles riesgos, agrégala como comentario en Plutto.</p></div></div>
-      <div class="step-row" onclick="toggleStep('solicitante',2,this)"><input type="checkbox" class="step-check" id="sc-sol-2" onclick="event.stopPropagation()"><div class="step-num">3</div><div class="step-body"><h4>Enviar a Abastecimiento y esperar</h4><p>Recibirás notificación cuando el proveedor sea aprobado o rechazado. No se requiere seguimiento manual.</p></div></div>
+      <div class="step-row" onclick="toggleStep('solicitante',0,this)"><div class="step-num">1</div><div class="step-body"><h4>Ingresar la solicitud en Plutto</h4><p>Completar el formulario con nombre, RUT, servicio, monto estimado anual y datos de contacto del proveedor.</p></div></div>
+      <div class="step-row" onclick="toggleStep('solicitante',1,this)"><div class="step-num">2</div><div class="step-body"><h4>Adjuntar contexto relevante</h4><p>Si ya conoces al proveedor o tienes información sobre posibles riesgos, agrégala como comentario en Plutto.</p></div></div>
+      <div class="step-row" onclick="toggleStep('solicitante',2,this)"><div class="step-num">3</div><div class="step-body"><h4>Enviar a Abastecimiento y esperar</h4><p>Recibirás notificación cuando el proveedor sea aprobado o rechazado. No se requiere seguimiento manual.</p></div></div>
     </div>
     <div class="warn-box">⚠️ <strong>Importante:</strong> No se debe contratar a un proveedor ni solicitarle servicios antes de que el proceso esté completado y aprobado en Plutto.</div>
     <div class="divider"></div>
@@ -411,10 +411,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row" onclick="toggleStep('abastecimiento',0,this)"><input type="checkbox" class="step-check" id="sc-aba-0" onclick="event.stopPropagation()"><div class="step-num">1</div><div class="step-body"><h4>Validar la solicitud y responder el filtro</h4><p>Verificar que los datos estén completos y responder las 6 preguntas del filtro de clasificación.</p></div></div>
-      <div class="step-row" onclick="toggleStep('abastecimiento',1,this)"><input type="checkbox" class="step-check" id="sc-aba-1" onclick="event.stopPropagation()"><div class="step-num">2</div><div class="step-body"><h4>Enviar el portal al proveedor</h4><p>Plutto genera y envía automáticamente el enlace al portal. Hacer seguimiento si no responde en 3 días hábiles.</p></div></div>
-      <div class="step-row" onclick="toggleStep('abastecimiento',2,this)"><input type="checkbox" class="step-check" id="sc-aba-2" onclick="event.stopPropagation()"><div class="step-num">3</div><div class="step-body"><h4>Asignar revisores según tipo de evaluación</h4><p>Cumplimiento siempre participa. Finanzas y Legal se suman en evaluaciones Completa, Reforzada y Subcontratación.</p></div></div>
-      <div class="step-row" onclick="toggleStep('abastecimiento',3,this)"><input type="checkbox" class="step-check" id="sc-aba-3" onclick="event.stopPropagation()"><div class="step-num">4</div><div class="step-body"><h4>Registrar la decisión y cerrar el proceso</h4><p>Con todas las revisiones completadas, registrar aprobación o rechazo. El informe se adjunta al contrato o ERP.</p></div></div>
+      <div class="step-row" onclick="toggleStep('abastecimiento',0,this)"><div class="step-num">1</div><div class="step-body"><h4>Validar la solicitud y responder el filtro</h4><p>Verificar que los datos estén completos y responder las 6 preguntas del filtro de clasificación.</p></div></div>
+      <div class="step-row" onclick="toggleStep('abastecimiento',1,this)"><div class="step-num">2</div><div class="step-body"><h4>Enviar el portal al proveedor</h4><p>Plutto genera y envía automáticamente el enlace al portal. Hacer seguimiento si no responde en 3 días hábiles.</p></div></div>
+      <div class="step-row" onclick="toggleStep('abastecimiento',2,this)"><div class="step-num">3</div><div class="step-body"><h4>Asignar revisores según tipo de evaluación</h4><p>Cumplimiento siempre participa. Finanzas y Legal se suman en evaluaciones Completa, Reforzada y Subcontratación.</p></div></div>
+      <div class="step-row" onclick="toggleStep('abastecimiento',3,this)"><div class="step-num">4</div><div class="step-body"><h4>Registrar la decisión y cerrar el proceso</h4><p>Con todas las revisiones completadas, registrar aprobación o rechazo. El informe se adjunta al contrato o ERP.</p></div></div>
     </div>
     <div class="warn-box">⏱ <strong>Tiempos objetivo:</strong> Express: máx. 5 días hábiles. Completa o Reforzada: máx. 10 días hábiles.</div>
     <div class="divider"></div>
@@ -444,10 +444,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row" onclick="toggleStep('cumplimiento',0,this)"><input type="checkbox" class="step-check" id="sc-cum-0" onclick="event.stopPropagation()"><div class="step-num">1</div><div class="step-body"><h4>Revisar la declaración jurada y el formulario</h4><p>Verificar que el proveedor completó correctamente las declaraciones y que los beneficiarios finales estén identificados.</p></div></div>
-      <div class="step-row" onclick="toggleStep('cumplimiento',1,this)"><input type="checkbox" class="step-check" id="sc-cum-1" onclick="event.stopPropagation()"><div class="step-num">2</div><div class="step-body"><h4>Analizar el screening automático de Plutto</h4><p>Revisar cada alerta, determinar si es falso positivo o riesgo real, y registrar la justificación.</p></div></div>
-      <div class="step-row" onclick="toggleStep('cumplimiento',2,this)"><input type="checkbox" class="step-check" id="sc-cum-2" onclick="event.stopPropagation()"><div class="step-num">3</div><div class="step-body"><h4>Clasificar el nivel de riesgo y emitir recomendación</h4><p>Clasificar al proveedor como riesgo Alto, Medio o Bajo. Si es Alto, elevar al Comité de Excepción.</p></div></div>
-      <div class="step-row" onclick="toggleStep('cumplimiento',3,this)"><input type="checkbox" class="step-check" id="sc-cum-3" onclick="event.stopPropagation()"><div class="step-num">4</div><div class="step-body"><h4>Gestionar el monitoreo continuo</h4><p>Revisar periódicamente las alertas automáticas. Las alertas de compliance requieren acción en máximo 48 horas.</p></div></div>
+      <div class="step-row" onclick="toggleStep('cumplimiento',0,this)"><div class="step-num">1</div><div class="step-body"><h4>Revisar la declaración jurada y el formulario</h4><p>Verificar que el proveedor completó correctamente las declaraciones y que los beneficiarios finales estén identificados.</p></div></div>
+      <div class="step-row" onclick="toggleStep('cumplimiento',1,this)"><div class="step-num">2</div><div class="step-body"><h4>Analizar el screening automático de Plutto</h4><p>Revisar cada alerta, determinar si es falso positivo o riesgo real, y registrar la justificación.</p></div></div>
+      <div class="step-row" onclick="toggleStep('cumplimiento',2,this)"><div class="step-num">3</div><div class="step-body"><h4>Clasificar el nivel de riesgo y emitir recomendación</h4><p>Clasificar al proveedor como riesgo Alto, Medio o Bajo. Si es Alto, elevar al Comité de Excepción.</p></div></div>
+      <div class="step-row" onclick="toggleStep('cumplimiento',3,this)"><div class="step-num">4</div><div class="step-body"><h4>Gestionar el monitoreo continuo</h4><p>Revisar periódicamente las alertas automáticas. Las alertas de compliance requieren acción en máximo 48 horas.</p></div></div>
     </div>
     <div class="exc-box">
       <div class="exc-title">🚨 Elevar al Comité de Excepción cuando:</div>
@@ -482,8 +482,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row" onclick="toggleStep('finanzas',0,this)"><input type="checkbox" class="step-check" id="sc-fin-0" onclick="event.stopPropagation()"><div class="step-num">1</div><div class="step-body"><h4>Revisar la carpeta tributaria y el informe DICOM</h4><p>Verificar ingresos de los últimos 24 meses, detectar meses sin facturación y revisar morosidades.</p></div></div>
-      <div class="step-row" onclick="toggleStep('finanzas',1,this)"><input type="checkbox" class="step-check" id="sc-fin-1" onclick="event.stopPropagation()"><div class="step-num">2</div><div class="step-body"><h4>Proponer condiciones financieras según el riesgo</h4><p>Si hay fragilidad financiera, proponer: garantía bancaria, seguro de cumplimiento, anticipo cero o pagos por hito.</p></div></div>
+      <div class="step-row" onclick="toggleStep('finanzas',0,this)"><div class="step-num">1</div><div class="step-body"><h4>Revisar la carpeta tributaria y el informe DICOM</h4><p>Verificar ingresos de los últimos 24 meses, detectar meses sin facturación y revisar morosidades.</p></div></div>
+      <div class="step-row" onclick="toggleStep('finanzas',1,this)"><div class="step-num">2</div><div class="step-body"><h4>Proponer condiciones financieras según el riesgo</h4><p>Si hay fragilidad financiera, proponer: garantía bancaria, seguro de cumplimiento, anticipo cero o pagos por hito.</p></div></div>
     </div>
     <div class="sig-box">
       <div class="sig-title">🔴 Señales de alerta inmediata</div>
@@ -518,9 +518,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row" onclick="toggleStep('legal',0,this)"><input type="checkbox" class="step-check" id="sc-leg-0" onclick="event.stopPropagation()"><div class="step-num">1</div><div class="step-body"><h4>Validar la personería y vigencia societaria</h4><p>Verificar en el Registro de Comercio que la empresa existe, el representante legal tiene poderes vigentes y no hay restricciones societarias.</p></div></div>
-      <div class="step-row" onclick="toggleStep('legal',1,this)"><input type="checkbox" class="step-check" id="sc-leg-1" onclick="event.stopPropagation()"><div class="step-num">2</div><div class="step-body"><h4>Revisar cláusulas requeridas del contrato</h4><p>Cláusula anticorrupción, derecho de auditoría, terminación por incumplimiento de DD, protección de datos personales.</p></div></div>
-      <div class="step-row" onclick="toggleStep('legal',2,this)"><input type="checkbox" class="step-check" id="sc-leg-2" onclick="event.stopPropagation()"><div class="step-num">3</div><div class="step-body"><h4>Registrar el visto bueno legal en Plutto</h4><p>Sin este registro el proceso no puede cerrarse como aprobado. Es un paso bloqueante.</p></div></div>
+      <div class="step-row" onclick="toggleStep('legal',0,this)"><div class="step-num">1</div><div class="step-body"><h4>Validar la personería y vigencia societaria</h4><p>Verificar en el Registro de Comercio que la empresa existe, el representante legal tiene poderes vigentes y no hay restricciones societarias.</p></div></div>
+      <div class="step-row" onclick="toggleStep('legal',1,this)"><div class="step-num">2</div><div class="step-body"><h4>Revisar cláusulas requeridas del contrato</h4><p>Cláusula anticorrupción, derecho de auditoría, terminación por incumplimiento de DD, protección de datos personales.</p></div></div>
+      <div class="step-row" onclick="toggleStep('legal',2,this)"><div class="step-num">3</div><div class="step-body"><h4>Registrar el visto bueno legal en Plutto</h4><p>Sin este registro el proceso no puede cerrarse como aprobado. Es un paso bloqueante.</p></div></div>
     </div>
     <div class="divider"></div>
     <div class="decision-section">
@@ -549,9 +549,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row" onclick="toggleStep('subcontratacion',0,this)"><input type="checkbox" class="step-check" id="sc-sub-0" onclick="event.stopPropagation()"><div class="step-num">1</div><div class="step-body"><h4>Verificar F-30 y F-30-1 actualizados</h4><p>Formularios de la Dirección del Trabajo que acreditan cotizaciones previsionales al día. Deben ser del mes en curso.</p></div></div>
-      <div class="step-row" onclick="toggleStep('subcontratacion',1,this)"><input type="checkbox" class="step-check" id="sc-sub-1" onclick="event.stopPropagation()"><div class="step-num">2</div><div class="step-body"><h4>Revisar SSOMA y certificado de siniestralidad</h4><p>Validar que el proveedor tiene protocolos de seguridad activos y tasa de accidentabilidad aceptable.</p></div></div>
-      <div class="step-row" onclick="toggleStep('subcontratacion',2,this)"><input type="checkbox" class="step-check" id="sc-sub-2" onclick="event.stopPropagation()"><div class="step-num">3</div><div class="step-body"><h4>Autorizar el ingreso a faena en Plutto</h4><p>Sin este registro el acceso físico no debe autorizarse bajo ninguna circunstancia.</p></div></div>
+      <div class="step-row" onclick="toggleStep('subcontratacion',0,this)"><div class="step-num">1</div><div class="step-body"><h4>Verificar F-30 y F-30-1 actualizados</h4><p>Formularios de la Dirección del Trabajo que acreditan cotizaciones previsionales al día. Deben ser del mes en curso.</p></div></div>
+      <div class="step-row" onclick="toggleStep('subcontratacion',1,this)"><div class="step-num">2</div><div class="step-body"><h4>Revisar SSOMA y certificado de siniestralidad</h4><p>Validar que el proveedor tiene protocolos de seguridad activos y tasa de accidentabilidad aceptable.</p></div></div>
+      <div class="step-row" onclick="toggleStep('subcontratacion',2,this)"><div class="step-num">3</div><div class="step-body"><h4>Autorizar el ingreso a faena en Plutto</h4><p>Sin este registro el acceso físico no debe autorizarse bajo ninguna circunstancia.</p></div></div>
     </div>
     <div class="divider"></div>
     <div class="decision-section">
