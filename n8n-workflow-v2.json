@@ -1,0 +1,121 @@
+{
+  "name": "DD Proveedores v2 — Política por Área",
+  "nodes": [
+    {
+      "id": "node-webhook-v2",
+      "name": "Webhook Sesión v2",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "proyecto-politicas-v2",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-code-v2",
+      "name": "Parsear Body v2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300],
+      "parameters": {
+        "jsCode": "const raw = JSON.parse($input.first().json.body);\n\nconst evalTypes = raw.evalTypes || {};\nconst areas = raw.areas || {};\n\nconst evalActivas = Object.entries(evalTypes)\n  .filter(([,v]) => v)\n  .map(([k]) => ({ express:'Express', completa:'Completa', subcontratacion:'Subcontratación', reforzada:'Reforzada', internacional:'Internacional' }[k]))\n  .join(', ');\n\nconst areasList = ['solicitante','abastecimiento','cumplimiento','finanzas','legal','subcontratacion'];\nconst labels = { solicitante:'Solicitante', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal', subcontratacion:'Subcontratación' };\nconst icons = { aprobado:'✅', rechazado:'❌', observacion:'✏️' };\n\nconst resumenSlack = areasList.map(a => {\n  const d = areas[a]?.decision;\n  const icon = icons[d] || '⏳';\n  const note = areas[a]?.notes ? ` — _\"${areas[a].notes.substring(0, 60)}${areas[a].notes.length > 60 ? '…' : ''}\"_` : '';\n  const extras = areas[a]?.extraDocs?.length ? ` (+${areas[a].extraDocs.length} doc adicional)` : '';\n  return `• ${icon} *${labels[a]}*: ${d || 'Pendiente'}${note}${extras}`;\n}).join('\\n');\n\nreturn [{ json: {\n  client:    raw.client,\n  email:     raw.email,\n  timestamp: raw.timestamp,\n  eval_activas: evalActivas || 'Ninguna',\n\n  eval_express:         evalTypes.express         ?? false,\n  eval_completa:        evalTypes.completa        ?? false,\n  eval_subcontratacion: evalTypes.subcontratacion ?? false,\n  eval_reforzada:       evalTypes.reforzada       ?? false,\n  eval_internacional:   evalTypes.internacional   ?? false,\n\n  dec_solicitante:     areas.solicitante?.decision     ?? null,\n  notes_solicitante:   areas.solicitante?.notes        ?? '',\n  extras_solicitante:  (areas.solicitante?.extraDocs   || []).join(', '),\n\n  dec_abastecimiento:  areas.abastecimiento?.decision  ?? null,\n  notes_abastecimiento:areas.abastecimiento?.notes     ?? '',\n  extras_abastecimiento:(areas.abastecimiento?.extraDocs|| []).join(', '),\n\n  dec_cumplimiento:    areas.cumplimiento?.decision    ?? null,\n  notes_cumplimiento:  areas.cumplimiento?.notes       ?? '',\n  extras_cumplimiento: (areas.cumplimiento?.extraDocs  || []).join(', '),\n\n  dec_finanzas:        areas.finanzas?.decision        ?? null,\n  notes_finanzas:      areas.finanzas?.notes           ?? '',\n  extras_finanzas:     (areas.finanzas?.extraDocs      || []).join(', '),\n\n  dec_legal:           areas.legal?.decision           ?? null,\n  notes_legal:         areas.legal?.notes              ?? '',\n  extras_legal:        (areas.legal?.extraDocs         || []).join(', '),\n\n  dec_subcontratacion: areas.subcontratacion?.decision ?? null,\n  notes_subcontratacion:areas.subcontratacion?.notes  ?? '',\n  extras_subcontratacion:(areas.subcontratacion?.extraDocs|| []).join(', '),\n\n  alerts_active: raw.alertsActive ?? 0,\n  _resumen_slack: resumenSlack,\n}}];"
+      }
+    },
+    {
+      "id": "node-sheets-v2",
+      "name": "Google Sheets v2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [680, 300],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REEMPLAZAR_CON_ID_DEL_SHEET",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "client":                 "={{ $json.client }}",
+            "email":                  "={{ $json.email }}",
+            "timestamp":              "={{ $json.timestamp }}",
+            "eval_activas":           "={{ $json.eval_activas }}",
+            "eval_express":           "={{ $json.eval_express }}",
+            "eval_completa":          "={{ $json.eval_completa }}",
+            "eval_subcontratacion":   "={{ $json.eval_subcontratacion }}",
+            "eval_reforzada":         "={{ $json.eval_reforzada }}",
+            "eval_internacional":     "={{ $json.eval_internacional }}",
+            "dec_solicitante":        "={{ $json.dec_solicitante }}",
+            "notes_solicitante":      "={{ $json.notes_solicitante }}",
+            "extras_solicitante":     "={{ $json.extras_solicitante }}",
+            "dec_abastecimiento":     "={{ $json.dec_abastecimiento }}",
+            "notes_abastecimiento":   "={{ $json.notes_abastecimiento }}",
+            "extras_abastecimiento":  "={{ $json.extras_abastecimiento }}",
+            "dec_cumplimiento":       "={{ $json.dec_cumplimiento }}",
+            "notes_cumplimiento":     "={{ $json.notes_cumplimiento }}",
+            "extras_cumplimiento":    "={{ $json.extras_cumplimiento }}",
+            "dec_finanzas":           "={{ $json.dec_finanzas }}",
+            "notes_finanzas":         "={{ $json.notes_finanzas }}",
+            "extras_finanzas":        "={{ $json.extras_finanzas }}",
+            "dec_legal":              "={{ $json.dec_legal }}",
+            "notes_legal":            "={{ $json.notes_legal }}",
+            "extras_legal":           "={{ $json.extras_legal }}",
+            "dec_subcontratacion":    "={{ $json.dec_subcontratacion }}",
+            "notes_subcontratacion":  "={{ $json.notes_subcontratacion }}",
+            "extras_subcontratacion": "={{ $json.extras_subcontratacion }}",
+            "alerts_active":          "={{ $json.alerts_active }}"
+          }
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CONECTAR_CREDENCIAL",
+          "name": "Google Sheets"
+        }
+      }
+    },
+    {
+      "id": "node-slack-v2",
+      "name": "Slack Sesión v2",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [900, 300],
+      "parameters": {
+        "operation": "post",
+        "channel": "REEMPLAZAR_CON_CANAL",
+        "text": "=:clipboard: *Nueva sesión de política DD completada*\n\n*Empresa:* {{ $json.client }}\n*Email:* {{ $json.email }}\n*Fecha:* {{ $json.timestamp }}\n\n*Evaluaciones activadas:* {{ $json.eval_activas }}\n*Alertas configuradas:* {{ $json.alerts_active }} / 23\n\n*Decisiones por área:*\n{{ $json._resumen_slack }}",
+        "otherOptions": {}
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "CONECTAR_CREDENCIAL",
+          "name": "Slack"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Sesión v2": {
+      "main": [[{ "node": "Parsear Body v2", "type": "main", "index": 0 }]]
+    },
+    "Parsear Body v2": {
+      "main": [[{ "node": "Google Sheets v2", "type": "main", "index": 0 }]]
+    },
+    "Google Sheets v2": {
+      "main": [[{ "node": "Slack Sesión v2", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
