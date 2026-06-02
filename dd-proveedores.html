@@ -967,17 +967,48 @@ async function enviar() {
 
   const payload = buildExportPayload();
 
-  // Enviar a Google Sheets si está configurado
   if (SHEETS_URL) {
-    // Construir payload detallado para Sheets
     const type = classify();
+    const areaVal = area => {
+      if (!areaChecks[area]) return null;
+      const vals = Object.values(areaChecks[area]);
+      return `${vals.filter(Boolean).length}/${vals.length}`;
+    };
     const sheetsPayload = {
-      email: clientEmail,
-      timestamp: new Date().toISOString(),
-      evalType: TYPE_LABEL[type] || 'Sin clasificar',
-      answers: ans,
-      checkedDocs: Array.from(checkedDocs).map(i => DOCS[i]?.[0]).filter(Boolean),
-      areaProgress: payload.progresoPorArea,
+      email:              clientEmail,
+      timestamp:          new Date().toISOString(),
+      eval_type:          TYPE_LABEL[type] || null,
+      // Preguntas
+      q1_monto_20k:       ans[1] !== undefined ? ans[1] : null,
+      q2_monto_100k:      ans[2] !== undefined ? ans[2] : null,
+      q3_subcontratacion: ans[3] !== undefined ? ans[3] : null,
+      q4_activos_datos:   ans[4] !== undefined ? ans[4] : null,
+      q5_anticipo:        ans[5] !== undefined ? ans[5] : null,
+      q6_duracion_intl:   ans[6] !== undefined ? ans[6] : null,
+      // Documentos (boolean por doc)
+      doc_declaracion_jurada:    checkedDocs.has(0),
+      doc_vinculo_pep:           checkedDocs.has(1),
+      doc_conflicto_interes:     checkedDocs.has(2),
+      doc_constitucion_sociedad: checkedDocs.has(3),
+      doc_erut:                  checkedDocs.has(4),
+      doc_vigencia_sociedad:     checkedDocs.has(5),
+      doc_dni_representante:     checkedDocs.has(6),
+      doc_carpeta_tributaria:    checkedDocs.has(7),
+      doc_vigencia_poderes:      checkedDocs.has(8),
+      doc_cuenta_bancaria:       checkedDocs.has(9),
+      doc_f30:                   checkedDocs.has(10),
+      doc_f30_1:                 checkedDocs.has(11),
+      doc_estado_financiero:     checkedDocs.has(12),
+      doc_deuda_fiscal:          checkedDocs.has(13),
+      doc_accidentabilidad:      checkedDocs.has(14),
+      doc_dicom:                 checkedDocs.has(15),
+      // Progreso por área
+      area_solicitante:     areaVal('solicitante'),
+      area_abastecimiento:  areaVal('abastecimiento'),
+      area_cumplimiento:    areaVal('cumplimiento'),
+      area_finanzas:        areaVal('finanzas'),
+      area_legal:           areaVal('legal'),
+      area_subcontratacion: areaVal('subcontratacion'),
     };
     try {
       await fetch(SHEETS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(sheetsPayload) });
