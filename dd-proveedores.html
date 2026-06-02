@@ -814,12 +814,19 @@ const DOCS = [
 ];
 const TYPE_IDX   = {express:2,completa:3,subcontratacion:4,reforzada:5,internacional:6};
 const TYPE_LABEL = {express:'Evaluación Express',completa:'Evaluación Completa',subcontratacion:'Evaluación Subcontratación',reforzada:'Evaluación Reforzada',internacional:'Evaluación Internacional'};
+const TYPE_FULL  = {
+  express:        'Debida Diligencia Express — Compra menor a USD 20.000 — Proveedor spot',
+  completa:       'Debida Diligencia Completa — Compra entre USD 20.000 y USD 100.000 — Proveedor general',
+  subcontratacion:'Debida Diligencia para Subcontratistas — Compra a subcontratista — Proveedor servicios',
+  reforzada:      'Debida Diligencia Reforzada — Compra mayor a USD 100.000 — Proveedor crítico o estratégico',
+  internacional:  'Debida Diligencia Internacional — Proveedor con domicilio fuera de Chile',
+};
 const TYPE_DESC  = {
-  express:'Proveedor de bajo riesgo. Compra puntual menor a USD 20.000. Validación básica con screening automático.',
-  completa:'Proveedor recurrente o de mediano impacto. Documentación legal y financiera estándar con screening completo.',
-  subcontratacion:'Proveedor que enviará personal a tus instalaciones bajo la Ley 20.123. Requiere documentación laboral específica.',
-  reforzada:'Proveedor crítico o estratégico. El máximo nivel de escrutinio: revisión financiera profunda y aprobación gerencial.',
-  internacional:'Proveedor con domicilio fuera de Chile. Documentación equivalente a estándares internacionales y verificación de sanciones globales.',
+  express:        'Evaluación simplificada diseñada para friccionar lo menos posible el proceso de compras menores, manteniendo un nivel básico de due diligence.',
+  completa:       'Evaluación más robusta acorde al volumen del contrato, con una revisión más profunda en términos legales y financieros para mitigar riesgos.',
+  subcontratacion:'Evaluación especializada con documentación específica para un análisis completo de proveedores subcontratados.',
+  reforzada:      'El nivel más exhaustivo de evaluación, con revisión detallada en cada área para una mitigación de riesgos integral.',
+  internacional:  'Evaluación adaptada a proveedores extranjeros: documentación equivalente a estándares internacionales y verificación de sanciones globales (OFAC/ONU/UE).',
 };
 
 function buildResult() {
@@ -830,7 +837,7 @@ function buildResult() {
     document.getElementById('result-intro').textContent = '';
     return;
   }
-  document.getElementById('eval-label').textContent = TYPE_LABEL[type];
+  document.getElementById('eval-label').textContent = TYPE_FULL[type];
   document.getElementById('result-intro').textContent = TYPE_DESC[type];
   const idx = TYPE_IDX[type];
   const grid = document.getElementById('doc-grid');
@@ -992,6 +999,8 @@ async function enviar() {
       email:              clientEmail,
       timestamp:          new Date().toISOString(),
       eval_type:          TYPE_LABEL[type] || null,
+      eval_full:          TYPE_FULL[type]  || null,
+      eval_desc:          TYPE_DESC[type]  || null,
       // Preguntas
       q1_monto_20k:       ans[1] !== undefined ? ans[1] : null,
       q2_monto_100k:      ans[2] !== undefined ? ans[2] : null,
