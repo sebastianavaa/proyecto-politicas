@@ -28,6 +28,15 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 /* PROGRESS */
 #progress{position:fixed;top:0;left:0;height:3px;background:var(--accent);transition:width .4s ease;z-index:500;}
 
+/* SENT BANNER */
+#sent-banner{position:fixed;top:3px;left:0;right:0;z-index:490;background:#78350F;color:#FEF3C7;
+  font-size:.8rem;font-weight:600;padding:.5rem 1.25rem;display:none;align-items:center;
+  justify-content:center;gap:.75rem;text-align:center;}
+#sent-banner span{opacity:.8;}
+#sent-banner button{background:rgba(255,255,255,.15);border:none;color:#FEF3C7;padding:.2rem .75rem;
+  border-radius:1rem;font-size:.75rem;font-weight:700;cursor:pointer;}
+#sent-banner button:hover{background:rgba(255,255,255,.25);}
+
 /* NAV */
 #nav{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:1.25rem;
   background:rgba(11,31,58,.9);backdrop-filter:blur(10px);padding:.625rem 1.25rem;border-radius:3rem;
@@ -276,6 +285,11 @@ function doPost(e) {
 -->
 
 <div id="progress"></div>
+<div id="sent-banner">
+  ⚠️ Ya enviaste este formulario el <strong id="sent-date"></strong>
+  <span>— puedes modificar y volver a enviar si es necesario.</span>
+  <button onclick="document.getElementById('sent-banner').style.display='none'">Cerrar</button>
+</div>
 
 <div id="app">
 
@@ -1015,6 +1029,11 @@ async function enviar() {
     } catch(e) {}
   }
 
+  // Guardar fecha de envío
+  const sentAt = new Date();
+  try { localStorage.setItem('dd_plutto_sent', sentAt.toISOString()); } catch(e) {}
+  showSentBanner(sentAt);
+
   // 3. Feedback visual
   if (btn) { btn.textContent = '✅ Enviado'; btn.classList.remove('saving'); btn.classList.add('ok'); }
   if (nav) nav.textContent = '✅ Enviado';
@@ -1048,9 +1067,21 @@ function loadLocal() {
   } catch(e) {}
 }
 
+function showSentBanner(date) {
+  const banner = document.getElementById('sent-banner');
+  const label  = document.getElementById('sent-date');
+  if (!banner || !label) return;
+  label.textContent = date.toLocaleString('es-CL', { dateStyle:'long', timeStyle:'short' });
+  banner.style.display = 'flex';
+}
+
 // ── INIT ──
 loadLocal();
 updateNav();
+try {
+  const sent = localStorage.getItem('dd_plutto_sent');
+  if (sent) showSentBanner(new Date(sent));
+} catch(e) {}
 </script>
 </body>
 </html>
