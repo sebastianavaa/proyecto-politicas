@@ -842,12 +842,12 @@ function go(n, dir) {
   if (n === 12) buildReport();
   updateNav(); save();
 }
-function next() { go(cur+1,1); }
-function prev() { go(cur-1,-1); }
+function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
+function prev() { const n = nextVisible(cur, -1); if (n) go(n, -1); }
 
 function updateNav() {
-  document.getElementById('prevBtn').disabled = cur === 1;
-  document.getElementById('nextBtn').disabled = cur === TOTAL;
+  document.getElementById('prevBtn').disabled = !nextVisible(cur, -1);
+  document.getElementById('nextBtn').disabled = !nextVisible(cur,  1);
   document.getElementById('counter').textContent = `${cur} / ${TOTAL}`;
   document.getElementById('progress').style.width = (cur/TOTAL*100)+'%';
 }
@@ -914,6 +914,7 @@ async function startSession() {
 function toggleRequiredArea(area) {
   st.requiredAreas[area] = !st.requiredAreas[area];
   document.getElementById('art-'+area)?.classList.toggle('on', st.requiredAreas[area]);
+  if (!st.requiredAreas[area] && cur === AREA_SLIDE[area]) next();
   save();
 }
 
@@ -1028,15 +1029,14 @@ function toggleAlert(idx) {
 function buildReport() {
   const areas = document.getElementById('reportAreas');
   if (areas) {
-    areas.innerHTML = AREAS.map(a => {
+    areas.innerHTML = AREAS.filter(a => a === 'solicitante' || st.requiredAreas[a]).map(a => {
       const d = st.areas[a];
-      const required = a === 'solicitante' || st.requiredAreas[a];
-      const s = d.decision || (required ? 'pendiente' : 'no-aplica');
+      const s = d.decision || 'pendiente';
       const sl = {aprobado:'✅ Aprobado',rechazado:'❌ Rechazado',observacion:'✏️ Con observaciones',pendiente:'⏳ Pendiente','no-aplica':'— No aplica'};
       const extras = d.extraDocs?.length ? `<div style="font-size:.7rem;color:var(--blue);margin-top:.2rem;">+${d.extraDocs.length} doc(s) adicional(es)</div>` : '';
       const resp = d.responsible?.name ? `<div style="font-size:.7rem;color:var(--gray);margin-top:.2rem;">👤 ${d.responsible.name}</div>` : '';
-      return `<div class="report-area" style="${!required&&!d.decision?'opacity:.45':''}"><h4>${AREA_LABELS[a]}</h4>
-        <div class="rs ${s==='no-aplica'?'pendiente':s}">${sl[s]}</div>
+      return `<div class="report-area"><h4>${AREA_LABELS[a]}</h4>
+        <div class="rs ${s}">${sl[s]}</div>
         ${resp}
         ${d.notes?`<div class="rn">"${d.notes.substring(0,70)}${d.notes.length>70?'…':''}"</div>`:''}
         ${extras}</div>`;
