@@ -845,11 +845,19 @@ function go(n, dir) {
 function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
 function prev() { const n = nextVisible(cur, -1); if (n) go(n, -1); }
 
+function visibleSlides() {
+  const v = [];
+  for (let i = 1; i <= TOTAL; i++) { if (isSlideVisible(i)) v.push(i); }
+  return v;
+}
+
 function updateNav() {
   document.getElementById('prevBtn').disabled = !nextVisible(cur, -1);
   document.getElementById('nextBtn').disabled = !nextVisible(cur,  1);
-  document.getElementById('counter').textContent = `${cur} / ${TOTAL}`;
-  document.getElementById('progress').style.width = (cur/TOTAL*100)+'%';
+  const v = visibleSlides();
+  const pos = v.indexOf(cur) + 1;
+  document.getElementById('counter').textContent = `${pos} / ${v.length}`;
+  document.getElementById('progress').style.width = (pos / v.length * 100) + '%';
 }
 
 document.addEventListener('keydown', e => {
