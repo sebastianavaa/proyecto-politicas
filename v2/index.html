@@ -232,12 +232,18 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .area-req-toggle.on::after{transform:translateX(1.125rem);}
 
 /* SAVE BUTTON PER AREA */
-.area-save-row{display:flex;align-items:center;gap:.75rem;margin-top:.625rem;}
+.area-save-row{display:flex;align-items:center;gap:.625rem;margin-top:.625rem;flex-wrap:wrap;}
 .btn-area-save{background:var(--navy);color:white;border:none;padding:.45rem 1rem;border-radius:.5rem;
   font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;}
-.btn-area-save:hover{background:var(--navy-mid);}
-.btn-area-save.saved{background:var(--success);}
-.area-save-status{font-size:.75rem;color:var(--gray);}
+.btn-area-save:hover:not(:disabled){background:var(--navy-mid);}
+.btn-area-save.saved{background:var(--success);color:white;}
+.btn-area-save.saved-edited{background:var(--success);color:white;}
+.btn-area-save:disabled{opacity:1;cursor:default;}
+.btn-area-edit{background:transparent;color:var(--blue);border:1.5px solid var(--blue);
+  padding:.4rem .875rem;border-radius:.5rem;font-size:.775rem;font-weight:700;cursor:pointer;
+  transition:all .2s;display:none;}
+.btn-area-edit:hover{background:var(--blue-light);}
+.area-save-status{font-size:.725rem;color:var(--gray);}
 
 /* VALIDATION WARNING EN REPORTE */
 .validation-warning{background:var(--danger-bg);border:1px solid #FECACA;border-radius:.75rem;
@@ -465,6 +471,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="extra-tags" id="tags-solicitante"></div>
       <div class="area-save-row">
         <button class="btn-area-save" id="save-btn-solicitante" onclick="guardarArea('solicitante')">💾 Guardar sección</button>
+        <button class="btn-area-edit" id="edit-btn-solicitante" onclick="editarArea('solicitante')">✏️ Editar</button>
         <span class="area-save-status" id="save-status-solicitante"></span>
       </div>
     </div>
@@ -507,6 +514,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="extra-tags" id="tags-abastecimiento"></div>
       <div class="area-save-row">
         <button class="btn-area-save" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')">💾 Guardar sección</button>
+        <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')">✏️ Editar</button>
         <span class="area-save-status" id="save-status-abastecimiento"></span>
       </div>
     </div>
@@ -568,6 +576,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="extra-tags" id="tags-cumplimiento"></div>
       <div class="area-save-row">
         <button class="btn-area-save" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')">💾 Guardar sección</button>
+        <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')">✏️ Editar</button>
         <span class="area-save-status" id="save-status-cumplimiento"></span>
       </div>
     </div>
@@ -633,6 +642,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="extra-tags" id="tags-finanzas"></div>
       <div class="area-save-row">
         <button class="btn-area-save" id="save-btn-finanzas" onclick="guardarArea('finanzas')">💾 Guardar sección</button>
+        <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')">✏️ Editar</button>
         <span class="area-save-status" id="save-status-finanzas"></span>
       </div>
     </div>
@@ -683,6 +693,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="extra-tags" id="tags-legal"></div>
       <div class="area-save-row">
         <button class="btn-area-save" id="save-btn-legal" onclick="guardarArea('legal')">💾 Guardar sección</button>
+        <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')">✏️ Editar</button>
         <span class="area-save-status" id="save-status-legal"></span>
       </div>
     </div>
@@ -731,6 +742,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="extra-tags" id="tags-subcontratacion"></div>
       <div class="area-save-row">
         <button class="btn-area-save" id="save-btn-subcontratacion" onclick="guardarArea('subcontratacion')">💾 Guardar sección</button>
+        <button class="btn-area-edit" id="edit-btn-subcontratacion" onclick="editarArea('subcontratacion')">✏️ Editar</button>
         <span class="area-save-status" id="save-status-subcontratacion"></span>
       </div>
     </div>
@@ -780,18 +792,36 @@ let cur = 1;
 
 const AREAS = ['solicitante','abastecimiento','cumplimiento','finanzas','legal','subcontratacion'];
 const AREA_LABELS = { solicitante:'Solicitante', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal', subcontratacion:'Subcontratación' };
+const AREA_SLIDE = { solicitante:6, abastecimiento:7, cumplimiento:8, finanzas:9, legal:10, subcontratacion:11 };
+
+function isSlideVisible(n) {
+  const entry = Object.entries(AREA_SLIDE).find(([,s]) => s === n);
+  if (!entry) return true;
+  const [area] = entry;
+  if (area === 'solicitante') return true;
+  return st.requiredAreas[area] !== false;
+}
+
+function nextVisible(from, dir) {
+  let n = from + dir;
+  while (n >= 1 && n <= TOTAL) {
+    if (isSlideVisible(n)) return n;
+    n += dir;
+  }
+  return null;
+}
 
 const st = {
   email:'', client:'', sessionId:'',
   evalTypes:{ express:true, completa:true, subcontratacion:true, reforzada:true, internacional:true },
   requiredAreas:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true, subcontratacion:true },
   areas:{
-    solicitante:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''}},
-    abastecimiento:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''}},
-    cumplimiento:{decision:null,notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''}},
-    finanzas:{decision:null,notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''}},
-    legal:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''}},
-    subcontratacion:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''}}
+    solicitante:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0},
+    abastecimiento:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0},
+    cumplimiento:{decision:null,notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0},
+    finanzas:{decision:null,notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0},
+    legal:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0},
+    subcontratacion:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0}
   },
   alerts: Array(23).fill(true),
 };
@@ -887,19 +917,45 @@ function toggleRequiredArea(area) {
   save();
 }
 
-// ── SAVE PER AREA ──
+// ── SAVE / EDIT PER AREA ──
 function guardarArea(area) {
+  st.areas[area].locked = true;
+  if (st.areas[area].editCount > 0) st.areas[area].editCount++;
+  else st.areas[area].editCount = 0; // first save, editCount stays 0 until they edit
   save();
-  const btn = document.getElementById('save-btn-'+area);
-  const status = document.getElementById('save-status-'+area);
-  if (btn) { btn.textContent='✅ Guardado'; btn.classList.add('saved'); }
-  if (status) {
-    const now = new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
-    status.textContent = 'Última vez: ' + now;
+  applyAreaSaveUI(area);
+}
+
+function editarArea(area) {
+  st.areas[area].locked = false;
+  st.areas[area].editCount = (st.areas[area].editCount || 0) + 1;
+  save();
+  applyAreaSaveUI(area);
+}
+
+function applyAreaSaveUI(area) {
+  const saveBtn   = document.getElementById('save-btn-'+area);
+  const editBtn   = document.getElementById('edit-btn-'+area);
+  const status    = document.getElementById('save-status-'+area);
+  const locked    = st.areas[area].locked;
+  const edited    = st.areas[area].editCount > 0;
+  const now       = new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+
+  if (!saveBtn || !editBtn) return;
+
+  if (locked) {
+    saveBtn.textContent = edited ? '✅ Guardado · editado' : '✅ Guardado';
+    saveBtn.className   = 'btn-area-save ' + (edited ? 'saved-edited' : 'saved');
+    saveBtn.disabled    = true;
+    editBtn.style.display = 'inline-flex';
+    if (status) status.textContent = now;
+  } else {
+    saveBtn.textContent = edited ? '💾 Guardar cambios' : '💾 Guardar sección';
+    saveBtn.className   = 'btn-area-save';
+    saveBtn.disabled    = false;
+    editBtn.style.display = 'none';
+    if (status) status.textContent = edited ? '⚠️ Cambios sin guardar' : '';
   }
-  setTimeout(() => {
-    if (btn) { btn.textContent='💾 Guardar sección'; btn.classList.remove('saved'); }
-  }, 2000);
 }
 
 // ── EVAL TYPES ──
@@ -1128,6 +1184,7 @@ function applyStateToUI() {
   });
 
   st.alerts.forEach((on,i) => document.getElementById('ar-'+i)?.classList.toggle('on', on));
+  AREAS.forEach(a => applyAreaSaveUI(a));
 }
 
 function load() {
