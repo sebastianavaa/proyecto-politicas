@@ -216,6 +216,34 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .btn-copy:hover{background:var(--accent-dark);}
 .btn-copy.copied{background:var(--success);color:white;}
 
+/* REQUIRED AREAS TOGGLES (en slide Solicitante) */
+.req-areas-section{margin-top:.875rem;background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem 1.125rem;}
+.req-areas-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;}
+.area-req-row{display:flex;align-items:center;gap:.875rem;padding:.5rem 0;border-bottom:1px solid var(--gray-border);}
+.area-req-row:last-child{border-bottom:none;}
+.area-req-info{flex:1;}
+.area-req-name{font-size:.85rem;font-weight:700;color:var(--navy);}
+.area-req-desc{font-size:.75rem;color:var(--gray);}
+.area-req-toggle{width:2.5rem;height:1.375rem;border-radius:1rem;background:var(--gray-border);
+  position:relative;flex-shrink:0;transition:background .2s;cursor:pointer;}
+.area-req-toggle.on{background:var(--success);}
+.area-req-toggle::after{content:'';position:absolute;width:1rem;height:1rem;border-radius:50%;
+  background:white;top:.175rem;left:.175rem;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.area-req-toggle.on::after{transform:translateX(1.125rem);}
+
+/* SAVE BUTTON PER AREA */
+.area-save-row{display:flex;align-items:center;gap:.75rem;margin-top:.625rem;}
+.btn-area-save{background:var(--navy);color:white;border:none;padding:.45rem 1rem;border-radius:.5rem;
+  font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-area-save:hover{background:var(--navy-mid);}
+.btn-area-save.saved{background:var(--success);}
+.area-save-status{font-size:.75rem;color:var(--gray);}
+
+/* VALIDATION WARNING EN REPORTE */
+.validation-warning{background:var(--danger-bg);border:1px solid #FECACA;border-radius:.75rem;
+  padding:.75rem 1rem;font-size:.8rem;color:var(--danger);margin-bottom:.875rem;line-height:1.6;}
+.validation-warning strong{color:#991B1B;}
+
 /* SENT BANNER */
 #sent-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:600;
   background:#1A4FA8;color:white;padding:.625rem 1.5rem;
@@ -393,6 +421,30 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
     <div class="warn-box">⚠️ <strong>Importante:</strong> No se debe contratar a un proveedor ni solicitarle servicios antes de que el proceso esté completado y aprobado en Plutto.</div>
     <div class="divider"></div>
+    <div class="req-areas-section">
+      <div class="req-areas-title">Áreas que participan en este proceso</div>
+      <div class="area-req-row">
+        <div class="area-req-info"><div class="area-req-name">Abastecimiento</div><div class="area-req-desc">Coordina el proceso y opera Plutto</div></div>
+        <div class="area-req-toggle on" id="art-abastecimiento" onclick="toggleRequiredArea('abastecimiento')"></div>
+      </div>
+      <div class="area-req-row">
+        <div class="area-req-info"><div class="area-req-name">Cumplimiento</div><div class="area-req-desc">Clasifica el riesgo y da recomendación final</div></div>
+        <div class="area-req-toggle on" id="art-cumplimiento" onclick="toggleRequiredArea('cumplimiento')"></div>
+      </div>
+      <div class="area-req-row">
+        <div class="area-req-info"><div class="area-req-name">Finanzas</div><div class="area-req-desc">Analiza la solidez financiera del proveedor</div></div>
+        <div class="area-req-toggle on" id="art-finanzas" onclick="toggleRequiredArea('finanzas')"></div>
+      </div>
+      <div class="area-req-row">
+        <div class="area-req-info"><div class="area-req-name">Legal</div><div class="area-req-desc">Valida la constitución legal del proveedor</div></div>
+        <div class="area-req-toggle on" id="art-legal" onclick="toggleRequiredArea('legal')"></div>
+      </div>
+      <div class="area-req-row">
+        <div class="area-req-info"><div class="area-req-name">Subcontratación</div><div class="area-req-desc">Aplica cuando el servicio involucra personal en faena</div></div>
+        <div class="area-req-toggle on" id="art-subcontratacion" onclick="toggleRequiredArea('subcontratacion')"></div>
+      </div>
+    </div>
+    <div class="divider"></div>
     <div class="decision-section">
       <div class="resp-label">Encargado del área</div>
       <div class="resp-row">
@@ -411,6 +463,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <button class="btn-add" onclick="addExtra('solicitante')">+ Agregar</button>
       </div>
       <div class="extra-tags" id="tags-solicitante"></div>
+      <div class="area-save-row">
+        <button class="btn-area-save" id="save-btn-solicitante" onclick="guardarArea('solicitante')">💾 Guardar sección</button>
+        <span class="area-save-status" id="save-status-solicitante"></span>
+      </div>
     </div>
   </div>
 </div>
@@ -449,6 +505,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <button class="btn-add" onclick="addExtra('abastecimiento')">+ Agregar</button>
       </div>
       <div class="extra-tags" id="tags-abastecimiento"></div>
+      <div class="area-save-row">
+        <button class="btn-area-save" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')">💾 Guardar sección</button>
+        <span class="area-save-status" id="save-status-abastecimiento"></span>
+      </div>
     </div>
   </div>
 </div>
@@ -506,6 +566,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <button class="btn-add" onclick="addExtra('cumplimiento')">+ Agregar</button>
       </div>
       <div class="extra-tags" id="tags-cumplimiento"></div>
+      <div class="area-save-row">
+        <button class="btn-area-save" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')">💾 Guardar sección</button>
+        <span class="area-save-status" id="save-status-cumplimiento"></span>
+      </div>
     </div>
   </div>
 </div>
@@ -567,6 +631,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <button class="btn-add" onclick="addExtra('finanzas')">+ Agregar</button>
       </div>
       <div class="extra-tags" id="tags-finanzas"></div>
+      <div class="area-save-row">
+        <button class="btn-area-save" id="save-btn-finanzas" onclick="guardarArea('finanzas')">💾 Guardar sección</button>
+        <span class="area-save-status" id="save-status-finanzas"></span>
+      </div>
     </div>
   </div>
 </div>
@@ -613,6 +681,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <button class="btn-add" onclick="addExtra('legal')">+ Agregar</button>
       </div>
       <div class="extra-tags" id="tags-legal"></div>
+      <div class="area-save-row">
+        <button class="btn-area-save" id="save-btn-legal" onclick="guardarArea('legal')">💾 Guardar sección</button>
+        <span class="area-save-status" id="save-status-legal"></span>
+      </div>
     </div>
   </div>
 </div>
@@ -657,6 +729,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <button class="btn-add" onclick="addExtra('subcontratacion')">+ Agregar</button>
       </div>
       <div class="extra-tags" id="tags-subcontratacion"></div>
+      <div class="area-save-row">
+        <button class="btn-area-save" id="save-btn-subcontratacion" onclick="guardarArea('subcontratacion')">💾 Guardar sección</button>
+        <span class="area-save-status" id="save-status-subcontratacion"></span>
+      </div>
     </div>
   </div>
 </div>
@@ -677,6 +753,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <span style="font-size:.8rem;color:var(--gray);flex:1;">🔗 <strong style="color:var(--navy)">Link de esta sesión</strong> — compártelo con las áreas que faltan</span>
       <button class="btn-copy" id="btn-copy-report" onclick="copySessionLink('btn-copy-report')">Copiar link</button>
     </div>
+    <div id="validation-warning" class="validation-warning" style="display:none;"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
       <div>
         <div style="font-size:.875rem;font-weight:700;color:var(--navy);">¿Todo listo?</div>
@@ -707,6 +784,7 @@ const AREA_LABELS = { solicitante:'Solicitante', abastecimiento:'Abastecimiento'
 const st = {
   email:'', client:'', sessionId:'',
   evalTypes:{ express:true, completa:true, subcontratacion:true, reforzada:true, internacional:true },
+  requiredAreas:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true, subcontratacion:true },
   areas:{
     solicitante:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''}},
     abastecimiento:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''}},
@@ -802,6 +880,28 @@ async function startSession() {
   setTimeout(() => go(2,1), 1200);
 }
 
+// ── REQUIRED AREAS ──
+function toggleRequiredArea(area) {
+  st.requiredAreas[area] = !st.requiredAreas[area];
+  document.getElementById('art-'+area)?.classList.toggle('on', st.requiredAreas[area]);
+  save();
+}
+
+// ── SAVE PER AREA ──
+function guardarArea(area) {
+  save();
+  const btn = document.getElementById('save-btn-'+area);
+  const status = document.getElementById('save-status-'+area);
+  if (btn) { btn.textContent='✅ Guardado'; btn.classList.add('saved'); }
+  if (status) {
+    const now = new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+    status.textContent = 'Última vez: ' + now;
+  }
+  setTimeout(() => {
+    if (btn) { btn.textContent='💾 Guardar sección'; btn.classList.remove('saved'); }
+  }, 2000);
+}
+
 // ── EVAL TYPES ──
 function toggleEval(type) {
   st.evalTypes[type] = !st.evalTypes[type];
@@ -874,11 +974,14 @@ function buildReport() {
   if (areas) {
     areas.innerHTML = AREAS.map(a => {
       const d = st.areas[a];
-      const s = d.decision||'pendiente';
-      const sl = {aprobado:'✅ Aprobado',rechazado:'❌ Rechazado',observacion:'✏️ Con observaciones',pendiente:'⏳ Pendiente'};
+      const required = a === 'solicitante' || st.requiredAreas[a];
+      const s = d.decision || (required ? 'pendiente' : 'no-aplica');
+      const sl = {aprobado:'✅ Aprobado',rechazado:'❌ Rechazado',observacion:'✏️ Con observaciones',pendiente:'⏳ Pendiente','no-aplica':'— No aplica'};
       const extras = d.extraDocs?.length ? `<div style="font-size:.7rem;color:var(--blue);margin-top:.2rem;">+${d.extraDocs.length} doc(s) adicional(es)</div>` : '';
-      return `<div class="report-area"><h4>${AREA_LABELS[a]}</h4>
-        <div class="rs ${s}">${sl[s]}</div>
+      const resp = d.responsible?.name ? `<div style="font-size:.7rem;color:var(--gray);margin-top:.2rem;">👤 ${d.responsible.name}</div>` : '';
+      return `<div class="report-area" style="${!required&&!d.decision?'opacity:.45':''}"><h4>${AREA_LABELS[a]}</h4>
+        <div class="rs ${s==='no-aplica'?'pendiente':s}">${sl[s]}</div>
+        ${resp}
         ${d.notes?`<div class="rn">"${d.notes.substring(0,70)}${d.notes.length>70?'…':''}"</div>`:''}
         ${extras}</div>`;
     }).join('');
@@ -893,6 +996,20 @@ function buildReport() {
       <strong style="color:var(--navy)">Evaluaciones activas:</strong> ${types||'Ninguna'}<br>
       <strong style="color:var(--navy)">Alertas activadas:</strong> ${st.alerts.filter(Boolean).length} de 23`;
   }
+
+  // Validar áreas requeridas
+  const allRequired = ['solicitante', ...Object.keys(st.requiredAreas).filter(a => st.requiredAreas[a])];
+  const pending = allRequired.filter(a => !st.areas[a]?.decision);
+  const warn = document.getElementById('validation-warning');
+  const sendBtn = document.getElementById('sendBtn');
+  if (pending.length > 0) {
+    const names = pending.map(a => AREA_LABELS[a]).join(', ');
+    if (warn) { warn.style.display='block'; warn.innerHTML=`<strong>Faltan áreas por completar:</strong> ${names}<br>Cada área debe seleccionar Aprobado, Rechazado o Con observaciones antes de enviar.`; }
+    if (sendBtn) { sendBtn.disabled=true; sendBtn.style.opacity='.4'; sendBtn.style.cursor='not-allowed'; }
+  } else {
+    if (warn) warn.style.display='none';
+    if (sendBtn) { sendBtn.disabled=false; sendBtn.style.opacity=''; sendBtn.style.cursor=''; }
+  }
 }
 
 // ── SEND ──
@@ -903,6 +1020,7 @@ async function enviar() {
     sessionId: st.sessionId,
     email: st.email, client: st.client, timestamp: new Date().toISOString(),
     evalTypes: st.evalTypes,
+    requiredAreas: st.requiredAreas,
     areas: Object.fromEntries(AREAS.map(a => [a, {
       decision: st.areas[a].decision,
       notes: st.areas[a].notes,
@@ -966,6 +1084,7 @@ function mergeState(d) {
   if (d.email) st.email = d.email;
   if (d.client) st.client = d.client;
   if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
+  if (d.requiredAreas) Object.assign(st.requiredAreas, d.requiredAreas);
   if (d.areas) AREAS.forEach(a => { if (d.areas[a]) Object.assign(st.areas[a], d.areas[a]); });
   if (Array.isArray(d.alerts)) st.alerts = d.alerts;
 }
@@ -974,6 +1093,9 @@ function applyStateToUI() {
   const ei = document.getElementById('emailInput'); if (ei) ei.value = st.email || '';
   const ci = document.getElementById('clientInput'); if (ci) ci.value = st.client || '';
 
+  Object.entries(st.requiredAreas).forEach(([area, on]) => {
+    document.getElementById('art-'+area)?.classList.toggle('on', on);
+  });
   Object.entries(st.evalTypes).forEach(([type, active]) => {
     document.getElementById('et-'+type)?.classList.toggle('on', active);
     document.getElementById('ec-'+type)?.classList.toggle('active', active);
