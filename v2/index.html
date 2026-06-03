@@ -785,16 +785,18 @@ function showSessionLink(id) {
 }
 
 // ── START ──
-function startSession() {
+async function startSession() {
   const ci = document.getElementById('clientInput');
   const ei = document.getElementById('emailInput');
   const client = ci.value.trim(), email = ei.value.trim();
   if (!client) { ci.classList.add('err'); return; }
   if (!email||!email.includes('@')) { ei.classList.add('err'); return; }
   ci.classList.remove('err'); ei.classList.remove('err');
-  st.client = client; st.email = email;
   if (!st.sessionId) st.sessionId = generateSessionId(client);
   history.replaceState({}, '', '?s=' + st.sessionId);
+  // Traer estado existente de esta empresa (si otra área ya empezó), sin pisar lo recién escrito
+  await loadRemote();
+  st.client = client; st.email = email;
   showSessionLink(st.sessionId);
   save();
   setTimeout(() => go(2,1), 1200);
@@ -922,52 +924,98 @@ async function enviar() {
   setTimeout(()=>{ if(btn){ btn.textContent='📤 Enviar reporte'; btn.classList.remove('ok'); }},3000);
 }
 
-// ── PERSIST ──
+// ── PERSIST (local instantáneo + remoto compartido vía Vercel KV) ──
+const API_URL = '/api/session';
+
 function save() {
   try {
     const key = st.sessionId ? 'dd_v2_' + st.sessionId : 'dd_v2';
     localStorage.setItem(key, JSON.stringify(st));
   } catch(e) {}
+  saveRemote();
+}
+
+let _remoteTimer = null;
+function saveRemote() {
+  if (!st.sessionId) return;
+  clearTimeout(_remoteTimer);
+  _remoteTimer = setTimeout(() => {
+    fetch(API_URL + '?s=' + encodeURIComponent(st.sessionId), {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(st)
+    }).catch(()=>{});
+  }, 1000);
+}
+
+async function loadRemote() {
+  if (!st.sessionId) return;
+  try {
+    const res = await fetch(API_URL + '?s=' + encodeURIComponent(st.sessionId));
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && data.state) {
+      mergeState(data.state);
+      applyStateToUI();
+    }
+  } catch(e) {}
+}
+
+function mergeState(d) {
+  if (!d) return;
+  if (d.sessionId) st.sessionId = d.sessionId;
+  if (d.email) st.email = d.email;
+  if (d.client) st.client = d.client;
+  if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
+  if (d.areas) AREAS.forEach(a => { if (d.areas[a]) Object.assign(st.areas[a], d.areas[a]); });
+  if (Array.isArray(d.alerts)) st.alerts = d.alerts;
+}
+
+function applyStateToUI() {
+  const ei = document.getElementById('emailInput'); if (ei) ei.value = st.email || '';
+  const ci = document.getElementById('clientInput'); if (ci) ci.value = st.client || '';
+
+  Object.entries(st.evalTypes).forEach(([type, active]) => {
+    document.getElementById('et-'+type)?.classList.toggle('on', active);
+    document.getElementById('ec-'+type)?.classList.toggle('active', active);
+    document.getElementById('ec-'+type)?.classList.toggle('inactive', !active);
+  });
+
+  AREAS.forEach(a => {
+    const area = st.areas[a];
+    const badge = document.getElementById('badge-'+a);
+    const btns = document.querySelectorAll(`[onclick*="setDecision('${a}'"]`);
+    btns.forEach(b => b.classList.remove('sel-aprobado','sel-rechazado','sel-observacion'));
+    if (area.decision) {
+      if (badge) { badge.className='area-status '+area.decision; badge.textContent=area.decision==='aprobado'?'✅ Aprobado':area.decision==='rechazado'?'❌ Rechazado':'✏️ Con observaciones'; }
+      btns.forEach(b => { if ((b.getAttribute('onclick')||'').includes("'"+area.decision+"'")) b.classList.add('sel-'+area.decision); });
+    } else if (badge) {
+      badge.className='area-status'; badge.textContent='⏳ Pendiente';
+    }
+    const ta=document.getElementById('notes-'+a); if(ta) ta.value=area.notes||'';
+    const rn=document.getElementById('resp-name-'+a); if(rn) rn.value=area.responsible?.name||'';
+    const re=document.getElementById('resp-email-'+a); if(re) re.value=area.responsible?.email||'';
+    renderTags(a);
+  });
+
+  Object.entries(st.areas.cumplimiento.exceptions||{}).forEach(([i,on]) => {
+    const cb=document.getElementById('exc-'+i); if(cb) cb.checked=!!on;
+    cb?.closest('.exc-item')?.classList.toggle('flagged', !!on);
+  });
+  Object.entries(st.areas.finanzas.signals||{}).forEach(([i,on]) => {
+    const cb=document.getElementById('sig-'+i); if(cb) cb.checked=!!on;
+  });
+
+  st.alerts.forEach((on,i) => document.getElementById('ar-'+i)?.classList.toggle('on', on));
 }
 
 function load() {
   try {
-    // Read session ID from URL first
     const urlId = new URLSearchParams(window.location.search).get('s');
-    const storageKey = urlId ? 'dd_v2_' + urlId : 'dd_v2';
-
-    const raw = localStorage.getItem(storageKey); if (!raw) {
-      if (urlId) { st.sessionId = urlId; history.replaceState({}, '', '?s=' + urlId); }
-      return;
-    }
-    const d = JSON.parse(raw);
-    if (d.sessionId) st.sessionId = d.sessionId;
-    else if (urlId) st.sessionId = urlId;
-    if (d.email) { st.email=d.email; const el=document.getElementById('emailInput'); if(el) el.value=d.email; }
-    if (d.client) { st.client=d.client; const cl=document.getElementById('clientInput'); if(cl) cl.value=d.client; }
-    if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
-    if (d.areas) AREAS.forEach(a => { if(d.areas[a]) Object.assign(st.areas[a], d.areas[a]); });
-    if (d.alerts) st.alerts = d.alerts;
-
-    if (st.sessionId) history.replaceState({}, '', '?s=' + st.sessionId);
-
-    Object.entries(st.evalTypes).forEach(([type, active]) => {
-      document.getElementById('et-'+type)?.classList.toggle('on', active);
-      document.getElementById('ec-'+type)?.classList.toggle('active', active);
-      document.getElementById('ec-'+type)?.classList.toggle('inactive', !active);
-    });
-    AREAS.forEach(a => {
-      const area = st.areas[a];
-      if (area.decision) {
-        const badge = document.getElementById('badge-'+a);
-        if (badge) { badge.className='area-status '+area.decision; badge.textContent=area.decision==='aprobado'?'✅ Aprobado':area.decision==='rechazado'?'❌ Rechazado':'✏️ Con observaciones'; }
-      }
-      if (area.notes) { const ta=document.getElementById('notes-'+a); if(ta) ta.value=area.notes; }
-      if (area.responsible?.name) { const el=document.getElementById('resp-name-'+a); if(el) el.value=area.responsible.name; }
-      if (area.responsible?.email) { const el=document.getElementById('resp-email-'+a); if(el) el.value=area.responsible.email; }
-      renderTags(a);
-    });
-    st.alerts.forEach((on,i) => document.getElementById('ar-'+i)?.classList.toggle('on', on));
+    if (urlId) { st.sessionId = urlId; history.replaceState({}, '', '?s=' + urlId); }
+    const key = st.sessionId ? 'dd_v2_' + st.sessionId : 'dd_v2';
+    const raw = localStorage.getItem(key);
+    if (raw) mergeState(JSON.parse(raw));
+    applyStateToUI();
   } catch(e) {}
 }
 
@@ -980,6 +1028,7 @@ function showSentBanner(iso) {
 }
 
 load();
+loadRemote();
 const _prevSent = localStorage.getItem('dd_v2_sent');
 if (_prevSent) showSentBanner(_prevSent);
 updateNav();
