@@ -195,9 +195,23 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .warn-box{background:var(--warn-bg);border:1px solid var(--warn-br);border-radius:.75rem;
   padding:.7rem 1rem;font-size:.8rem;color:var(--warn-tx);margin-top:.625rem;line-height:1.55;}
 .warn-box strong{color:#78350F;}
+
+/* SENT BANNER */
+#sent-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:600;
+  background:#1A4FA8;color:white;padding:.625rem 1.5rem;
+  font-size:.8125rem;text-align:center;line-height:1.5;
+  box-shadow:0 2px 8px rgba(0,0,0,.25);}
+#sent-banner strong{color:var(--accent);}
+#sent-banner-close{background:none;border:none;color:rgba(255,255,255,.7);
+  font-size:1rem;cursor:pointer;margin-left:.75rem;line-height:1;}
+#sent-banner-close:hover{color:white;}
 </style>
 </head>
 <body>
+<div id="sent-banner">
+  ✅ Esta sesión ya fue enviada el <strong id="sent-date"></strong>. Puedes volver a enviar si necesitas actualizar el reporte.
+  <button id="sent-banner-close" onclick="document.getElementById('sent-banner').style.display='none'">✕</button>
+</div>
 <div id="progress"></div>
 <div id="app">
 
@@ -797,6 +811,9 @@ async function enviar() {
     alertsConfig: st.alerts,
   };
   try { await fetch(WEBHOOK_URL, { method:'POST', mode:'no-cors', body:JSON.stringify(payload) }); } catch(e) {}
+  const sentAt = new Date().toISOString();
+  localStorage.setItem('dd_v2_sent', sentAt);
+  showSentBanner(sentAt);
   if (btn) { btn.textContent='✅ Enviado'; btn.classList.remove('saving'); btn.classList.add('ok'); }
   const toast = document.getElementById('send-toast');
   if (toast) { toast.style.display='block'; setTimeout(()=>toast.style.display='none',4000); }
@@ -836,7 +853,17 @@ function load() {
   } catch(e) {}
 }
 
+function showSentBanner(iso) {
+  const d = new Date(iso);
+  const fmt = d.toLocaleDateString('es-CL', { day:'2-digit', month:'2-digit', year:'numeric' })
+    + ' ' + d.toLocaleTimeString('es-CL', { hour:'2-digit', minute:'2-digit' });
+  document.getElementById('sent-date').textContent = fmt;
+  document.getElementById('sent-banner').style.display = 'block';
+}
+
 load();
+const _prevSent = localStorage.getItem('dd_v2_sent');
+if (_prevSent) showSentBanner(_prevSent);
 updateNav();
 </script>
 </body>
