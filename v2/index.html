@@ -196,6 +196,26 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   padding:.7rem 1rem;font-size:.8rem;color:var(--warn-tx);margin-top:.625rem;line-height:1.55;}
 .warn-box strong{color:#78350F;}
 
+/* RESPONSIBLE PERSON */
+.resp-row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;}
+.resp-row input{padding:.45rem .75rem;border:1.5px solid var(--gray-border);border-radius:.5rem;
+  font-size:.8rem;font-family:var(--font);outline:none;transition:border .2s;}
+.resp-row input:focus{border-color:var(--blue);}
+.resp-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin-bottom:.375rem;}
+
+/* SESSION LINK BOX */
+.session-link-box{display:none;margin-top:1rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  border-radius:.75rem;padding:.875rem 1.125rem;width:100%;max-width:540px;text-align:left;}
+.session-link-box p{font-size:.75rem;color:rgba(255,255,255,.6);margin-bottom:.5rem;}
+.session-link-row{display:flex;gap:.5rem;align-items:center;}
+.session-link-url{flex:1;padding:.4rem .75rem;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.15);
+  border-radius:.5rem;font-size:.75rem;color:rgba(255,255,255,.85);font-family:monospace;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.btn-copy{background:var(--accent);color:var(--navy);border:none;padding:.4rem .875rem;border-radius:.5rem;
+  font-size:.775rem;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .2s;}
+.btn-copy:hover{background:var(--accent-dark);}
+.btn-copy.copied{background:var(--success);color:white;}
+
 /* SENT BANNER */
 #sent-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:600;
   background:#1A4FA8;color:white;padding:.625rem 1.5rem;
@@ -226,6 +246,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <input type="email" id="emailInput" class="txt-input" placeholder="tu@empresa.com" onkeydown="if(event.key==='Enter')startSession()"/>
     </div>
     <button class="btn-primary" onclick="startSession()">Comenzar sesión →</button>
+  </div>
+  <div class="session-link-box" id="session-link-box">
+    <p>🔗 Comparte este link con todas las áreas para que completen su sección:</p>
+    <div class="session-link-row">
+      <div class="session-link-url" id="session-link-url"></div>
+      <button class="btn-copy" id="btn-copy" onclick="copySessionLink()">Copiar</button>
+    </div>
   </div>
 </div>
 
@@ -367,6 +394,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="warn-box">⚠️ <strong>Importante:</strong> No se debe contratar a un proveedor ni solicitarle servicios antes de que el proceso esté completado y aprobado en Plutto.</div>
     <div class="divider"></div>
     <div class="decision-section">
+      <div class="resp-label">Encargado del área</div>
+      <div class="resp-row">
+        <input type="text" id="resp-name-solicitante" placeholder="Nombre completo" oninput="saveResp('solicitante','name',this.value)">
+        <input type="email" id="resp-email-solicitante" placeholder="email@empresa.com" oninput="saveResp('solicitante','email',this.value)">
+      </div>
       <div class="decision-title">Decisión del área sobre este proceso</div>
       <div class="decision-btns">
         <button class="btn-dec" onclick="setDecision('solicitante','aprobado',this)">✅ Aprobado</button>
@@ -400,6 +432,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="warn-box">⏱ <strong>Tiempos objetivo:</strong> Express: máx. 5 días hábiles. Completa o Reforzada: máx. 10 días hábiles.</div>
     <div class="divider"></div>
     <div class="decision-section">
+      <div class="resp-label">Encargado del área</div>
+      <div class="resp-row">
+        <input type="text" id="resp-name-abastecimiento" placeholder="Nombre completo" oninput="saveResp('abastecimiento','name',this.value)">
+        <input type="email" id="resp-email-abastecimiento" placeholder="email@empresa.com" oninput="saveResp('abastecimiento','email',this.value)">
+      </div>
       <div class="decision-title">Decisión del área sobre este proceso</div>
       <div class="decision-btns">
         <button class="btn-dec" onclick="setDecision('abastecimiento','aprobado',this)">✅ Aprobado</button>
@@ -452,6 +489,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
     <div class="divider"></div>
     <div class="decision-section">
+      <div class="resp-label">Encargado del área</div>
+      <div class="resp-row">
+        <input type="text" id="resp-name-cumplimiento" placeholder="Nombre completo" oninput="saveResp('cumplimiento','name',this.value)">
+        <input type="email" id="resp-email-cumplimiento" placeholder="email@empresa.com" oninput="saveResp('cumplimiento','email',this.value)">
+      </div>
       <div class="decision-title">Decisión del área sobre este proceso</div>
       <div class="decision-btns">
         <button class="btn-dec" onclick="setDecision('cumplimiento','aprobado',this)">✅ Aprobado</button>
@@ -508,6 +550,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
     <div class="divider"></div>
     <div class="decision-section">
+      <div class="resp-label">Encargado del área</div>
+      <div class="resp-row">
+        <input type="text" id="resp-name-finanzas" placeholder="Nombre completo" oninput="saveResp('finanzas','name',this.value)">
+        <input type="email" id="resp-email-finanzas" placeholder="email@empresa.com" oninput="saveResp('finanzas','email',this.value)">
+      </div>
       <div class="decision-title">Decisión del área sobre este proceso</div>
       <div class="decision-btns">
         <button class="btn-dec" onclick="setDecision('finanzas','aprobado',this)">✅ Aprobado</button>
@@ -549,6 +596,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
     <div class="divider"></div>
     <div class="decision-section">
+      <div class="resp-label">Encargado del área</div>
+      <div class="resp-row">
+        <input type="text" id="resp-name-legal" placeholder="Nombre completo" oninput="saveResp('legal','name',this.value)">
+        <input type="email" id="resp-email-legal" placeholder="email@empresa.com" oninput="saveResp('legal','email',this.value)">
+      </div>
       <div class="decision-title">Decisión del área sobre este proceso</div>
       <div class="decision-btns">
         <button class="btn-dec" onclick="setDecision('legal','aprobado',this)">✅ Aprobado</button>
@@ -588,6 +640,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
     <div class="divider"></div>
     <div class="decision-section">
+      <div class="resp-label">Encargado del área</div>
+      <div class="resp-row">
+        <input type="text" id="resp-name-subcontratacion" placeholder="Nombre completo" oninput="saveResp('subcontratacion','name',this.value)">
+        <input type="email" id="resp-email-subcontratacion" placeholder="email@empresa.com" oninput="saveResp('subcontratacion','email',this.value)">
+      </div>
       <div class="decision-title">Decisión del área sobre este proceso</div>
       <div class="decision-btns">
         <button class="btn-dec" onclick="setDecision('subcontratacion','aprobado',this)">✅ Aprobado</button>
@@ -616,6 +673,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Configuración acordada</div>
     <div id="reportConfig" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem;font-size:.8rem;color:var(--gray);line-height:1.9;margin-bottom:1rem;"></div>
+    <div style="background:var(--gray-light);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
+      <span style="font-size:.8rem;color:var(--gray);flex:1;">🔗 <strong style="color:var(--navy)">Link de esta sesión</strong> — compártelo con las áreas que faltan</span>
+      <button class="btn-copy" id="btn-copy-report" onclick="copySessionLink('btn-copy-report')">Copiar link</button>
+    </div>
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
       <div>
         <div style="font-size:.875rem;font-weight:700;color:var(--navy);">¿Todo listo?</div>
@@ -644,15 +705,15 @@ const AREAS = ['solicitante','abastecimiento','cumplimiento','finanzas','legal',
 const AREA_LABELS = { solicitante:'Solicitante', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal', subcontratacion:'Subcontratación' };
 
 const st = {
-  email:'', client:'',
+  email:'', client:'', sessionId:'',
   evalTypes:{ express:true, completa:true, subcontratacion:true, reforzada:true, internacional:true },
   areas:{
-    solicitante:{decision:null,notes:'',extraDocs:[]},
-    abastecimiento:{decision:null,notes:'',extraDocs:[]},
-    cumplimiento:{decision:null,notes:'',extraDocs:[],exceptions:{}},
-    finanzas:{decision:null,notes:'',extraDocs:[],signals:{}},
-    legal:{decision:null,notes:'',extraDocs:[]},
-    subcontratacion:{decision:null,notes:'',extraDocs:[]}
+    solicitante:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''}},
+    abastecimiento:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''}},
+    cumplimiento:{decision:null,notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''}},
+    finanzas:{decision:null,notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''}},
+    legal:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''}},
+    subcontratacion:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''}}
   },
   alerts: Array(23).fill(true),
 };
@@ -689,6 +750,41 @@ document.addEventListener('keydown', e => {
   if (e.key==='ArrowLeft') { e.preventDefault(); prev(); }
 });
 
+// ── SESSION ID ──
+function generateSessionId(client) {
+  const slug = client.toLowerCase()
+    .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i')
+    .replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').replace(/ñ/g,'n')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').substring(0,20);
+  const rand = Math.random().toString(36).substring(2,6);
+  return slug + '-' + rand;
+}
+
+function getSessionUrl(id) {
+  return window.location.origin + window.location.pathname + '?s=' + id;
+}
+
+function copySessionLink(btnId) {
+  const id = st.sessionId;
+  if (!id) return;
+  navigator.clipboard.writeText(getSessionUrl(id)).catch(() => {});
+  const btn = document.getElementById(btnId || 'btn-copy');
+  if (btn) {
+    btn.textContent = '✅ Copiado';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  }
+}
+
+function showSessionLink(id) {
+  const box = document.getElementById('session-link-box');
+  const urlEl = document.getElementById('session-link-url');
+  if (box && urlEl) {
+    urlEl.textContent = getSessionUrl(id);
+    box.style.display = 'block';
+  }
+}
+
 // ── START ──
 function startSession() {
   const ci = document.getElementById('clientInput');
@@ -698,7 +794,11 @@ function startSession() {
   if (!email||!email.includes('@')) { ei.classList.add('err'); return; }
   ci.classList.remove('err'); ei.classList.remove('err');
   st.client = client; st.email = email;
-  save(); go(2,1);
+  if (!st.sessionId) st.sessionId = generateSessionId(client);
+  history.replaceState({}, '', '?s=' + st.sessionId);
+  showSessionLink(st.sessionId);
+  save();
+  setTimeout(() => go(2,1), 1200);
 }
 
 // ── EVAL TYPES ──
@@ -741,6 +841,7 @@ function setDecision(area, decision, btn) {
 }
 
 function saveNotes(area, val) { st.areas[area].notes = val; save(); }
+function saveResp(area, field, val) { st.areas[area].responsible[field] = val; save(); }
 
 // ── EXTRA DOCS ──
 function addExtra(area) {
@@ -798,12 +899,14 @@ async function enviar() {
   const btn = document.getElementById('sendBtn');
   if (btn) { btn.textContent='⏳ Enviando…'; btn.classList.add('saving'); }
   const payload = {
+    sessionId: st.sessionId,
     email: st.email, client: st.client, timestamp: new Date().toISOString(),
     evalTypes: st.evalTypes,
     areas: Object.fromEntries(AREAS.map(a => [a, {
       decision: st.areas[a].decision,
       notes: st.areas[a].notes,
       extraDocs: st.areas[a].extraDocs,
+      responsible: st.areas[a].responsible,
       ...(a==='cumplimiento' ? { exceptions: st.areas[a].exceptions } : {}),
       ...(a==='finanzas' ? { signals: st.areas[a].signals } : {}),
     }])),
@@ -821,17 +924,33 @@ async function enviar() {
 }
 
 // ── PERSIST ──
-function save() { try { localStorage.setItem('dd_v2', JSON.stringify(st)); } catch(e) {} }
+function save() {
+  try {
+    const key = st.sessionId ? 'dd_v2_' + st.sessionId : 'dd_v2';
+    localStorage.setItem(key, JSON.stringify(st));
+  } catch(e) {}
+}
 
 function load() {
   try {
-    const raw = localStorage.getItem('dd_v2'); if (!raw) return;
+    // Read session ID from URL first
+    const urlId = new URLSearchParams(window.location.search).get('s');
+    const storageKey = urlId ? 'dd_v2_' + urlId : 'dd_v2';
+
+    const raw = localStorage.getItem(storageKey); if (!raw) {
+      if (urlId) { st.sessionId = urlId; history.replaceState({}, '', '?s=' + urlId); }
+      return;
+    }
     const d = JSON.parse(raw);
+    if (d.sessionId) st.sessionId = d.sessionId;
+    else if (urlId) st.sessionId = urlId;
     if (d.email) { st.email=d.email; const el=document.getElementById('emailInput'); if(el) el.value=d.email; }
     if (d.client) { st.client=d.client; const cl=document.getElementById('clientInput'); if(cl) cl.value=d.client; }
     if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
     if (d.areas) AREAS.forEach(a => { if(d.areas[a]) Object.assign(st.areas[a], d.areas[a]); });
     if (d.alerts) st.alerts = d.alerts;
+
+    if (st.sessionId) history.replaceState({}, '', '?s=' + st.sessionId);
 
     Object.entries(st.evalTypes).forEach(([type, active]) => {
       document.getElementById('et-'+type)?.classList.toggle('on', active);
@@ -843,10 +962,10 @@ function load() {
       if (area.decision) {
         const badge = document.getElementById('badge-'+a);
         if (badge) { badge.className='area-status '+area.decision; badge.textContent=area.decision==='aprobado'?'✅ Aprobado':area.decision==='rechazado'?'❌ Rechazado':'✏️ Con observaciones'; }
-        const btns = document.querySelectorAll(`[onclick*="setDecision('${a}'"]`);
-        btns.forEach(b => { if(b.onclick?.toString().includes(area.decision)) b.classList.add('sel-'+area.decision); });
       }
       if (area.notes) { const ta=document.getElementById('notes-'+a); if(ta) ta.value=area.notes; }
+      if (area.responsible?.name) { const el=document.getElementById('resp-name-'+a); if(el) el.value=area.responsible.name; }
+      if (area.responsible?.email) { const el=document.getElementById('resp-email-'+a); if(el) el.value=area.responsible.email; }
       renderTags(a);
     });
     st.alerts.forEach((on,i) => document.getElementById('ar-'+i)?.classList.toggle('on', on));
