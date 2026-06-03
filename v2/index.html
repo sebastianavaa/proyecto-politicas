@@ -1327,15 +1327,34 @@ async function enviar() {
       activa: st.alerts[i].activa, severidad: st.alerts[i].severidad, comentario: st.alerts[i].comentario
     })),
   };
-  try { await fetch(WEBHOOK_URL, { method:'POST', mode:'no-cors', body:JSON.stringify(payload) }); } catch(e) {}
-  const sentAt = new Date().toISOString();
-  st.sentAt = sentAt;
-  save(); // persiste el envío en el estado compartido (lo ven todas las áreas)
-  showSentBanner(sentAt);
-  if (btn) { btn.textContent='✅ Enviado'; btn.classList.remove('saving'); btn.classList.add('ok'); }
-  const toast = document.getElementById('send-toast');
-  if (toast) { toast.style.display='block'; setTimeout(()=>toast.style.display='none',4000); }
-  setTimeout(()=>{ if(btn){ btn.textContent='📤 Enviar reporte'; btn.classList.remove('ok'); }},3000);
+  let success = false;
+  try {
+    const res = await fetch('/api/submit', {
+      method:'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      success = true;
+    } else {
+      console.error('Submit error:', res.status);
+    }
+  } catch(e) {
+    console.error('Submit failed:', e);
+  }
+  if (success) {
+    const sentAt = new Date().toISOString();
+    st.sentAt = sentAt;
+    save(); // persiste el envío en el estado compartido (lo ven todas las áreas)
+    showSentBanner(sentAt);
+    if (btn) { btn.textContent='✅ Enviado'; btn.classList.remove('saving'); btn.classList.add('ok'); }
+    const toast = document.getElementById('send-toast');
+    if (toast) { toast.style.display='block'; setTimeout(()=>toast.style.display='none',4000); }
+    setTimeout(()=>{ if(btn){ btn.textContent='📤 Enviar reporte'; btn.classList.remove('ok'); }},3000);
+  } else {
+    if (btn) { btn.textContent='❌ Error al enviar'; btn.classList.remove('saving'); btn.classList.add('error'); }
+    setTimeout(()=>{ if(btn){ btn.textContent='📤 Enviar reporte'; btn.classList.remove('error'); }},4000);
+  }
 }
 
 // ── PERSIST (local instantáneo + remoto compartido vía Vercel KV) ──
