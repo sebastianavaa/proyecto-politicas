@@ -750,14 +750,13 @@ document.addEventListener('keydown', e => {
   if (e.key==='ArrowLeft') { e.preventDefault(); prev(); }
 });
 
-// ── SESSION ID ──
+// ── SESSION ID ── (determinístico: mismo nombre de empresa = mismo link)
 function generateSessionId(client) {
   const slug = client.toLowerCase()
     .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i')
     .replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').replace(/ñ/g,'n')
-    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').substring(0,20);
-  const rand = Math.random().toString(36).substring(2,6);
-  return slug + '-' + rand;
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').substring(0,30);
+  return slug || 'empresa';
 }
 
 function getSessionUrl(id) {
