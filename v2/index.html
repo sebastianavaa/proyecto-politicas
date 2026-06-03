@@ -143,6 +143,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .extra-tag{background:var(--blue-light);color:var(--blue);padding:.2rem .625rem;border-radius:.375rem;font-size:.75rem;font-weight:600;display:flex;align-items:center;gap:.375rem;}
 .extra-tag button{background:none;border:none;color:var(--blue);cursor:pointer;font-size:.875rem;line-height:1;padding:0;}
 
+/* LOCKED AREA (campos deshabilitados tras guardar) */
+.btn-dec:disabled{opacity:.45;cursor:not-allowed;}
+.decision-section input:disabled,.notes-ta:disabled{background:var(--gray-light);cursor:not-allowed;opacity:.75;}
+.extra-row input:disabled,.btn-add:disabled{opacity:.45;cursor:not-allowed;}
+.extra-tag button:disabled{opacity:.35;cursor:not-allowed;}
+
 /* AREA STATUS BADGE */
 .area-status{display:inline-flex;align-items:center;gap:.375rem;padding:.2rem .7rem;border-radius:1rem;
   font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-top:.4rem;
@@ -171,6 +177,43 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .sev-alta{background:#FEE2E2;color:var(--danger);}
 .sev-media{background:var(--warn-bg);color:var(--accent-dark);}
 .sev-baja{background:var(--blue-light);color:var(--blue);}
+.sev-leve{background:var(--blue-light);color:var(--blue);}
+.sev-grave{background:#FEE2E2;color:var(--danger);}
+
+/* CONFIG DE ALERTA (Abastecimiento): toggle + selector severidad + comentario */
+.alert-cfg{background:var(--white);border:1px solid var(--gray-border);border-radius:.625rem;padding:.6rem .875rem;margin-bottom:.4rem;}
+.alert-cfg.off{opacity:.5;}
+.alert-cfg-top{display:flex;align-items:center;gap:.75rem;}
+.alert-cfg .a-label{flex:1;font-size:.8rem;color:var(--text);}
+.alert-cfg .a-toggle{cursor:pointer;}
+.alert-cfg.on .a-toggle{background:var(--success);}
+.alert-cfg.on .a-toggle::after{transform:translateX(.875rem);}
+.sev-sel{display:inline-flex;gap:.2rem;background:var(--gray-light);border-radius:.4rem;padding:.15rem;flex-shrink:0;}
+.sev-opt{border:none;background:transparent;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;
+  padding:.2rem .5rem;border-radius:.3rem;cursor:pointer;color:var(--gray);transition:all .15s;}
+.sev-opt:disabled{cursor:not-allowed;}
+.sev-opt.on{color:white;}
+.sev-opt.on[data-sev="leve"]{background:var(--blue);}
+.sev-opt.on[data-sev="media"]{background:var(--accent-dark);}
+.sev-opt.on[data-sev="grave"]{background:var(--danger);}
+.alert-cmt{width:100%;margin-top:.45rem;padding:.4rem .6rem;border:1.5px solid var(--gray-border);border-radius:.4rem;
+  font-size:.75rem;font-family:var(--font);outline:none;transition:border .2s;resize:vertical;}
+.alert-cmt:focus{border-color:var(--blue);}
+.alert-cmt:disabled{background:var(--gray-light);}
+
+/* VISTA REVISOR: alerta en lectura + comentario */
+.alert-rev{background:var(--white);border:1px solid var(--gray-border);border-radius:.625rem;padding:.6rem .875rem;margin-bottom:.4rem;}
+.alert-rev.off{opacity:.45;}
+.alert-rev-top{display:flex;align-items:center;gap:.75rem;}
+.alert-rev .a-label{flex:1;font-size:.8rem;color:var(--text);}
+.alert-off-tag{font-size:.6rem;font-weight:800;text-transform:uppercase;color:var(--gray);background:var(--gray-light);padding:.15rem .45rem;border-radius:.25rem;flex-shrink:0;}
+
+/* RECAP en Abastecimiento (tipos + documentos en una vista) */
+.recap-box{background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.875rem 1rem;margin-bottom:.75rem;}
+.recap-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;}
+.recap-chips{display:flex;flex-wrap:wrap;gap:.375rem;}
+.recap-chip{background:var(--blue-light);color:var(--blue);padding:.2rem .625rem;border-radius:.375rem;font-size:.75rem;font-weight:600;}
+.recap-chip.muted{background:var(--gray-light);color:var(--gray);}
 
 .area-alerts-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);
   margin-bottom:.625rem;margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--gray-border);}
@@ -287,49 +330,36 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="session-link-url" id="session-link-url"></div>
       <button class="btn-copy" id="btn-copy" onclick="copySessionLink()">Copiar</button>
     </div>
+    <button class="btn-primary" id="continue-btn" style="margin-top:.875rem;width:100%" onclick="go(2,1)">Continuar a la sesión →</button>
   </div>
 </div>
 
-<!-- ── 2: POR QUÉ IMPORTA ── -->
+<!-- ── 2: POR QUÉ IMPORTA + MARCO LEGAL (fusionadas) ── -->
 <div class="slide slide-std" data-n="2">
-  <div class="s-head"><div class="s-tag">El problema</div><h2>¿Por qué necesitas una política de compras?</h2>
-  <p>Trabajar con proveedores sin un proceso formal expone a tu empresa a riesgos legales, financieros y operativos.</p></div>
-  <div class="s-body">
+  <div class="s-head"><div class="s-tag">El problema y la ley</div><h2>¿Por qué necesitas una política de compras?</h2>
+  <p>Trabajar con proveedores sin un proceso formal expone a tu empresa a riesgos legales, financieros, reputacionales y operativos. Y la normativa chilena ya lo exige: cada riesgo tiene una ley detrás.</p></div>
+  <div class="s-body scrollable">
     <div class="cards">
-      <div class="card"><div class="card-icon">⚖️</div><h3>Responsabilidad penal</h3><p>Si un proveedor comete un delito y tu empresa no tomó medidas para conocerlo, puedes ser declarado responsable bajo la Ley 20.393.</p></div>
-      <div class="card"><div class="card-icon">💸</div><h3>Riesgo financiero</h3><p>Un proveedor en quiebra o con morosidades severas puede paralizar tu operación. Sin due diligence, no lo sabes hasta que es tarde.</p></div>
-      <div class="card"><div class="card-icon">📰</div><h3>Daño reputacional</h3><p>La prensa y los clientes no distinguen entre tu empresa y tus proveedores. Sus problemas se convierten en los tuyos.</p></div>
-      <div class="card"><div class="card-icon">🔒</div><h3>Parálisis operativa</h3><p>Un proveedor que custodia datos o activos críticos sin ser evaluado es un riesgo de seguridad que puede frenar toda la operación.</p></div>
+      <div class="card"><div class="card-icon">⚖️</div><span class="law">Ley 20.393</span><h3>Responsabilidad penal</h3><p>Obliga a evaluar a los proveedores <strong>antes de contratarlos</strong>. Si no lo haces y el proveedor comete un delito, la empresa responde penalmente: multas, inhabilitaciones y clausura.</p></div>
+      <div class="card"><div class="card-icon">🕵️</div><span class="law">Ley 19.913</span><h3>Lavado de activos</h3><p>Exige identificar <strong>beneficiarios finales</strong> y verificar que no estén sancionados. Ignorarlo expone a la empresa a involucramiento en lavado de activos o financiamiento del terrorismo.</p></div>
+      <div class="card"><div class="card-icon">👷</div><span class="law">Ley 20.123</span><h3>Subcontratación</h3><p>Exige documentación <strong>laboral y previsional</strong> a los subcontratistas. Sin ella, la empresa responde de forma <strong>solidaria</strong> por las deudas laborales del proveedor hacia sus trabajadores.</p></div>
+      <div class="card"><div class="card-icon">🔄</div><span class="law">Ley 21.595</span><h3>Monitoreo continuo</h3><p>No basta con evaluar una vez: obliga a <strong>monitorear permanentemente</strong> a los proveedores activos. Si surge un problema y no se detectó, la empresa también responde.</p></div>
     </div>
+    <div class="warn-box" style="margin-top:1rem">💡 <strong>Además del riesgo legal:</strong> un proveedor en quiebra puede paralizar tu operación, y sus problemas reputacionales se vuelven los tuyos — la prensa y tus clientes no distinguen entre tu empresa y tus proveedores.</div>
   </div>
 </div>
 
-<!-- ── 3: MARCO LEGAL ── -->
+<!-- ── 3: TIPOS DE EVALUACIÓN ── -->
 <div class="slide slide-std" data-n="3">
-  <div class="s-head"><div class="s-tag">Marco legal</div><h2>La ley ya no te permite no saberlo</h2>
-  <p>La normativa chilena establece obligaciones concretas. Ignorarlas no elimina la responsabilidad.</p></div>
-  <div class="s-body">
-    <table class="dt"><thead><tr><th>Qué exige la ley</th><th>Qué pasa si no se cumple</th></tr></thead>
-    <tbody>
-      <tr><td><span class="law">Ley 20.393</span><br>Evaluar a los proveedores <strong>antes de contratarlos</strong>.</td><td><span class="td-danger">Responsabilidad penal de la empresa.</span> Multas, inhabilitaciones y clausura.</td></tr>
-      <tr><td><span class="law">Ley 19.913</span><br>Identificar <strong>beneficiarios finales</strong> y verificar que no estén sancionados.</td><td><span class="td-danger">Riesgo de involucramiento</span> en lavado de activos o financiamiento del terrorismo.</td></tr>
-      <tr><td><span class="law">Ley 20.123</span><br>Exigir documentación <strong>laboral y previsional</strong> a subcontratistas.</td><td><span class="td-danger">Responsabilidad solidaria</span> ante deudas laborales del proveedor hacia sus trabajadores.</td></tr>
-      <tr><td><span class="law">Ley 21.595</span><br><strong>Monitorear continuamente</strong> a los proveedores activos.</td><td><span class="td-danger">No basta con evaluar una vez.</span> Si surge un problema y no se detectó, la empresa también responde.</td></tr>
-    </tbody></table>
-  </div>
-</div>
-
-<!-- ── 4: TIPOS DE EVALUACIÓN ── -->
-<div class="slide slide-std" data-n="4">
-  <div class="s-head"><div class="s-tag">Configuración</div><h2>Tipos de evaluación a activar</h2>
-  <p>Selecciona qué tipos de evaluación aplicará tu empresa. Puedes activar o desactivar cada uno.</p></div>
+  <div class="s-head"><div class="s-tag">Recomendación de Plutto</div><h2>Plutto te recomienda estos 5 procesos</h2>
+  <p>Según tu operación, estos son los tipos de evaluación que recomendamos activar. Puedes activar o desactivar cada uno según tu realidad.</p></div>
   <div class="s-body scrollable">
     <div class="eval-cards">
       <div class="eval-card active" id="ec-express" onclick="toggleEval('express')">
         <div class="eval-toggle on" id="et-express"></div>
         <div class="eval-info">
           <div class="eval-subtitle">Compra menor a USD 20.000 — Proveedor spot</div>
-          <h4>Debida Diligencia Express</h4>
+          <h4>Debida Diligencia Exprés</h4>
           <p>Evaluación simplificada para friccionar lo menos posible el proceso de compras menores, manteniendo un nivel básico de due diligence.</p>
         </div>
       </div>
@@ -345,7 +375,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="eval-toggle on" id="et-subcontratacion"></div>
         <div class="eval-info">
           <div class="eval-subtitle">Compra a subcontratista — Proveedor servicios</div>
-          <h4>Debida Diligencia para Subcontratistas</h4>
+          <h4>Debida Diligencia Subcontratación</h4>
           <p>Evaluación especializada con documentación específica para un análisis completo de proveedores subcontratados (Ley 20.123).</p>
         </div>
       </div>
@@ -369,8 +399,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 5: DOCUMENTOS POR TIPO ── -->
-<div class="slide slide-std" data-n="5">
+<!-- ── 4: DOCUMENTOS POR TIPO ── -->
+<div class="slide slide-std" data-n="4">
   <div class="s-head"><div class="s-tag">Documentos requeridos</div><h2>¿Qué le pedimos al proveedor?</h2>
   <p>Cada tipo de evaluación tiene su propio conjunto de documentos. Esto es lo que el proveedor deberá entregar.</p></div>
   <div class="s-body scrollable">
@@ -378,11 +408,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <table class="dt" style="min-width:660px;">
         <thead><tr>
           <th style="min-width:210px;">Documento</th>
-          <th style="text-align:center;">Express</th>
+          <th style="text-align:center;">Exprés</th>
           <th style="text-align:center;">Completa</th>
-          <th style="text-align:center;">Subcontr.</th>
+          <th style="text-align:center;">Subcontratación</th>
           <th style="text-align:center;">Reforzada</th>
-          <th style="text-align:center;">Intl.</th>
+          <th style="text-align:center;">Internacional</th>
         </tr></thead>
         <tbody>
           <tr><td>Declaración jurada del proveedor</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
@@ -412,8 +442,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 6: ÁREA SOLICITANTE ── -->
-<div class="slide slide-std" data-n="6">
+<!-- ── 5: ÁREA SOLICITANTE ── -->
+<div class="slide slide-std" data-n="5">
   <div class="s-head"><div class="s-tag">Revisión por área — 1 de 6</div>
     <h2>Solicitante</h2>
     <p>Quien detecta la necesidad y abre el proceso. Puede ser cualquier área de la empresa.</p>
@@ -478,8 +508,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 7: ÁREA ABASTECIMIENTO ── -->
-<div class="slide slide-std" data-n="7">
+<!-- ── 6: ÁREA ABASTECIMIENTO ── -->
+<div class="slide slide-std" data-n="6">
   <div class="s-head"><div class="s-tag">Revisión por área — 2 de 6</div>
     <h2>Abastecimiento</h2>
     <p>Coordina el proceso completo. Opera Plutto día a día y asegura que cada proveedor sea evaluado correctamente.</p>
@@ -492,7 +522,19 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Asignar revisores según tipo de evaluación</h4><p>Cumplimiento siempre participa. Finanzas y Legal se suman en evaluaciones Completa, Reforzada y Subcontratación.</p></div></div>
       <div class="step-row"><div class="step-num">4</div><div class="step-body"><h4>Registrar la decisión y cerrar el proceso</h4><p>Con todas las revisiones completadas, registrar aprobación o rechazo. El informe se adjunta al contrato o ERP.</p></div></div>
     </div>
-    <div class="warn-box">⏱ <strong>Tiempos objetivo:</strong> Express: máx. 5 días hábiles. Completa o Reforzada: máx. 10 días hábiles.</div>
+    <div class="warn-box">⏱ <strong>Tiempos objetivo:</strong> Exprés: máx. 5 días hábiles. Completa o Reforzada: máx. 10 días hábiles.</div>
+    <div class="divider"></div>
+    <div class="recap-box">
+      <div class="recap-title">Procesos de evaluación activos</div>
+      <div class="recap-chips" id="abast-evaltypes"></div>
+    </div>
+    <div class="recap-box">
+      <div class="recap-title">Documentos que se solicitarán al proveedor</div>
+      <div class="recap-chips" id="abast-docs"></div>
+    </div>
+    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:.25rem">⚙️ Configuración de alertas — severidad y monitoreo</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Define qué alertas se monitorean y con qué severidad (Leve / Media / Grave). Cada área revisora verá las alertas de su competencia y podrá comentarlas.</p>
+    <div id="abast-alerts"></div>
     <div class="divider"></div>
     <div class="decision-section">
       <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
@@ -521,8 +563,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 8: ÁREA CUMPLIMIENTO ── -->
-<div class="slide slide-std" data-n="8">
+<!-- ── 7: ÁREA CUMPLIMIENTO ── -->
+<div class="slide slide-std" data-n="7">
   <div class="s-head"><div class="s-tag">Revisión por área — 3 de 6</div>
     <h2>Cumplimiento</h2>
     <p>Dueño del proceso normativo. Clasifica el riesgo y da la recomendación final en cada evaluación.</p>
@@ -541,20 +583,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="exc-item" onclick="toggleExc(1,this)"><input type="checkbox" id="exc-1" onclick="event.stopPropagation()"><span>Se detecta conflicto de interés de nivel Alto.</span></div>
       <div class="exc-item" onclick="toggleExc(2,this)"><input type="checkbox" id="exc-2" onclick="event.stopPropagation()"><span>El área solicitante insiste en aprobar un proveedor que Cumplimiento recomienda rechazar.</span></div>
     </div>
-    <div class="area-alerts-title">Alertas automáticas a monitorear</div>
-    <div class="alert-group">
-      <div class="alert-group-title">🔎 Cumplimiento <span class="ag-count">8</span></div>
-      <div class="alert-rows">
-        <div class="alert-row on" id="ar-15" onclick="toggleAlert(15)"><div class="a-toggle"></div><span class="a-label">Hallazgos listas OFAC, Interpol u otras</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-16" onclick="toggleAlert(16)"><div class="a-toggle"></div><span class="a-label">Hallazgos listas Warning</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-17" onclick="toggleAlert(17)"><div class="a-toggle"></div><span class="a-label">Hallazgos listas Sanciones</span><span class="sev sev-media">Media</span></div>
-        <div class="alert-row on" id="ar-18" onclick="toggleAlert(18)"><div class="a-toggle"></div><span class="a-label">Hallazgos posible Persona Políticamente Expuesta (PEP)</span><span class="sev sev-media">Media</span></div>
-        <div class="alert-row on" id="ar-19" onclick="toggleAlert(19)"><div class="a-toggle"></div><span class="a-label">Cuenta con hits de cumplimiento</span><span class="sev sev-baja">Baja</span></div>
-        <div class="alert-row on" id="ar-20" onclick="toggleAlert(20)"><div class="a-toggle"></div><span class="a-label">Hallazgos EAP</span><span class="sev sev-baja">Baja</span></div>
-        <div class="alert-row on" id="ar-21" onclick="toggleAlert(21)"><div class="a-toggle"></div><span class="a-label">Hallazgos posible Relacionado a PEP</span><span class="sev sev-baja">Baja</span></div>
-        <div class="alert-row on" id="ar-22" onclick="toggleAlert(22)"><div class="a-toggle"></div><span class="a-label">Tiene hallazgos de Adverse Media</span><span class="sev sev-baja">Baja</span></div>
-      </div>
-    </div>
+    <div class="area-alerts-title">Alertas de tu competencia — revisa la severidad y comenta</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">La severidad la define Abastecimiento. Si tienes observaciones sobre alguna alerta, déjalas en su comentario.</p>
+    <div id="alerts-cumplimiento"></div>
     <div class="divider"></div>
     <div class="decision-section">
       <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
@@ -583,8 +614,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 9: ÁREA FINANZAS ── -->
-<div class="slide slide-std" data-n="9">
+<!-- ── 8: ÁREA FINANZAS ── -->
+<div class="slide slide-std" data-n="8">
   <div class="s-head"><div class="s-tag">Revisión por área — 4 de 6</div>
     <h2>Finanzas</h2>
     <p>Revisor en evaluaciones Completa, Reforzada y Subcontratación. Analiza la solidez financiera del proveedor.</p>
@@ -601,26 +632,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="sig-item" onclick="toggleSig(1,this)"><input type="checkbox" id="sig-1" onclick="event.stopPropagation()"><span><strong>Morosidad comercial severa en DICOM:</strong> solicitar historial ampliado.</span></div>
       <div class="sig-item" onclick="toggleSig(2,this)"><input type="checkbox" id="sig-2" onclick="event.stopPropagation()"><span><strong>Inicio de actividades menor a 12 meses:</strong> aplicar Evaluación Reforzada.</span></div>
     </div>
-    <div class="area-alerts-title">Alertas automáticas a monitorear</div>
-    <div class="alert-group">
-      <div class="alert-group-title">🏛️ Tributario <span class="ag-count">5</span></div>
-      <div class="alert-rows">
-        <div class="alert-row on" id="ar-0" onclick="toggleAlert(0)"><div class="a-toggle"></div><span class="a-label">Entidad en nómina difícil de fiscalización</span><span class="sev sev-baja">Baja</span></div>
-        <div class="alert-row on" id="ar-1" onclick="toggleAlert(1)"><div class="a-toggle"></div><span class="a-label">Inició actividades hace menos de 6 meses</span><span class="sev sev-media">Media</span></div>
-        <div class="alert-row on" id="ar-2" onclick="toggleAlert(2)"><div class="a-toggle"></div><span class="a-label">No ha iniciado actividades</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-3" onclick="toggleAlert(3)"><div class="a-toggle"></div><span class="a-label">Sociedad disuelta</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-4" onclick="toggleAlert(4)"><div class="a-toggle"></div><span class="a-label">Término de giro</span><span class="sev sev-alta">Alta</span></div>
-      </div>
-    </div>
-    <div class="alert-group">
-      <div class="alert-group-title">💰 Financiero <span class="ag-count">4</span></div>
-      <div class="alert-rows">
-        <div class="alert-row on" id="ar-5" onclick="toggleAlert(5)"><div class="a-toggle"></div><span class="a-label">Cuenta con publicaciones concursales</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-6" onclick="toggleAlert(6)"><div class="a-toggle"></div><span class="a-label">Cuenta con morosidades en boletines</span><span class="sev sev-media">Media</span></div>
-        <div class="alert-row on" id="ar-7" onclick="toggleAlert(7)"><div class="a-toggle"></div><span class="a-label">Puntaje riesgoso en Equifax</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-8" onclick="toggleAlert(8)"><div class="a-toggle"></div><span class="a-label">Puntaje de riesgo moderado en Equifax</span><span class="sev sev-media">Media</span></div>
-      </div>
-    </div>
+    <div class="area-alerts-title">Alertas de tu competencia — revisa la severidad y comenta</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">La severidad la define Abastecimiento. Si tienes observaciones sobre alguna alerta, déjalas en su comentario.</p>
+    <div id="alerts-finanzas"></div>
     <div class="divider"></div>
     <div class="decision-section">
       <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
@@ -649,8 +663,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 10: ÁREA LEGAL ── -->
-<div class="slide slide-std" data-n="10">
+<!-- ── 9: ÁREA LEGAL ── -->
+<div class="slide slide-std" data-n="9">
   <div class="s-head"><div class="s-tag">Revisión por área — 5 de 6</div>
     <h2>Legal</h2>
     <p>Revisor en evaluaciones Completa y Reforzada. Valida la constitución legal del proveedor.</p>
@@ -662,16 +676,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Revisar cláusulas requeridas del contrato</h4><p>Cláusula anticorrupción, derecho de auditoría, terminación por incumplimiento de DD, protección de datos personales.</p></div></div>
       <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Registrar el visto bueno legal en Plutto</h4><p>Sin este registro el proceso no puede cerrarse como aprobado. Es un paso bloqueante.</p></div></div>
     </div>
-    <div class="area-alerts-title">Alertas automáticas a monitorear</div>
-    <div class="alert-group">
-      <div class="alert-group-title">⚖️ Legal y Societario <span class="ag-count">4</span></div>
-      <div class="alert-rows">
-        <div class="alert-row on" id="ar-9" onclick="toggleAlert(9)"><div class="a-toggle"></div><span class="a-label">Demandas con procedimientos concursales</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-10" onclick="toggleAlert(10)"><div class="a-toggle"></div><span class="a-label">Tiene demandas penales</span><span class="sev sev-alta">Alta</span></div>
-        <div class="alert-row on" id="ar-11" onclick="toggleAlert(11)"><div class="a-toggle"></div><span class="a-label">Demandas laborales en el último año</span><span class="sev sev-media">Media</span></div>
-        <div class="alert-row on" id="ar-12" onclick="toggleAlert(12)"><div class="a-toggle"></div><span class="a-label">Aparición en causas legales</span><span class="sev sev-baja">Baja</span></div>
-      </div>
-    </div>
+    <div class="area-alerts-title">Alertas de tu competencia — revisa la severidad y comenta</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">La severidad la define Abastecimiento. Si tienes observaciones sobre alguna alerta, déjalas en su comentario.</p>
+    <div id="alerts-legal"></div>
     <div class="divider"></div>
     <div class="decision-section">
       <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
@@ -700,8 +707,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 11: ÁREA SUBCONTRATACIÓN ── -->
-<div class="slide slide-std" data-n="11">
+<!-- ── 10: ÁREA SUBCONTRATACIÓN ── -->
+<div class="slide slide-std" data-n="10">
   <div class="s-head"><div class="s-tag">Revisión por área — 6 de 6</div>
     <h2>Subcontratación</h2>
     <p>Revisor adicional cuando el servicio involucra personal en instalaciones propias (Ley 20.123).</p>
@@ -713,14 +720,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Revisar SSOMA y certificado de siniestralidad</h4><p>Validar que el proveedor tiene protocolos de seguridad activos y tasa de accidentabilidad aceptable.</p></div></div>
       <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Autorizar el ingreso a faena en Plutto</h4><p>Sin este registro el acceso físico no debe autorizarse bajo ninguna circunstancia.</p></div></div>
     </div>
-    <div class="area-alerts-title">Alertas automáticas a monitorear</div>
-    <div class="alert-group">
-      <div class="alert-group-title">👷 Laboral <span class="ag-count">2</span></div>
-      <div class="alert-rows">
-        <div class="alert-row on" id="ar-13" onclick="toggleAlert(13)"><div class="a-toggle"></div><span class="a-label">Multas Dirección del Trabajo</span><span class="sev sev-media">Media</span></div>
-        <div class="alert-row on" id="ar-14" onclick="toggleAlert(14)"><div class="a-toggle"></div><span class="a-label">Registra sanciones de la SNIFA</span><span class="sev sev-media">Media</span></div>
-      </div>
-    </div>
+    <div class="area-alerts-title">Alertas de tu competencia — revisa la severidad y comenta</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">La severidad la define Abastecimiento. Si tienes observaciones sobre alguna alerta, déjalas en su comentario.</p>
+    <div id="alerts-subcontratacion"></div>
     <div class="divider"></div>
     <div class="decision-section">
       <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
@@ -749,8 +751,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 12: REPORTE FINAL ── -->
-<div class="slide slide-std" data-n="12">
+<!-- ── 11: REPORTE FINAL ── -->
+<div class="slide slide-std" data-n="11">
   <div class="s-head"><div class="s-tag">Reporte final</div>
     <h2>Resumen de la sesión</h2>
     <p>Vista consolidada de todo lo acordado. Envía para registrar el acuerdo con el equipo Plutto.</p>
@@ -761,6 +763,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Configuración acordada</div>
     <div id="reportConfig" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem;font-size:.8rem;color:var(--gray);line-height:1.9;margin-bottom:1rem;"></div>
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Alertas configuradas</div>
+    <div id="reportAlerts" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:.5rem 1rem 1rem;margin-bottom:1rem;"></div>
     <div style="background:var(--gray-light);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
       <span style="font-size:.8rem;color:var(--gray);flex:1;">🔗 <strong style="color:var(--navy)">Link de esta sesión</strong> — compártelo con las áreas que faltan</span>
       <button class="btn-copy" id="btn-copy-report" onclick="copySessionLink('btn-copy-report')">Copiar link</button>
@@ -781,18 +785,70 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <div id="nav">
   <button class="nav-btn" id="prevBtn" onclick="prev()" disabled>←</button>
-  <span id="counter">1 / 12</span>
+  <span id="counter">1 / 11</span>
   <button class="nav-btn" id="nextBtn" onclick="next()">→</button>
 </div>
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 12;
+const TOTAL = 11;
 let cur = 1;
 
 const AREAS = ['solicitante','abastecimiento','cumplimiento','finanzas','legal','subcontratacion'];
 const AREA_LABELS = { solicitante:'Solicitante', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal', subcontratacion:'Subcontratación' };
-const AREA_SLIDE = { solicitante:6, abastecimiento:7, cumplimiento:8, finanzas:9, legal:10, subcontratacion:11 };
+const AREA_SLIDE = { solicitante:5, abastecimiento:6, cumplimiento:7, finanzas:8, legal:9, subcontratacion:10 };
+
+// Metadata de las 23 alertas: etiqueta, grupo, área revisora dueña y severidad recomendada por Plutto.
+// La severidad y el on/off se CONFIGURAN en Abastecimiento (hub central).
+// Cada revisor ve solo las alertas de su área (severidad en lectura) y puede comentarlas.
+const SEV_ORDER = ['leve','media','grave'];
+const SEV_LABEL = { leve:'Leve', media:'Media', grave:'Grave' };
+const ALERTS = [
+  { label:'Entidad en nómina difícil de fiscalización',            group:'Tributario',         icon:'🏛️', area:'finanzas',        sev:'leve'  },
+  { label:'Inició actividades hace menos de 6 meses',              group:'Tributario',         icon:'🏛️', area:'finanzas',        sev:'media' },
+  { label:'No ha iniciado actividades',                            group:'Tributario',         icon:'🏛️', area:'finanzas',        sev:'grave' },
+  { label:'Sociedad disuelta',                                     group:'Tributario',         icon:'🏛️', area:'finanzas',        sev:'grave' },
+  { label:'Término de giro',                                       group:'Tributario',         icon:'🏛️', area:'finanzas',        sev:'grave' },
+  { label:'Cuenta con publicaciones concursales',                  group:'Financiero',         icon:'💰', area:'finanzas',        sev:'grave' },
+  { label:'Cuenta con morosidades en boletines',                   group:'Financiero',         icon:'💰', area:'finanzas',        sev:'media' },
+  { label:'Puntaje riesgoso en Equifax',                           group:'Financiero',         icon:'💰', area:'finanzas',        sev:'grave' },
+  { label:'Puntaje de riesgo moderado en Equifax',                 group:'Financiero',         icon:'💰', area:'finanzas',        sev:'media' },
+  { label:'Demandas con procedimientos concursales',               group:'Legal y Societario', icon:'⚖️', area:'legal',           sev:'grave' },
+  { label:'Tiene demandas penales',                                group:'Legal y Societario', icon:'⚖️', area:'legal',           sev:'grave' },
+  { label:'Demandas laborales en el último año',                   group:'Legal y Societario', icon:'⚖️', area:'legal',           sev:'media' },
+  { label:'Aparición en causas legales',                           group:'Legal y Societario', icon:'⚖️', area:'legal',           sev:'leve'  },
+  { label:'Multas Dirección del Trabajo',                          group:'Laboral',            icon:'👷', area:'subcontratacion', sev:'media' },
+  { label:'Registra sanciones de la SNIFA',                        group:'Laboral',            icon:'👷', area:'subcontratacion', sev:'media' },
+  { label:'Hallazgos listas OFAC, Interpol u otras',               group:'Cumplimiento',       icon:'🔎', area:'cumplimiento',    sev:'grave' },
+  { label:'Hallazgos listas Warning',                              group:'Cumplimiento',       icon:'🔎', area:'cumplimiento',    sev:'grave' },
+  { label:'Hallazgos listas Sanciones',                            group:'Cumplimiento',       icon:'🔎', area:'cumplimiento',    sev:'media' },
+  { label:'Hallazgos posible Persona Políticamente Expuesta (PEP)',group:'Cumplimiento',       icon:'🔎', area:'cumplimiento',    sev:'media' },
+  { label:'Cuenta con hits de cumplimiento',                       group:'Cumplimiento',       icon:'🔎', area:'cumplimiento',    sev:'leve'  },
+  { label:'Hallazgos EAP',                                         group:'Cumplimiento',       icon:'🔎', area:'cumplimiento',    sev:'leve'  },
+  { label:'Hallazgos posible Relacionado a PEP',                   group:'Cumplimiento',       icon:'🔎', area:'cumplimiento',    sev:'leve'  },
+  { label:'Tiene hallazgos de Adverse Media',                      group:'Cumplimiento',       icon:'🔎', area:'cumplimiento',    sev:'leve'  },
+];
+function defaultAlerts() { return ALERTS.map(a => ({ activa:true, severidad:a.sev, comentario:'' })); }
+
+// Matriz de documentos por tipo de evaluación (para el recap de Abastecimiento).
+const DOCS = [
+  { name:'Declaración jurada del proveedor', req:['express','completa','subcontratacion','reforzada','internacional'] },
+  { name:'Declaración vínculo PEP',          req:['express','completa','subcontratacion','reforzada','internacional'] },
+  { name:'Declaración Conflicto de Interés', req:['completa','subcontratacion','reforzada'] },
+  { name:'Constitución de la Sociedad',      req:['reforzada'], opc:['completa','subcontratacion'] },
+  { name:'E-RUT',                            req:['express','completa','subcontratacion','reforzada'] },
+  { name:'Certificado de Vigencia de Sociedad', req:['completa','subcontratacion','reforzada'] },
+  { name:'DNI del Representante Legal',       req:['completa','subcontratacion','reforzada'] },
+  { name:'Carpeta tributaria SII',           req:['completa','subcontratacion','reforzada'] },
+  { name:'Certificado de Vigencia de Poderes', req:['completa','subcontratacion','reforzada'] },
+  { name:'Certificado cuenta bancaria',      req:['completa','subcontratacion','reforzada'], opc:['express'] },
+  { name:'F-30',                             req:['subcontratacion'] },
+  { name:'F-30-1',                           opc:['subcontratacion'] },
+  { name:'Estado Financiero',                req:['internacional'], opc:['reforzada'] },
+  { name:'Deuda Fiscal TGR',                 req:['reforzada'], opc:['completa','subcontratacion'] },
+  { name:'Reporte Accidentabilidad',         req:['subcontratacion'] },
+  { name:'DICOM',                            req:['completa','subcontratacion','reforzada'] },
+];
 
 function isSlideVisible(n) {
   const entry = Object.entries(AREA_SLIDE).find(([,s]) => s === n);
@@ -823,7 +879,8 @@ const st = {
     legal:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0},
     subcontratacion:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0}
   },
-  alerts: Array(23).fill(true),
+  alerts: defaultAlerts(),
+  sentAt:'',
 };
 
 // ── NAVIGATION ──
@@ -839,7 +896,7 @@ function go(n, dir) {
   to.style.opacity = '0'; to.classList.add('active');
   requestAnimationFrame(() => requestAnimationFrame(() => { to.style.transform = ''; to.style.opacity = ''; }));
   cur = n;
-  if (n === 12) buildReport();
+  if (n === TOTAL) buildReport();
   updateNav(); save();
 }
 function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
@@ -858,6 +915,18 @@ function updateNav() {
   const pos = v.indexOf(cur) + 1;
   document.getElementById('counter').textContent = `${pos} / ${v.length}`;
   document.getElementById('progress').style.width = (pos / v.length * 100) + '%';
+  updateAreaTags();
+}
+
+// "Revisión por área — X de N": N y X se calculan según las áreas activas,
+// para que al desactivar áreas no quede un "6 de 6" desactualizado.
+function updateAreaTags() {
+  const visAreas = AREAS.filter(a => a === 'solicitante' || st.requiredAreas[a]);
+  const total = visAreas.length;
+  visAreas.forEach((a, i) => {
+    const tag = document.querySelector(`.slide[data-n="${AREA_SLIDE[a]}"] .s-tag`);
+    if (tag) tag.textContent = `Revisión por área — ${i + 1} de ${total}`;
+  });
 }
 
 document.addEventListener('keydown', e => {
@@ -914,8 +983,12 @@ async function startSession() {
   await loadRemote();
   st.client = client; st.email = email;
   showSessionLink(st.sessionId);
+  // Dejar visible el link compartible: ocultamos el formulario inicial y mostramos
+  // el botón "Continuar" para que alcancen a copiarlo antes de avanzar.
+  document.querySelector('.input-wrap .input-row')?.style.setProperty('display','none');
+  const startBtn = document.querySelector('.input-wrap > .btn-primary');
+  if (startBtn) startBtn.style.display = 'none';
   save();
-  setTimeout(() => go(2,1), 1200);
 }
 
 // ── REQUIRED AREAS ──
@@ -923,6 +996,7 @@ function toggleRequiredArea(area) {
   st.requiredAreas[area] = !st.requiredAreas[area];
   document.getElementById('art-'+area)?.classList.toggle('on', st.requiredAreas[area]);
   if (!st.requiredAreas[area] && cur === AREA_SLIDE[area]) next();
+  updateNav();
   save();
 }
 
@@ -954,8 +1028,7 @@ function guardarArea(area) {
   const status = document.getElementById('save-status-'+area);
   if (status) status.style.color = 'var(--gray)';
   a.locked = true;
-  if (a.editCount > 0) a.editCount++;
-  else a.editCount = 0;
+  // editCount lo gestiona editarArea() al reabrir; aquí solo se confirma el guardado.
   save();
   applyAreaSaveUI(area);
 }
@@ -983,13 +1056,26 @@ function applyAreaSaveUI(area) {
     saveBtn.disabled    = true;
     editBtn.style.display = 'inline-flex';
     if (status) status.textContent = now;
+    setAreaEditable(area, false);
   } else {
     saveBtn.textContent = edited ? '💾 Guardar cambios' : '💾 Guardar sección';
     saveBtn.className   = 'btn-area-save';
     saveBtn.disabled    = false;
     editBtn.style.display = 'none';
     if (status) status.textContent = edited ? '⚠️ Cambios sin guardar' : '';
+    setAreaEditable(area, true);
   }
+}
+
+// Candado real: cuando un área está guardada/bloqueada, sus campos no se pueden editar
+// hasta presionar "✏️ Editar". Evita que otra persona pise una sección ya cerrada.
+function setAreaEditable(area, editable) {
+  ['resp-name-'+area, 'resp-email-'+area, 'notes-'+area, 'extra-'+area].forEach(id => {
+    const el = document.getElementById(id); if (el) el.disabled = !editable;
+  });
+  document.querySelectorAll(`[onclick*="setDecision('${area}'"]`).forEach(b => b.disabled = !editable);
+  document.querySelectorAll(`[onclick*="addExtra('${area}')"]`).forEach(b => b.disabled = !editable);
+  document.querySelectorAll(`#tags-${area} button`).forEach(b => b.disabled = !editable);
 }
 
 // ── EVAL TYPES ──
@@ -998,6 +1084,7 @@ function toggleEval(type) {
   document.getElementById('et-'+type).classList.toggle('on', st.evalTypes[type]);
   document.getElementById('ec-'+type).classList.toggle('active', st.evalTypes[type]);
   document.getElementById('ec-'+type).classList.toggle('inactive', !st.evalTypes[type]);
+  renderAbastRecap();
   save();
 }
 
@@ -1051,11 +1138,99 @@ function renderTags(area) {
   ).join('');
 }
 
-// ── ALERTS ──
-function toggleAlert(idx) {
-  st.alerts[idx] = !st.alerts[idx];
-  document.getElementById('ar-'+idx)?.classList.toggle('on', st.alerts[idx]);
-  save();
+// ── ALERTS (config en Abastecimiento + lectura/comentario en revisores) ──
+function normalizeAlerts(arr) {
+  if (!Array.isArray(arr)) return defaultAlerts();
+  return ALERTS.map((meta, i) => {
+    const v = arr[i];
+    if (v && typeof v === 'object') {
+      return {
+        activa: v.activa !== false,
+        severidad: SEV_ORDER.includes(v.severidad) ? v.severidad : meta.sev,
+        comentario: v.comentario || ''
+      };
+    }
+    return { activa: v === undefined ? true : !!v, severidad: meta.sev, comentario: '' };
+  });
+}
+
+function setAlertActive(i)        { st.alerts[i].activa = !st.alerts[i].activa; renderAbastAlerts(); save(); }
+function setAlertSeverity(i, sev) { st.alerts[i].severidad = sev; renderAbastAlerts(); save(); }
+function setAlertComment(i, val)  { st.alerts[i].comentario = val; save(); } // sin re-render: no pierde foco
+
+function renderAbastAlerts() {
+  const cont = document.getElementById('abast-alerts'); if (!cont) return;
+  let html = '', lastGroup = null;
+  ALERTS.forEach((meta, i) => {
+    const a = st.alerts[i];
+    if (meta.group !== lastGroup) {
+      const count = ALERTS.filter(x => x.group === meta.group).length;
+      html += `<div class="alert-group-title" style="margin-top:.75rem">${meta.icon} ${meta.group} <span class="ag-count">${count}</span></div>`;
+      lastGroup = meta.group;
+    }
+    const sevBtns = SEV_ORDER.map(s =>
+      `<button class="sev-opt ${a.severidad === s ? 'on' : ''}" data-sev="${s}" onclick="setAlertSeverity(${i},'${s}')">${SEV_LABEL[s]}</button>`
+    ).join('');
+    html += `<div class="alert-cfg ${a.activa ? 'on' : 'off'}">
+      <div class="alert-cfg-top">
+        <div class="a-toggle" onclick="setAlertActive(${i})"></div>
+        <span class="a-label">${meta.label}</span>
+        <span class="sev-sel">${sevBtns}</span>
+      </div>
+      <textarea class="alert-cmt" rows="1" placeholder="Comentario sobre esta alerta (opcional)…" oninput="setAlertComment(${i},this.value)">${a.comentario || ''}</textarea>
+    </div>`;
+  });
+  cont.innerHTML = html;
+}
+
+function renderReviewAlerts(area) {
+  const cont = document.getElementById('alerts-' + area); if (!cont) return;
+  let html = '', lastGroup = null, any = false;
+  ALERTS.forEach((meta, i) => {
+    if (meta.area !== area) return;
+    any = true;
+    const a = st.alerts[i];
+    if (meta.group !== lastGroup) {
+      const count = ALERTS.filter(x => x.area === area && x.group === meta.group).length;
+      html += `<div class="alert-group-title" style="margin-top:.6rem">${meta.icon} ${meta.group} <span class="ag-count">${count}</span></div>`;
+      lastGroup = meta.group;
+    }
+    const tag = a.activa
+      ? `<span class="sev sev-${a.severidad}">${SEV_LABEL[a.severidad]}</span>`
+      : `<span class="alert-off-tag">No monitoreada</span>`;
+    html += `<div class="alert-rev ${a.activa ? '' : 'off'}">
+      <div class="alert-rev-top"><span class="a-label">${meta.label}</span>${tag}</div>
+      <textarea class="alert-cmt" rows="1" placeholder="Comentario del área sobre esta alerta…" oninput="setAlertComment(${i},this.value)">${a.comentario || ''}</textarea>
+    </div>`;
+  });
+  cont.innerHTML = any ? html : '';
+}
+
+function renderAbastRecap() {
+  const TYPE_LABEL = { express:'Exprés', completa:'Completa', subcontratacion:'Subcontratación', reforzada:'Reforzada', internacional:'Internacional' };
+  const active = Object.entries(st.evalTypes).filter(([,v]) => v).map(([k]) => k);
+  const et = document.getElementById('abast-evaltypes');
+  if (et) et.innerHTML = active.length
+    ? active.map(k => `<span class="recap-chip">${TYPE_LABEL[k]}</span>`).join('')
+    : '<span class="recap-chip muted">Ningún proceso activo</span>';
+  const dc = document.getElementById('abast-docs');
+  if (dc) {
+    const req = [], opc = [];
+    DOCS.forEach(d => {
+      const isReq = (d.req || []).some(t => active.includes(t));
+      const isOpc = !isReq && (d.opc || []).some(t => active.includes(t));
+      if (isReq) req.push(d.name); else if (isOpc) opc.push(d.name);
+    });
+    dc.innerHTML = (req.map(n => `<span class="recap-chip">${n}</span>`).join('')
+      + opc.map(n => `<span class="recap-chip muted">${n} · opcional</span>`).join(''))
+      || '<span class="recap-chip muted">Sin documentos (no hay procesos activos)</span>';
+  }
+}
+
+function renderAllAlerts() {
+  renderAbastAlerts();
+  renderAbastRecap();
+  ['cumplimiento','finanzas','legal','subcontratacion'].forEach(renderReviewAlerts);
 }
 
 // ── REPORT ──
@@ -1078,12 +1253,32 @@ function buildReport() {
   const cfg = document.getElementById('reportConfig');
   if (cfg) {
     const types = Object.entries(st.evalTypes).filter(([,v])=>v).map(([k])=>({
-      express:'Express',completa:'Completa',subcontratacion:'Subcontratación',reforzada:'Reforzada',internacional:'Internacional'
+      express:'Exprés',completa:'Completa',subcontratacion:'Subcontratación',reforzada:'Reforzada',internacional:'Internacional'
     }[k])).join(', ');
     cfg.innerHTML = `<strong style="color:var(--navy)">Empresa:</strong> ${st.client||'—'}<br>
       <strong style="color:var(--navy)">Email:</strong> ${st.email||'—'}<br>
       <strong style="color:var(--navy)">Evaluaciones activas:</strong> ${types||'Ninguna'}<br>
-      <strong style="color:var(--navy)">Alertas activadas:</strong> ${st.alerts.filter(Boolean).length} de 23`;
+      <strong style="color:var(--navy)">Alertas activadas:</strong> ${st.alerts.filter(a=>a.activa).length} de 23`;
+  }
+
+  const ra = document.getElementById('reportAlerts');
+  if (ra) {
+    let html = '', lastGroup = null;
+    ALERTS.forEach((meta, i) => {
+      const a = st.alerts[i];
+      if (meta.group !== lastGroup) {
+        html += `<div style="font-size:.7rem;font-weight:800;color:var(--navy);margin:.7rem 0 .25rem">${meta.icon} ${meta.group}</div>`;
+        lastGroup = meta.group;
+      }
+      const tag = a.activa
+        ? `<span class="sev sev-${a.severidad}">${SEV_LABEL[a.severidad]}</span>`
+        : `<span class="alert-off-tag">No monitoreada</span>`;
+      const cmt = a.comentario
+        ? `<div style="font-size:.7rem;color:var(--gray);margin-top:.15rem">💬 ${a.comentario}</div>` : '';
+      html += `<div style="padding:.3rem 0;border-bottom:1px solid var(--gray-border)">
+        <div style="display:flex;gap:.5rem;align-items:center;font-size:.78rem"><span style="flex:1;${a.activa ? '' : 'opacity:.5'}">${meta.label}</span>${tag}</div>${cmt}</div>`;
+    });
+    ra.innerHTML = html;
   }
 
   // Validar áreas requeridas con detalle de qué falta
@@ -1126,12 +1321,16 @@ async function enviar() {
       ...(a==='cumplimiento' ? { exceptions: st.areas[a].exceptions } : {}),
       ...(a==='finanzas' ? { signals: st.areas[a].signals } : {}),
     }])),
-    alertsActive: st.alerts.filter(Boolean).length,
-    alertsConfig: st.alerts,
+    alertsActive: st.alerts.filter(a => a.activa).length,
+    alerts: ALERTS.map((m, i) => ({
+      alerta: m.label, grupo: m.group, area: m.area,
+      activa: st.alerts[i].activa, severidad: st.alerts[i].severidad, comentario: st.alerts[i].comentario
+    })),
   };
   try { await fetch(WEBHOOK_URL, { method:'POST', mode:'no-cors', body:JSON.stringify(payload) }); } catch(e) {}
   const sentAt = new Date().toISOString();
-  localStorage.setItem('dd_v2_sent_' + (st.sessionId||''), sentAt);
+  st.sentAt = sentAt;
+  save(); // persiste el envío en el estado compartido (lo ven todas las áreas)
   showSentBanner(sentAt);
   if (btn) { btn.textContent='✅ Enviado'; btn.classList.remove('saving'); btn.classList.add('ok'); }
   const toast = document.getElementById('send-toast');
@@ -1180,10 +1379,11 @@ function mergeState(d) {
   if (d.sessionId) st.sessionId = d.sessionId;
   if (d.email) st.email = d.email;
   if (d.client) st.client = d.client;
+  if (d.sentAt) st.sentAt = d.sentAt;
   if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
   if (d.requiredAreas) Object.assign(st.requiredAreas, d.requiredAreas);
   if (d.areas) AREAS.forEach(a => { if (d.areas[a]) Object.assign(st.areas[a], d.areas[a]); });
-  if (Array.isArray(d.alerts)) st.alerts = d.alerts;
+  if (Array.isArray(d.alerts)) st.alerts = normalizeAlerts(d.alerts);
 }
 
 function applyStateToUI() {
@@ -1224,8 +1424,10 @@ function applyStateToUI() {
     const cb=document.getElementById('sig-'+i); if(cb) cb.checked=!!on;
   });
 
-  st.alerts.forEach((on,i) => document.getElementById('ar-'+i)?.classList.toggle('on', on));
+  renderAllAlerts();
   AREAS.forEach(a => applyAreaSaveUI(a));
+  updateAreaTags();
+  if (st.sentAt) showSentBanner(st.sentAt);
 }
 
 function load() {
@@ -1249,8 +1451,15 @@ function showSentBanner(iso) {
 
 load();
 loadRemote();
-const _prevSent = localStorage.getItem('dd_v2_sent_' + (st.sessionId||''));
-if (_prevSent) showSentBanner(_prevSent);
+if (st.sentAt) showSentBanner(st.sentAt);
+
+// Re-sincroniza el estado compartido al volver a la pestaña (sin pisar lo que se esté escribiendo)
+window.addEventListener('focus', () => {
+  const ae = document.activeElement;
+  if (ae && ['INPUT','TEXTAREA'].includes(ae.tagName)) return;
+  loadRemote();
+});
+
 updateNav();
 </script>
 </body>
