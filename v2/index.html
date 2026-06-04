@@ -302,6 +302,29 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   padding:.75rem 1rem;font-size:.8rem;color:var(--danger);margin-bottom:.875rem;line-height:1.6;}
 .validation-warning strong{color:#991B1B;}
 
+/* CUSTOM PROCESSES */
+.custom-process-card{background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem;margin-bottom:.75rem;}
+.cp-header{display:flex;gap:.75rem;align-items:flex-start;margin-bottom:.75rem;}
+.cp-name-input{width:100%;padding:.5rem .75rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.9rem;font-weight:700;font-family:var(--font);outline:none;transition:border .2s;margin-bottom:.375rem;color:var(--navy);}
+.cp-name-input:focus{border-color:var(--blue);}
+.cp-desc-input{width:100%;padding:.45rem .75rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.8rem;font-family:var(--font);color:var(--text);outline:none;resize:vertical;transition:border .2s;}
+.cp-desc-input:focus{border-color:var(--blue);}
+.cp-remove{background:none;border:none;color:var(--gray);font-size:1.1rem;cursor:pointer;padding:.25rem;flex-shrink:0;line-height:1;transition:color .15s;}
+.cp-remove:hover{color:var(--danger);}
+.cp-docs{background:var(--gray-light);border-radius:.625rem;padding:.75rem;}
+
+/* AREA SAVE BUTTON — más prominente */
+.btn-area-save-main{width:100%;background:var(--blue);color:white;border:none;padding:.75rem;border-radius:.75rem;
+  font-size:.9rem;font-weight:800;cursor:pointer;transition:all .2s;margin-top:1rem;letter-spacing:.02em;}
+.btn-area-save-main:hover:not(:disabled){background:var(--accent-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(85,99,230,.3);}
+.btn-area-save-main.saved{background:var(--success);}
+.btn-area-save-main:disabled{opacity:1;cursor:default;}
+
+/* DOCS COLAPSABLES EN SLIDE 5 */
+.eval-docs-toggle{font-size:.72rem;color:var(--blue);font-weight:600;cursor:pointer;margin-top:.375rem;display:inline-flex;align-items:center;gap:.25rem;user-select:none;background:none;border:none;padding:0;font-family:var(--font);}
+.eval-docs-list{display:none;margin-top:.375rem;padding:.5rem .75rem;background:var(--gray-light);border-radius:.5rem;font-size:.75rem;color:var(--gray);line-height:1.8;}
+.eval-docs-list.open{display:block;}
+
 /* SENT BANNER */
 #sent-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:600;
   background:#1A4FA8;color:white;padding:.625rem 1.5rem;
@@ -364,7 +387,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="cards">
       <div class="card"><div class="card-icon">⚖️</div><span class="law">Ley 20.393</span><h3>Responsabilidad penal</h3><p>Obliga a evaluar a los proveedores <strong>antes de contratarlos</strong>. Si no lo haces y el proveedor comete un delito, la empresa responde penalmente: multas, inhabilitaciones y clausura.</p></div>
       <div class="card"><div class="card-icon">🕵️</div><span class="law">Ley 19.913</span><h3>Lavado de activos</h3><p>Exige identificar <strong>beneficiarios finales</strong> y verificar que no estén sancionados. Ignorarlo expone a la empresa a involucramiento en lavado de activos o financiamiento del terrorismo.</p></div>
-      <div class="card"><div class="card-icon">👷</div><span class="law">Ley 20.123</span><h3>Subcontratación</h3><p>Exige documentación <strong>laboral y previsional</strong> a los subcontratistas. Sin ella, la empresa responde de forma <strong>solidaria</strong> por las deudas laborales del proveedor hacia sus trabajadores.</p></div>
       <div class="card"><div class="card-icon">🔄</div><span class="law">Ley 21.595</span><h3>Monitoreo continuo</h3><p>No basta con evaluar una vez: obliga a <strong>monitorear permanentemente</strong> a los proveedores activos. Si surge un problema y no se detectó, la empresa también responde.</p></div>
     </div>
     <div class="warn-box" style="margin-top:1rem">💡 <strong>Además del riesgo legal:</strong> un proveedor en quiebra puede paralizar tu operación, y sus problemas reputacionales se vuelven los tuyos — la prensa y tus clientes no distinguen entre tu empresa y tus proveedores.</div>
@@ -389,13 +411,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000</div>
           <h4>Proveedor General</h4>
           <p>Evaluación más robusta acorde al volumen del contrato, con revisión más profunda en términos legales y financieros para mitigar riesgos.</p>
-        </div>
-      </div>
-      <div class="eval-card active" style="cursor:default;">
-        <div class="eval-info">
-          <div class="eval-subtitle">Servicio con personal en faena</div>
-          <h4>Proveedor de Servicios</h4>
-          <p>Evaluación especializada con documentación laboral y previsional para proveedores subcontratados. Aplica Ley 20.123.</p>
         </div>
       </div>
       <div class="eval-card active" style="cursor:default;">
@@ -428,27 +443,23 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <th style="min-width:210px;">Documento</th>
           <th style="text-align:center;">Spot</th>
           <th style="text-align:center;">General</th>
-          <th style="text-align:center;">Proveedor de Servicios</th>
           <th style="text-align:center;">Crítico</th>
-          <th style="text-align:center;">Proveedor Internacional</th>
+          <th style="text-align:center;">Internacional</th>
         </tr></thead>
         <tbody>
-          <tr><td>Declaración jurada del proveedor</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
-          <tr><td>Declaración vínculo PEP</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
-          <tr><td>Declaración Conflicto de Interés</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Constitución de la Sociedad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>E-RUT</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Certificado de Vigencia de Sociedad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>DNI del Representante Legal</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Carpeta tributaria SII</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Certificado de Vigencia de Poderes</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Certificado cuenta bancaria</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>F-30</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>F-30-1</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Estado Financiero</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
-          <tr><td>Deuda Fiscal TGR</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Reporte Accidentabilidad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>DICOM</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Declaración jurada del proveedor</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
+          <tr><td>Declaración vínculo PEP</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
+          <tr><td>Declaración Conflicto de Interés</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Constitución de la Sociedad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--warn-tx);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>E-RUT</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Certificado de Vigencia de Sociedad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>DNI del Representante Legal</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Carpeta tributaria SII</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Certificado de Vigencia de Poderes</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Certificado cuenta bancaria</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--warn-tx);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>Estado Financiero</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--warn-tx);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
+          <tr><td>Deuda Fiscal TGR</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--warn-tx);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
+          <tr><td>DICOM</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
         </tbody>
       </table>
     </div>
@@ -464,48 +475,65 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 <div class="slide slide-std" data-n="5">
   <div class="s-head"><div class="s-tag">Configuración inicial</div>
     <h2>Owner del proyecto</h2>
-    <p>Define quién participa en la construcción de esta política de proveedores.</p>
+    <p>Activa los procesos que aplican a tu empresa y selecciona qué áreas revisarán a los proveedores.</p>
     <div class="area-status" id="badge-owner">Pendiente</div>
   </div>
   <div class="s-body scrollable">
-    <div class="req-areas-section" style="margin-bottom:0;border-bottom:none;border-radius:.875rem .875rem 0 0;">
+    <div class="req-areas-section">
       <div class="req-areas-title">Procesos de evaluación activos</div>
-      <div class="eval-cards" style="gap:.4rem;">
-        <div class="eval-card active" id="ec-express" onclick="toggleEval('express')" style="padding:.65rem .875rem;">
-          <div class="eval-toggle on" id="et-express"></div>
-          <div class="eval-info">
+      <div class="eval-cards" style="gap:.5rem;">
+
+        <div class="eval-card active" id="ec-express" onclick="toggleEval('express')" style="padding:.75rem .875rem;align-items:flex-start;">
+          <div class="eval-toggle on" id="et-express" style="margin-top:.2rem;flex-shrink:0;"></div>
+          <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Compra menor a USD 20.000</div>
             <h4>Proveedor Spot</h4>
+            <button class="eval-docs-toggle" onclick="toggleEvalDocs(event,'docs-express')">▾ Ver documentos</button>
+            <div class="eval-docs-list" id="docs-express">
+              <strong>Requeridos:</strong> Declaración jurada del proveedor · Declaración vínculo PEP · E-RUT<br>
+              <strong>Opcionales:</strong> Certificado cuenta bancaria
+            </div>
           </div>
         </div>
-        <div class="eval-card active" id="ec-completa" onclick="toggleEval('completa')" style="padding:.65rem .875rem;">
-          <div class="eval-toggle on" id="et-completa"></div>
-          <div class="eval-info">
+
+        <div class="eval-card active" id="ec-completa" onclick="toggleEval('completa')" style="padding:.75rem .875rem;align-items:flex-start;">
+          <div class="eval-toggle on" id="et-completa" style="margin-top:.2rem;flex-shrink:0;"></div>
+          <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000</div>
             <h4>Proveedor General</h4>
+            <button class="eval-docs-toggle" onclick="toggleEvalDocs(event,'docs-completa')">▾ Ver documentos</button>
+            <div class="eval-docs-list" id="docs-completa">
+              <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Conflicto de Interés · E-RUT · Certificado Vigencia Sociedad · DNI Representante Legal · Carpeta tributaria SII · Certificado Vigencia Poderes · Certificado cuenta bancaria · DICOM<br>
+              <strong>Opcionales:</strong> Constitución de la Sociedad · Deuda Fiscal TGR
+            </div>
           </div>
         </div>
-        <div class="eval-card active" id="ec-subcontratacion" onclick="toggleEval('subcontratacion')" style="padding:.65rem .875rem;">
-          <div class="eval-toggle on" id="et-subcontratacion"></div>
-          <div class="eval-info">
-            <div class="eval-subtitle">Servicio con personal en faena</div>
-            <h4>Proveedor de Servicios</h4>
-          </div>
-        </div>
-        <div class="eval-card active" id="ec-reforzada" onclick="toggleEval('reforzada')" style="padding:.65rem .875rem;">
-          <div class="eval-toggle on" id="et-reforzada"></div>
-          <div class="eval-info">
+
+        <div class="eval-card active" id="ec-reforzada" onclick="toggleEval('reforzada')" style="padding:.75rem .875rem;align-items:flex-start;">
+          <div class="eval-toggle on" id="et-reforzada" style="margin-top:.2rem;flex-shrink:0;"></div>
+          <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Compra mayor a USD 100.000</div>
             <h4>Proveedor Crítico</h4>
+            <button class="eval-docs-toggle" onclick="toggleEvalDocs(event,'docs-reforzada')">▾ Ver documentos</button>
+            <div class="eval-docs-list" id="docs-reforzada">
+              <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Conflicto de Interés · Constitución de la Sociedad · E-RUT · Certificado Vigencia Sociedad · DNI Representante Legal · Carpeta tributaria SII · Certificado Vigencia Poderes · Cuenta bancaria · Deuda Fiscal TGR · DICOM<br>
+              <strong>Opcionales:</strong> Estado Financiero
+            </div>
           </div>
         </div>
-        <div class="eval-card active" id="ec-internacional" onclick="toggleEval('internacional')" style="padding:.65rem .875rem;">
-          <div class="eval-toggle on" id="et-internacional"></div>
-          <div class="eval-info">
+
+        <div class="eval-card active" id="ec-internacional" onclick="toggleEval('internacional')" style="padding:.75rem .875rem;align-items:flex-start;">
+          <div class="eval-toggle on" id="et-internacional" style="margin-top:.2rem;flex-shrink:0;"></div>
+          <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Proveedor con domicilio fuera de Chile</div>
             <h4>Proveedor Internacional</h4>
+            <button class="eval-docs-toggle" onclick="toggleEvalDocs(event,'docs-internacional')">▾ Ver documentos</button>
+            <div class="eval-docs-list" id="docs-internacional">
+              <strong>Requeridos:</strong> Declaración jurada del proveedor · Declaración vínculo PEP · Estado Financiero
+            </div>
           </div>
         </div>
+
       </div>
     </div>
     <div class="divider"></div>
@@ -527,16 +555,26 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="area-req-info"><div class="area-req-name">Legal</div><div class="area-req-desc">Valida la constitución legal del proveedor</div></div>
         <div class="area-req-toggle on" id="art-legal" onclick="toggleRequiredArea('legal')"></div>
       </div>
-      <div class="area-req-row">
-        <div class="area-req-info"><div class="area-req-name">Subcontratación</div><div class="area-req-desc">Aplica cuando el servicio involucra personal en faena</div></div>
-        <div class="area-req-toggle on" id="art-subcontratacion" onclick="toggleRequiredArea('subcontratacion')"></div>
-      </div>
     </div>
   </div>
 </div>
 
-<!-- ── 6: RESUMEN DE ROLES + EXPECTATIVAS ── -->
+<!-- ── 6: PROCESOS PERSONALIZADOS ── -->
 <div class="slide slide-std" data-n="6">
+  <div class="s-head"><div class="s-tag">Procesos propios</div>
+    <h2>¿Tienes procesos adicionales?</h2>
+    <p>Agrega aquí los procesos de evaluación que no están en la lista anterior — pueden ser por industria, tipo de contrato, o criterio interno.</p>
+  </div>
+  <div class="s-body scrollable">
+    <div id="custom-processes-list"></div>
+    <button onclick="addCustomProcess()" style="width:100%;background:transparent;border:2px dashed var(--gray-border);border-radius:.875rem;padding:.875rem;font-size:.875rem;font-weight:700;color:var(--blue);cursor:pointer;transition:all .2s;margin-top:.25rem;">
+      + Agregar proceso personalizado
+    </button>
+  </div>
+</div>
+
+<!-- ── 7: RESUMEN DE ROLES + EXPECTATIVAS ── -->
+<div class="slide slide-std" data-n="7">
   <div class="s-head"><div class="s-tag">Flujo de trabajo</div>
     <h2>¿Cómo funciona esto?</h2>
     <p>3 fases para construir una política alineada en todo el equipo.</p>
@@ -602,22 +640,14 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 7: ÁREA ABASTECIMIENTO ── -->
-<div class="slide slide-std" data-n="7">
-  <div class="s-head"><div class="s-tag">Revisión por área — 1 de 5</div>
+<!-- ── 8: ÁREA ABASTECIMIENTO ── -->
+<div class="slide slide-std" data-n="8">
+  <div class="s-head"><div class="s-tag">Revisión por área — 1 de 4</div>
     <h2>Abastecimiento</h2>
     <p id="desc-abastecimiento">Coordina el proceso y configura las alertas.</p>
     <div class="area-status" id="badge-abastecimiento">Pendiente</div>
   </div>
   <div class="s-body scrollable">
-    <div class="step-list">
-      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Validar la solicitud y responder el filtro</h4><p>Verificar que los datos estén completos y responder las 6 preguntas del filtro de clasificación.</p></div></div>
-      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Enviar el portal al proveedor</h4><p>Plutto genera y envía automáticamente el enlace al portal. Hacer seguimiento si no responde en 3 días hábiles.</p></div></div>
-      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Asignar revisores según tipo de evaluación</h4><p>Cumplimiento siempre participa. Finanzas y Legal se suman en evaluaciones Completa, Reforzada y Subcontratación.</p></div></div>
-      <div class="step-row"><div class="step-num">4</div><div class="step-body"><h4>Registrar la decisión y cerrar el proceso</h4><p>Con todas las revisiones completadas, registrar aprobación o rechazo. El informe se adjunta al contrato o ERP.</p></div></div>
-    </div>
-    <div class="warn-box">⏱ <strong>Tiempos objetivo:</strong> Exprés: máx. 5 días hábiles. Completa o Reforzada: máx. 10 días hábiles.</div>
-    <div class="divider"></div>
     <div class="recap-box">
       <div class="recap-title">Procesos de evaluación activos</div>
       <div class="recap-chips" id="abast-evaltypes"></div>
@@ -627,7 +657,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="recap-chips" id="abast-docs"></div>
     </div>
     <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:.25rem">⚙️ Configuración de alertas — severidad y monitoreo</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Define qué alertas se monitorean y con qué severidad (Leve / Media / Grave). Cada área revisora verá las alertas de su competencia y podrá comentarlas.</p>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Define qué alertas activar y con qué severidad. Leve: se registra. Media: requiere revisión. Grave: el área responsable actúa como revisor del proceso.</p>
     <div id="abast-alerts"></div>
     <div class="divider"></div>
     <div class="decision-section">
@@ -636,30 +666,23 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <input type="text" id="resp-name-abastecimiento" placeholder="Nombre completo" oninput="saveResp('abastecimiento','name',this.value)">
         <input type="email" id="resp-email-abastecimiento" placeholder="email@empresa.com" oninput="saveResp('abastecimiento','email',this.value)">
       </div>
-      <div class="decision-title">Decisión del área sobre este proceso <span style="color:var(--danger)">*</span></div>
-      <div class="decision-btns">
-        <button class="btn-dec" onclick="setDecision('abastecimiento','aprobado',this)">Aprobado</button>
-        <button class="btn-dec" onclick="setDecision('abastecimiento','rechazado',this)">Rechazado</button>
-        <button class="btn-dec" onclick="setDecision('abastecimiento','observacion',this)">Con observaciones</button>
-      </div>
-      <textarea class="notes-ta" id="notes-abastecimiento" placeholder="Observaciones, modificaciones o comentarios del área..." oninput="saveNotes('abastecimiento',this.value)"></textarea>
+      <div class="decision-title">Observaciones del área</div>
+      <textarea class="notes-ta" id="notes-abastecimiento" placeholder="Comentarios, propuestas de cambio, documentos adicionales que quieras solicitar..." oninput="saveNotes('abastecimiento',this.value)" style="min-height:88px;"></textarea>
       <div class="extra-row">
         <input type="text" id="extra-abastecimiento" placeholder="Solicitar documento adicional..." onkeydown="if(event.key==='Enter')addExtra('abastecimiento')">
         <button class="btn-add" onclick="addExtra('abastecimiento')">+ Agregar</button>
       </div>
       <div class="extra-tags" id="tags-abastecimiento"></div>
-      <div class="area-save-row">
-        <button class="btn-area-save" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')">💾 Guardar sección</button>
-        <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')">✏️ Editar</button>
-        <span class="area-save-status" id="save-status-abastecimiento"></span>
-      </div>
+      <button class="btn-area-save-main" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')">Guardar sección de Abastecimiento</button>
+      <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
+      <span class="area-save-status" id="save-status-abastecimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
     </div>
   </div>
 </div>
 
-<!-- ── 8: ÁREA CUMPLIMIENTO ── -->
-<div class="slide slide-std" data-n="8">
-  <div class="s-head"><div class="s-tag">Revisión por área — 2 de 5</div>
+<!-- ── 9: ÁREA CUMPLIMIENTO ── -->
+<div class="slide slide-std" data-n="9">
+  <div class="s-head"><div class="s-tag">Revisión por área — 2 de 4</div>
     <h2>Cumplimiento</h2>
     <p id="desc-cumplimiento">Clasifica el riesgo y da recomendación final en cada evaluación.</p>
     <div class="area-status" id="badge-cumplimiento">Pendiente</div>
@@ -669,20 +692,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
       <div class="cross-area-cards" id="cross-summary-cumplimiento-cards"></div>
     </div>
-    <div class="step-list">
-      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Revisar la declaración jurada y el formulario</h4><p>Verificar que el proveedor completó correctamente las declaraciones y que los beneficiarios finales estén identificados.</p></div></div>
-      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Analizar el screening automático de Plutto</h4><p>Revisar cada alerta, determinar si es falso positivo o riesgo real, y registrar la justificación.</p></div></div>
-      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Clasificar el nivel de riesgo y emitir recomendación</h4><p>Clasificar al proveedor como riesgo Alto, Medio o Bajo. Si es Alto, elevar al Comité de Excepción.</p></div></div>
-      <div class="step-row"><div class="step-num">4</div><div class="step-body"><h4>Gestionar el monitoreo continuo</h4><p>Revisar periódicamente las alertas automáticas. Las alertas de compliance requieren acción en máximo 48 horas.</p></div></div>
-    </div>
-    <div class="exc-box">
-      <div class="exc-title">🚨 Elevar al Comité de Excepción cuando:</div>
-      <div class="exc-item" onclick="toggleExc(0,this)"><input type="checkbox" id="exc-0" onclick="event.stopPropagation()"><span>El proveedor tiene alertas de sanciones internacionales, insolvencia, corrupción o colusión.</span></div>
-      <div class="exc-item" onclick="toggleExc(1,this)"><input type="checkbox" id="exc-1" onclick="event.stopPropagation()"><span>Se detecta conflicto de interés de nivel Alto.</span></div>
-      <div class="exc-item" onclick="toggleExc(2,this)"><input type="checkbox" id="exc-2" onclick="event.stopPropagation()"><span>El área solicitante insiste en aprobar un proveedor que Cumplimiento recomienda rechazar.</span></div>
-    </div>
-    <div class="area-alerts-title">Alertas de tu competencia — revisa la severidad y comenta</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">La severidad la define Abastecimiento. Si tienes observaciones sobre alguna alerta, déjalas en su comentario.</p>
+    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
     <div id="alerts-cumplimiento"></div>
     <div class="divider"></div>
     <div class="decision-section">
@@ -691,30 +702,23 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <input type="text" id="resp-name-cumplimiento" placeholder="Nombre completo" oninput="saveResp('cumplimiento','name',this.value)">
         <input type="email" id="resp-email-cumplimiento" placeholder="email@empresa.com" oninput="saveResp('cumplimiento','email',this.value)">
       </div>
-      <div class="decision-title">Decisión del área sobre este proceso <span style="color:var(--danger)">*</span></div>
-      <div class="decision-btns">
-        <button class="btn-dec" onclick="setDecision('cumplimiento','aprobado',this)">Aprobado</button>
-        <button class="btn-dec" onclick="setDecision('cumplimiento','rechazado',this)">Rechazado</button>
-        <button class="btn-dec" onclick="setDecision('cumplimiento','observacion',this)">Con observaciones</button>
-      </div>
-      <textarea class="notes-ta" id="notes-cumplimiento" placeholder="Observaciones, modificaciones o comentarios del área..." oninput="saveNotes('cumplimiento',this.value)"></textarea>
+      <div class="decision-title">Observaciones del área</div>
+      <textarea class="notes-ta" id="notes-cumplimiento" placeholder="Comentarios, propuestas de cambio, documentos adicionales que quieras solicitar..." oninput="saveNotes('cumplimiento',this.value)" style="min-height:88px;"></textarea>
       <div class="extra-row">
         <input type="text" id="extra-cumplimiento" placeholder="Solicitar documento adicional..." onkeydown="if(event.key==='Enter')addExtra('cumplimiento')">
         <button class="btn-add" onclick="addExtra('cumplimiento')">+ Agregar</button>
       </div>
       <div class="extra-tags" id="tags-cumplimiento"></div>
-      <div class="area-save-row">
-        <button class="btn-area-save" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')">💾 Guardar sección</button>
-        <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')">✏️ Editar</button>
-        <span class="area-save-status" id="save-status-cumplimiento"></span>
-      </div>
+      <button class="btn-area-save-main" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')">Guardar sección de Cumplimiento</button>
+      <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
+      <span class="area-save-status" id="save-status-cumplimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
     </div>
   </div>
 </div>
 
-<!-- ── 9: ÁREA FINANZAS ── -->
-<div class="slide slide-std" data-n="9">
-  <div class="s-head"><div class="s-tag">Revisión por área — 3 de 5</div>
+<!-- ── 10: ÁREA FINANZAS ── -->
+<div class="slide slide-std" data-n="10">
+  <div class="s-head"><div class="s-tag">Revisión por área — 3 de 4</div>
     <h2>Finanzas</h2>
     <p id="desc-finanzas">Analiza la solidez financiera del proveedor.</p>
     <div class="area-status" id="badge-finanzas">Pendiente</div>
@@ -724,18 +728,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
       <div class="cross-area-cards" id="cross-summary-finanzas-cards"></div>
     </div>
-    <div class="step-list">
-      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Revisar la carpeta tributaria y el informe DICOM</h4><p>Verificar ingresos de los últimos 24 meses, detectar meses sin facturación y revisar morosidades.</p></div></div>
-      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Proponer condiciones financieras según el riesgo</h4><p>Si hay fragilidad financiera, proponer: garantía bancaria, seguro de cumplimiento, anticipo cero o pagos por hito.</p></div></div>
-    </div>
-    <div class="sig-box">
-      <div class="sig-title">🔴 Señales de alerta inmediata</div>
-      <div class="sig-item" onclick="toggleSig(0,this)"><input type="checkbox" id="sig-0" onclick="event.stopPropagation()"><span><strong>Deuda bancaria vencida mayor a 60 días (CMF):</strong> elevar a Comité de Excepción.</span></div>
-      <div class="sig-item" onclick="toggleSig(1,this)"><input type="checkbox" id="sig-1" onclick="event.stopPropagation()"><span><strong>Morosidad comercial severa en DICOM:</strong> solicitar historial ampliado.</span></div>
-      <div class="sig-item" onclick="toggleSig(2,this)"><input type="checkbox" id="sig-2" onclick="event.stopPropagation()"><span><strong>Inicio de actividades menor a 12 meses:</strong> aplicar Evaluación Reforzada.</span></div>
-    </div>
-    <div class="area-alerts-title">Alertas de tu competencia — revisa la severidad y comenta</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">La severidad la define Abastecimiento. Si tienes observaciones sobre alguna alerta, déjalas en su comentario.</p>
+    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
     <div id="alerts-finanzas"></div>
     <div class="divider"></div>
     <div class="decision-section">
@@ -744,30 +738,23 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <input type="text" id="resp-name-finanzas" placeholder="Nombre completo" oninput="saveResp('finanzas','name',this.value)">
         <input type="email" id="resp-email-finanzas" placeholder="email@empresa.com" oninput="saveResp('finanzas','email',this.value)">
       </div>
-      <div class="decision-title">Decisión del área sobre este proceso <span style="color:var(--danger)">*</span></div>
-      <div class="decision-btns">
-        <button class="btn-dec" onclick="setDecision('finanzas','aprobado',this)">Aprobado</button>
-        <button class="btn-dec" onclick="setDecision('finanzas','rechazado',this)">Rechazado</button>
-        <button class="btn-dec" onclick="setDecision('finanzas','observacion',this)">Con observaciones</button>
-      </div>
-      <textarea class="notes-ta" id="notes-finanzas" placeholder="Observaciones, modificaciones o comentarios del área..." oninput="saveNotes('finanzas',this.value)"></textarea>
+      <div class="decision-title">Observaciones del área</div>
+      <textarea class="notes-ta" id="notes-finanzas" placeholder="Comentarios, propuestas de cambio, documentos adicionales que quieras solicitar..." oninput="saveNotes('finanzas',this.value)" style="min-height:88px;"></textarea>
       <div class="extra-row">
         <input type="text" id="extra-finanzas" placeholder="Solicitar documento adicional..." onkeydown="if(event.key==='Enter')addExtra('finanzas')">
         <button class="btn-add" onclick="addExtra('finanzas')">+ Agregar</button>
       </div>
       <div class="extra-tags" id="tags-finanzas"></div>
-      <div class="area-save-row">
-        <button class="btn-area-save" id="save-btn-finanzas" onclick="guardarArea('finanzas')">💾 Guardar sección</button>
-        <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')">✏️ Editar</button>
-        <span class="area-save-status" id="save-status-finanzas"></span>
-      </div>
+      <button class="btn-area-save-main" id="save-btn-finanzas" onclick="guardarArea('finanzas')">Guardar sección de Finanzas</button>
+      <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
+      <span class="area-save-status" id="save-status-finanzas" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
     </div>
   </div>
 </div>
 
-<!-- ── 10: ÁREA LEGAL ── -->
-<div class="slide slide-std" data-n="10">
-  <div class="s-head"><div class="s-tag">Revisión por área — 4 de 5</div>
+<!-- ── 11: ÁREA LEGAL ── -->
+<div class="slide slide-std" data-n="11">
+  <div class="s-head"><div class="s-tag">Revisión por área — 4 de 4</div>
     <h2>Legal</h2>
     <p id="desc-legal">Valida la constitución legal del proveedor.</p>
     <div class="area-status" id="badge-legal">Pendiente</div>
@@ -777,13 +764,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
       <div class="cross-area-cards" id="cross-summary-legal-cards"></div>
     </div>
-    <div class="step-list">
-      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Validar la personería y vigencia societaria</h4><p>Verificar en el Registro de Comercio que la empresa existe, el representante legal tiene poderes vigentes y no hay restricciones societarias.</p></div></div>
-      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Revisar cláusulas requeridas del contrato</h4><p>Cláusula anticorrupción, derecho de auditoría, terminación por incumplimiento de DD, protección de datos personales.</p></div></div>
-      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Registrar el visto bueno legal en Plutto</h4><p>Sin este registro el proceso no puede cerrarse como aprobado. Es un paso bloqueante.</p></div></div>
-    </div>
-    <div class="area-alerts-title">Alertas de tu competencia — revisa la severidad y comenta</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">La severidad la define Abastecimiento. Si tienes observaciones sobre alguna alerta, déjalas en su comentario.</p>
+    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
     <div id="alerts-legal"></div>
     <div class="divider"></div>
     <div class="decision-section">
@@ -792,71 +774,16 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <input type="text" id="resp-name-legal" placeholder="Nombre completo" oninput="saveResp('legal','name',this.value)">
         <input type="email" id="resp-email-legal" placeholder="email@empresa.com" oninput="saveResp('legal','email',this.value)">
       </div>
-      <div class="decision-title">Decisión del área sobre este proceso <span style="color:var(--danger)">*</span></div>
-      <div class="decision-btns">
-        <button class="btn-dec" onclick="setDecision('legal','aprobado',this)">Aprobado</button>
-        <button class="btn-dec" onclick="setDecision('legal','rechazado',this)">Rechazado</button>
-        <button class="btn-dec" onclick="setDecision('legal','observacion',this)">Con observaciones</button>
-      </div>
-      <textarea class="notes-ta" id="notes-legal" placeholder="Observaciones, modificaciones o comentarios del área..." oninput="saveNotes('legal',this.value)"></textarea>
+      <div class="decision-title">Observaciones del área</div>
+      <textarea class="notes-ta" id="notes-legal" placeholder="Comentarios, propuestas de cambio, documentos adicionales que quieras solicitar..." oninput="saveNotes('legal',this.value)" style="min-height:88px;"></textarea>
       <div class="extra-row">
         <input type="text" id="extra-legal" placeholder="Solicitar documento adicional..." onkeydown="if(event.key==='Enter')addExtra('legal')">
         <button class="btn-add" onclick="addExtra('legal')">+ Agregar</button>
       </div>
       <div class="extra-tags" id="tags-legal"></div>
-      <div class="area-save-row">
-        <button class="btn-area-save" id="save-btn-legal" onclick="guardarArea('legal')">💾 Guardar sección</button>
-        <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')">✏️ Editar</button>
-        <span class="area-save-status" id="save-status-legal"></span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── 11: ÁREA SUBCONTRATACIÓN ── -->
-<div class="slide slide-std" data-n="11">
-  <div class="s-head"><div class="s-tag">Revisión por área — 5 de 5</div>
-    <h2>Subcontratación</h2>
-    <p id="desc-subcontratacion">Especialista en proveedores con personal en faena (Ley 20.123).</p>
-    <div class="area-status" id="badge-subcontratacion">Pendiente</div>
-  </div>
-  <div class="s-body scrollable">
-    <div class="cross-area-summary" id="cross-summary-subcontratacion">
-      <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
-      <div class="cross-area-cards" id="cross-summary-subcontratacion-cards"></div>
-    </div>
-    <div class="step-list">
-      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Verificar F-30 y F-30-1 actualizados</h4><p>Formularios de la Dirección del Trabajo que acreditan cotizaciones previsionales al día. Deben ser del mes en curso.</p></div></div>
-      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Revisar SSOMA y certificado de siniestralidad</h4><p>Validar que el proveedor tiene protocolos de seguridad activos y tasa de accidentabilidad aceptable.</p></div></div>
-      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Autorizar el ingreso a faena en Plutto</h4><p>Sin este registro el acceso físico no debe autorizarse bajo ninguna circunstancia.</p></div></div>
-    </div>
-    <div class="area-alerts-title">Alertas de tu competencia — revisa la severidad y comenta</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">La severidad la define Abastecimiento. Si tienes observaciones sobre alguna alerta, déjalas en su comentario.</p>
-    <div id="alerts-subcontratacion"></div>
-    <div class="divider"></div>
-    <div class="decision-section">
-      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
-      <div class="resp-row">
-        <input type="text" id="resp-name-subcontratacion" placeholder="Nombre completo" oninput="saveResp('subcontratacion','name',this.value)">
-        <input type="email" id="resp-email-subcontratacion" placeholder="email@empresa.com" oninput="saveResp('subcontratacion','email',this.value)">
-      </div>
-      <div class="decision-title">Decisión del área sobre este proceso <span style="color:var(--danger)">*</span></div>
-      <div class="decision-btns">
-        <button class="btn-dec" onclick="setDecision('subcontratacion','aprobado',this)">Aprobado</button>
-        <button class="btn-dec" onclick="setDecision('subcontratacion','rechazado',this)">Rechazado</button>
-        <button class="btn-dec" onclick="setDecision('subcontratacion','observacion',this)">Con observaciones</button>
-      </div>
-      <textarea class="notes-ta" id="notes-subcontratacion" placeholder="Observaciones, modificaciones o comentarios del área..." oninput="saveNotes('subcontratacion',this.value)"></textarea>
-      <div class="extra-row">
-        <input type="text" id="extra-subcontratacion" placeholder="Solicitar documento adicional..." onkeydown="if(event.key==='Enter')addExtra('subcontratacion')">
-        <button class="btn-add" onclick="addExtra('subcontratacion')">+ Agregar</button>
-      </div>
-      <div class="extra-tags" id="tags-subcontratacion"></div>
-      <div class="area-save-row">
-        <button class="btn-area-save" id="save-btn-subcontratacion" onclick="guardarArea('subcontratacion')">💾 Guardar sección</button>
-        <button class="btn-area-edit" id="edit-btn-subcontratacion" onclick="editarArea('subcontratacion')">✏️ Editar</button>
-        <span class="area-save-status" id="save-status-subcontratacion"></span>
-      </div>
+      <button class="btn-area-save-main" id="save-btn-legal" onclick="guardarArea('legal')">Guardar sección de Legal</button>
+      <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
+      <span class="area-save-status" id="save-status-legal" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
     </div>
   </div>
 </div>
@@ -932,9 +859,9 @@ const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politi
 const TOTAL = 13;
 let cur = 1;
 
-const AREAS = ['abastecimiento','cumplimiento','finanzas','legal','subcontratacion'];
-const AREA_LABELS = { solicitante:'Comprador del proyecto', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal', subcontratacion:'Subcontratación' };
-const AREA_SLIDE = { owner:5, abastecimiento:7, cumplimiento:8, finanzas:9, legal:10, subcontratacion:11 };
+const AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];
+const AREA_LABELS = { solicitante:'Comprador del proyecto', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal' };
+const AREA_SLIDE = { owner:5, abastecimiento:8, cumplimiento:9, finanzas:10, legal:11 };
 const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => [v, k]));
 
 // Metadata de las 23 alertas: etiqueta, grupo, área revisora dueña y severidad recomendada por Plutto.
@@ -956,8 +883,8 @@ const ALERTS = [
   { label:'Tiene demandas penales',                                group:'Legal y Societario', icon:'⚖️', area:'legal',           sev:'grave' },
   { label:'Demandas laborales en el último año',                   group:'Legal y Societario', icon:'⚖️', area:'legal',           sev:'media' },
   { label:'Aparición en causas legales',                           group:'Legal y Societario', icon:'⚖️', area:'legal',           sev:'leve'  },
-  { label:'Multas Dirección del Trabajo',                          group:'Laboral',            icon:'👷', area:'subcontratacion', sev:'media' },
-  { label:'Registra sanciones de la SNIFA',                        group:'Laboral',            icon:'👷', area:'subcontratacion', sev:'media' },
+  { label:'Multas Dirección del Trabajo',                          group:'Laboral',            icon:'👷', area:'cumplimiento',    sev:'media' },
+  { label:'Registra sanciones de la SNIFA',                        group:'Laboral',            icon:'👷', area:'cumplimiento',    sev:'media' },
   { label:'Hallazgos listas OFAC, Interpol u otras',               group:'Cumplimiento',       icon:'🔎', area:'cumplimiento',    sev:'grave' },
   { label:'Hallazgos listas Warning',                              group:'Cumplimiento',       icon:'🔎', area:'cumplimiento',    sev:'grave' },
   { label:'Hallazgos listas Sanciones',                            group:'Cumplimiento',       icon:'🔎', area:'cumplimiento',    sev:'media' },
@@ -971,22 +898,19 @@ function defaultAlerts() { return ALERTS.map(a => ({ activa:true, severidad:a.se
 
 // Matriz de documentos por tipo de evaluación (para el recap de Abastecimiento).
 const DOCS = [
-  { name:'Declaración jurada del proveedor', req:['express','completa','subcontratacion','reforzada','internacional'] },
-  { name:'Declaración vínculo PEP',          req:['express','completa','subcontratacion','reforzada','internacional'] },
-  { name:'Declaración Conflicto de Interés', req:['completa','subcontratacion','reforzada'] },
-  { name:'Constitución de la Sociedad',      req:['reforzada'], opc:['completa','subcontratacion'] },
-  { name:'E-RUT',                            req:['express','completa','subcontratacion','reforzada'] },
-  { name:'Certificado de Vigencia de Sociedad', req:['completa','subcontratacion','reforzada'] },
-  { name:'DNI del Representante Legal',       req:['completa','subcontratacion','reforzada'] },
-  { name:'Carpeta tributaria SII',           req:['completa','subcontratacion','reforzada'] },
-  { name:'Certificado de Vigencia de Poderes', req:['completa','subcontratacion','reforzada'] },
-  { name:'Certificado cuenta bancaria',      req:['completa','subcontratacion','reforzada'], opc:['express'] },
-  { name:'F-30',                             req:['subcontratacion'] },
-  { name:'F-30-1',                           opc:['subcontratacion'] },
+  { name:'Declaración jurada del proveedor', req:['express','completa','reforzada','internacional'] },
+  { name:'Declaración vínculo PEP',          req:['express','completa','reforzada','internacional'] },
+  { name:'Declaración Conflicto de Interés', req:['completa','reforzada'] },
+  { name:'Constitución de la Sociedad',      req:['reforzada'], opc:['completa'] },
+  { name:'E-RUT',                            req:['express','completa','reforzada'] },
+  { name:'Certificado de Vigencia de Sociedad', req:['completa','reforzada'] },
+  { name:'DNI del Representante Legal',       req:['completa','reforzada'] },
+  { name:'Carpeta tributaria SII',           req:['completa','reforzada'] },
+  { name:'Certificado de Vigencia de Poderes', req:['completa','reforzada'] },
+  { name:'Certificado cuenta bancaria',      req:['completa','reforzada'], opc:['express'] },
   { name:'Estado Financiero',                req:['internacional'], opc:['reforzada'] },
-  { name:'Deuda Fiscal TGR',                 req:['reforzada'], opc:['completa','subcontratacion'] },
-  { name:'Reporte Accidentabilidad',         req:['subcontratacion'] },
-  { name:'DICOM',                            req:['completa','subcontratacion','reforzada'] },
+  { name:'Deuda Fiscal TGR',                 req:['reforzada'], opc:['completa'] },
+  { name:'DICOM',                            req:['completa','reforzada'] },
 ];
 
 function isSlideVisible(n) {
@@ -1007,16 +931,15 @@ function nextVisible(from, dir) {
 
 const st = {
   email:'', client:'', sessionId:'',
-  evalTypes:{ express:true, completa:true, subcontratacion:true, reforzada:true, internacional:true },
-  requiredAreas:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true, subcontratacion:true },
+  evalTypes:{ express:true, completa:true, reforzada:true, internacional:true },
+  requiredAreas:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
   areas:{
-    solicitante:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0},
-    abastecimiento:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0},
-    cumplimiento:{decision:null,notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0},
-    finanzas:{decision:null,notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0},
-    legal:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0},
-    subcontratacion:{decision:null,notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0}
+    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0},
+    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0},
+    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0},
+    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0}
   },
+  customProcesses: [],
   alerts: defaultAlerts(),
   sentAt:'',
   syncNotes:'',
@@ -1177,8 +1100,6 @@ function guardarArea(area) {
     emailEl?.classList.add('err');
   } else emailEl?.classList.remove('err');
 
-  if (!a.decision) errors.push('decisión del área');
-
   if (errors.length > 0) {
     const status = document.getElementById('save-status-'+area);
     if (status) { status.textContent = '⚠️ Completa: ' + errors.join(', '); status.style.color='var(--danger)'; }
@@ -1201,41 +1122,44 @@ function editarArea(area) {
 }
 
 function applyAreaSaveUI(area) {
-  const saveBtn   = document.getElementById('save-btn-'+area);
-  const editBtn   = document.getElementById('edit-btn-'+area);
-  const status    = document.getElementById('save-status-'+area);
-  const locked    = st.areas[area].locked;
-  const edited    = st.areas[area].editCount > 0;
-  const now       = new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
-
+  const saveBtn = document.getElementById('save-btn-'+area);
+  const editBtn = document.getElementById('edit-btn-'+area);
+  const status  = document.getElementById('save-status-'+area);
+  const locked  = st.areas[area].locked;
+  const edited  = st.areas[area].editCount > 0;
+  const now     = new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
   if (!saveBtn || !editBtn) return;
-
   if (locked) {
-    saveBtn.textContent = edited ? '✅ Guardado · editado' : '✅ Guardado';
-    saveBtn.className   = 'btn-area-save ' + (edited ? 'saved-edited' : 'saved');
-    saveBtn.disabled    = true;
-    editBtn.style.display = 'inline-flex';
-    if (status) status.textContent = now;
+    saveBtn.textContent = edited ? '✅ Guardado — editado' : '✅ Sección guardada';
+    saveBtn.className = 'btn-area-save-main saved';
+    saveBtn.disabled = true;
+    editBtn.style.display = 'block';
+    if (status) status.textContent = 'Guardado a las ' + now;
     setAreaEditable(area, false);
   } else {
-    saveBtn.textContent = edited ? '💾 Guardar cambios' : '💾 Guardar sección';
-    saveBtn.className   = 'btn-area-save';
-    saveBtn.disabled    = false;
+    saveBtn.textContent = edited ? 'Guardar cambios de ' + AREA_LABELS[area] : 'Guardar sección de ' + AREA_LABELS[area];
+    saveBtn.className = 'btn-area-save-main';
+    saveBtn.disabled = false;
     editBtn.style.display = 'none';
     if (status) status.textContent = edited ? '⚠️ Cambios sin guardar' : '';
     setAreaEditable(area, true);
   }
 }
 
-// Candado real: cuando un área está guardada/bloqueada, sus campos no se pueden editar
-// hasta presionar "✏️ Editar". Evita que otra persona pise una sección ya cerrada.
 function setAreaEditable(area, editable) {
   ['resp-name-'+area, 'resp-email-'+area, 'notes-'+area, 'extra-'+area].forEach(id => {
     const el = document.getElementById(id); if (el) el.disabled = !editable;
   });
-  document.querySelectorAll(`[onclick*="setDecision('${area}'"]`).forEach(b => b.disabled = !editable);
   document.querySelectorAll(`[onclick*="addExtra('${area}')"]`).forEach(b => b.disabled = !editable);
   document.querySelectorAll(`#tags-${area} button`).forEach(b => b.disabled = !editable);
+}
+
+function toggleEvalDocs(event, id) {
+  event.stopPropagation();
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('open');
+  event.target.textContent = el.classList.contains('open') ? '▴ Ocultar documentos' : '▾ Ver documentos';
 }
 
 // ── EVAL TYPES ──
@@ -1353,35 +1277,24 @@ function renderReviewAlerts(area) {
       html += `<div class="alert-group-title" style="margin-top:.75rem">${meta.icon} ${meta.group} <span class="ag-count">${count}</span></div>`;
       lastGroup = meta.group;
     }
-    const isOwn = meta.area === area;
-    if (isOwn) {
-      // Editable: toggle + severidad + comentario (como Abastecimiento)
-      const sevBtns = SEV_ORDER.map(s =>
-        `<button class="sev-opt ${a.severidad === s ? 'on' : ''}" data-sev="${s}" onclick="setAlertSeverity(${i},'${s}')">${SEV_LABEL[s]}</button>`
-      ).join('');
-      html += `<div class="alert-cfg ${a.activa ? 'on' : 'off'}">
-        <div class="alert-cfg-top">
-          <div class="a-toggle" onclick="setAlertActive(${i})"></div>
-          <span class="a-label">${meta.label}</span>
-          <span class="sev-sel">${sevBtns}</span>
-        </div>
-        <textarea class="alert-cmt" rows="1" placeholder="Por qué es importante para ${AREA_LABELS[area]}…" oninput="setAlertComment(${i},this.value)">${a.comentario || ''}</textarea>
-      </div>`;
-    } else {
-      // Lectura: solo badge severidad
-      const tag = a.activa
-        ? `<span class="sev sev-${a.severidad}">${SEV_LABEL[a.severidad]}</span>`
-        : `<span class="alert-off-tag">No monitoreada</span>`;
-      html += `<div class="alert-rev ${a.activa ? '' : 'off'}">
-        <div class="alert-rev-top"><span class="a-label">${meta.label}</span><span style="font-size:.65rem;color:var(--gray);font-weight:600">${AREA_LABELS[meta.area]}</span>${tag}</div>
-      </div>`;
-    }
+    // Todas las alertas editables — toggle + severidad + comentario
+    const sevBtns = SEV_ORDER.map(s =>
+      `<button class="sev-opt ${a.severidad === s ? 'on' : ''}" data-sev="${s}" onclick="setAlertSeverity(${i},'${s}')">${SEV_LABEL[s]}</button>`
+    ).join('');
+    html += `<div class="alert-cfg ${a.activa ? 'on' : 'off'}">
+      <div class="alert-cfg-top">
+        <div class="a-toggle" onclick="setAlertActive(${i})"></div>
+        <span class="a-label">${meta.label}</span>
+        <span class="sev-sel">${sevBtns}</span>
+      </div>
+      <textarea class="alert-cmt" rows="1" placeholder="Comentario del área…" oninput="setAlertComment(${i},this.value)">${a.comentario || ''}</textarea>
+    </div>`;
   });
   cont.innerHTML = html;
 }
 
 function renderAbastRecap() {
-  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', subcontratacion:'Proveedor de Servicios', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional' };
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional' };
   const active = Object.entries(st.evalTypes).filter(([,v]) => v).map(([k]) => k);
   const et = document.getElementById('abast-evaltypes');
   if (et) et.innerHTML = active.length
@@ -1406,22 +1319,73 @@ function renderCrossAreaSummary(area) {
   if (!container) return;
   const cards = AREAS.filter(a => a !== area && st.requiredAreas[a]).map(a => {
     const d = st.areas[a];
-    const decision = d.decision || 'pendiente';
-    const decisionLabels = { aprobado:'Aprobado', rechazado:'Rechazado', observacion:'Con observaciones', pendiente:'Pendiente' };
-    const notesPreview = d.notes ? d.notes.substring(0, 50) + (d.notes.length > 50 ? '…' : '') : '';
+    const estado = d.locked ? 'aprobado' : 'pendiente';
+    const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
+    const notesPreview = d.notes ? d.notes.substring(0, 60) + (d.notes.length > 60 ? '…' : '') : '';
     return `<div class="cross-area-card">
       <div class="cross-area-card-name">${AREA_LABELS[a]}</div>
-      <div class="cross-area-badge ${decision}">${decisionLabels[decision]}</div>
+      <div class="cross-area-badge ${estado}">${estadoLabel}</div>
       ${notesPreview ? `<div class="cross-area-notes">"${notesPreview}"</div>` : ''}
     </div>`;
   }).join('');
   container.innerHTML = cards || '<div style="grid-column:1/-1;font-size:.75rem;color:var(--gray);padding:.5rem">Sin áreas activas</div>';
 }
 
+// ── PROCESOS PERSONALIZADOS ──
+function renderCustomProcesses() {
+  const cont = document.getElementById('custom-processes-list'); if (!cont) return;
+  if (!st.customProcesses.length) {
+    cont.innerHTML = '<div style="font-size:.8rem;color:var(--gray);text-align:center;padding:1.5rem 0;">Sin procesos personalizados aún. Haz click en "+ Agregar proceso" para comenzar.</div>';
+    return;
+  }
+  cont.innerHTML = st.customProcesses.map((p, i) => `
+    <div class="custom-process-card" id="cp-card-${i}">
+      <div class="cp-header">
+        <div style="flex:1;min-width:0;">
+          <input class="cp-name-input" placeholder="Nombre del proceso *" value="${(p.name||'').replace(/"/g,'&quot;')}"
+            oninput="updateCustomProcess(${i},'name',this.value)">
+          <textarea class="cp-desc-input" placeholder="¿Cuándo aplica este proceso?" rows="2"
+            oninput="updateCustomProcess(${i},'description',this.value)">${p.description||''}</textarea>
+        </div>
+        <button class="cp-remove" onclick="removeCustomProcess(${i})" title="Eliminar proceso">✕</button>
+      </div>
+      <div class="cp-docs">
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin-bottom:.375rem;">Documentos requeridos</div>
+        <div class="cp-doc-tags" id="cp-doc-tags-${i}">${(p.docs||[]).map((d,j)=>`<span class="extra-tag">${d}<button onclick="removeCustomDoc(${i},${j})">×</button></span>`).join('')}</div>
+        <div class="extra-row" style="margin-top:.375rem;">
+          <input type="text" id="cp-doc-input-${i}" placeholder="Agregar documento..." onkeydown="if(event.key==='Enter'){addCustomDoc(${i});event.preventDefault();}">
+          <button class="btn-add" onclick="addCustomDoc(${i})">+ Agregar</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function addCustomProcess() {
+  st.customProcesses.push({ name:'', description:'', docs:[] });
+  renderCustomProcesses(); save();
+}
+function removeCustomProcess(i) {
+  st.customProcesses.splice(i, 1);
+  renderCustomProcesses(); save();
+}
+function updateCustomProcess(i, field, val) {
+  st.customProcesses[i][field] = val; save();
+}
+function addCustomDoc(i) {
+  const inp = document.getElementById('cp-doc-input-'+i);
+  const val = inp.value.trim(); if (!val) return;
+  st.customProcesses[i].docs.push(val); inp.value = '';
+  renderCustomProcesses(); save();
+}
+function removeCustomDoc(i, j) {
+  st.customProcesses[i].docs.splice(j, 1);
+  renderCustomProcesses(); save();
+}
+
 function renderAllAlerts() {
   renderAbastAlerts();
   renderAbastRecap();
-  ['cumplimiento','finanzas','legal','subcontratacion'].forEach(a => {
+  ['cumplimiento','finanzas','legal'].forEach(a => {
     renderReviewAlerts(a);
     renderCrossAreaSummary(a);
   });
@@ -1472,8 +1436,8 @@ function buildReport() {
   if (syncAreas) {
     syncAreas.innerHTML = AREAS.filter(a => st.requiredAreas[a]).map(a => {
       const d = st.areas[a];
-      const s = d.decision || 'pendiente';
-      const sl = {aprobado:'Aprobado',rechazado:'Rechazado',observacion:'Con observaciones',pendiente:'Pendiente'};
+      const s = d.locked ? 'aprobado' : 'pendiente';
+      const sl = { aprobado:'Completado', pendiente:'Pendiente' };
       const resp = d.responsible?.name ? `<div style="font-size:.7rem;color:var(--gray);margin-top:.2rem;">👤 ${d.responsible.name}</div>` : '';
       return `<div class="report-area"><h4>${AREA_LABELS[a]}</h4>
         <div class="rs ${s}">${sl[s]}</div>
@@ -1503,12 +1467,11 @@ function buildReport() {
   if (areas) {
     areas.innerHTML = AREAS.filter(a => st.requiredAreas[a]).map(a => {
       const d = st.areas[a];
-      const s = d.decision || 'pendiente';
-      const sl = {aprobado:'Aprobado',rechazado:'Rechazado',observacion:'Con observaciones',pendiente:'Pendiente','no-aplica':'— No aplica'};
+      const s = d.locked ? 'aprobado' : 'pendiente';
       const extras = d.extraDocs?.length ? `<div style="font-size:.7rem;color:var(--blue);margin-top:.2rem;">+${d.extraDocs.length} doc(s) adicional(es)</div>` : '';
       const resp = d.responsible?.name ? `<div style="font-size:.7rem;color:var(--gray);margin-top:.2rem;">👤 ${d.responsible.name}</div>` : '';
       return `<div class="report-area"><h4>${AREA_LABELS[a]}</h4>
-        <div class="rs ${s}">${sl[s]}</div>
+        <div class="rs ${s}">${d.locked ? 'Completado' : 'Pendiente'}</div>
         ${resp}
         ${d.notes?`<div class="rn">"${d.notes.substring(0,70)}${d.notes.length>70?'…':''}"</div>`:''}
         ${extras}</div>`;
@@ -1517,7 +1480,7 @@ function buildReport() {
   const cfg = document.getElementById('reportConfig');
   if (cfg) {
     const types = Object.entries(st.evalTypes).filter(([,v])=>v).map(([k])=>({
-      express:'Proveedor Spot',completa:'Proveedor General',subcontratacion:'Proveedor de Servicios',reforzada:'Proveedor Crítico',internacional:'Proveedor Internacional'
+      express:'Proveedor Spot',completa:'Proveedor General',reforzada:'Proveedor Crítico',internacional:'Proveedor Internacional'
     }[k])).join(', ');
     cfg.innerHTML = `<strong style="color:var(--navy)">Empresa:</strong> ${st.client||'—'}<br>
       <strong style="color:var(--navy)">Email:</strong> ${st.email||'—'}<br>
@@ -1545,14 +1508,13 @@ function buildReport() {
     ra.innerHTML = html;
   }
 
-  // Validar áreas requeridas con detalle de qué falta
+  // Validar encargados de áreas requeridas
   const allRequired = Object.keys(st.requiredAreas).filter(a => st.requiredAreas[a]);
   const areaErrors = allRequired.reduce((acc, a) => {
     const d = st.areas[a];
     const missing = [];
     if (!d?.responsible?.name?.trim()) missing.push('nombre del encargado');
     if (!d?.responsible?.email?.trim() || !d.responsible.email.includes('@')) missing.push('email');
-    if (!d?.decision) missing.push('decisión');
     if (missing.length) acc.push({ area: a, missing });
     return acc;
   }, []);
@@ -1749,6 +1711,7 @@ function mergeState(d) {
   if (d.client) st.client = d.client;
   if (d.sentAt) st.sentAt = d.sentAt;
   if (d.syncNotes) st.syncNotes = d.syncNotes;
+  if (Array.isArray(d.customProcesses)) st.customProcesses = d.customProcesses;
   if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
   if (d.requiredAreas) Object.assign(st.requiredAreas, d.requiredAreas);
   if (d.areas) AREAS.forEach(a => { if (d.areas[a]) Object.assign(st.areas[a], d.areas[a]); });
@@ -1771,14 +1734,7 @@ function applyStateToUI() {
   AREAS.forEach(a => {
     const area = st.areas[a];
     const badge = document.getElementById('badge-'+a);
-    const btns = document.querySelectorAll(`[onclick*="setDecision('${a}'"]`);
-    btns.forEach(b => b.classList.remove('sel-aprobado','sel-rechazado','sel-observacion'));
-    if (area.decision) {
-      if (badge) { badge.className='area-status '+area.decision; badge.textContent=area.decision==='aprobado'?'Aprobado':area.decision==='rechazado'?'Rechazado':'Con observaciones'; }
-      btns.forEach(b => { if ((b.getAttribute('onclick')||'').includes("'"+area.decision+"'")) b.classList.add('sel-'+area.decision); });
-    } else if (badge) {
-      badge.className='area-status'; badge.textContent='Pendiente';
-    }
+    if (badge) { badge.className = 'area-status' + (area.locked ? ' aprobado' : ''); badge.textContent = area.locked ? 'Completado' : 'Pendiente'; }
     const ta=document.getElementById('notes-'+a); if(ta) ta.value=area.notes||'';
     const rn=document.getElementById('resp-name-'+a); if(rn) rn.value=area.responsible?.name||'';
     const re=document.getElementById('resp-email-'+a); if(re) re.value=area.responsible?.email||'';
@@ -1794,6 +1750,7 @@ function applyStateToUI() {
   });
 
   renderAllAlerts();
+  renderCustomProcesses();
   AREAS.forEach(a => applyAreaSaveUI(a));
   updateAreaTags();
   if (st.sentAt) showSentBanner(st.sentAt);
