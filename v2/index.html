@@ -455,11 +455,52 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 5: RESUMEN DE ROLES + EXPECTATIVAS ── -->
+<!-- ── 5: OWNER DEL PROYECTO ── -->
 <div class="slide slide-std" data-n="5">
-  <div class="s-head"><div class="s-tag">Preparación</div>
-    <h2>Roles y responsabilidades</h2>
-    <p>¿Quién participa en cada fase de la construcción de esta política?</p>
+  <div class="s-head"><div class="s-tag">Configuración inicial</div>
+    <h2>Owner del proyecto</h2>
+    <p>Define quién participa en la construcción de esta política de proveedores.</p>
+    <div class="area-status" id="badge-owner">⏳ Pendiente</div>
+  </div>
+  <div class="s-body scrollable">
+    <div class="step-list">
+      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Selecciona los tipos de evaluación que necesitas</h4><p>Define cuáles procesos de due diligence serán obligatorios en tu empresa según el riesgo y monto de las compras.</p></div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Elige qué áreas participan</h4><p>Selecciona cuáles equipos revisarán a los proveedores. Cumplimiento siempre participa, el resto es opcional.</p></div></div>
+      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Revisa la configuración de alertas</h4><p>Abastecimiento definirá la severidad (Leve/Media/Grave) y comentarios en cada alerta durante la próxima fase.</p></div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="req-areas-section">
+      <div class="req-areas-title">Áreas que participan en la política</div>
+      <div class="area-req-row">
+        <div class="area-req-info"><div class="area-req-name">Abastecimiento</div><div class="area-req-desc">Coordina el proceso y opera Plutto</div></div>
+        <div class="area-req-toggle on" id="art-abastecimiento" onclick="toggleRequiredArea('abastecimiento')"></div>
+      </div>
+      <div class="area-req-row">
+        <div class="area-req-info"><div class="area-req-name">Cumplimiento</div><div class="area-req-desc">Clasifica el riesgo y da recomendación final</div></div>
+        <div class="area-req-toggle on" id="art-cumplimiento" onclick="toggleRequiredArea('cumplimiento')"></div>
+      </div>
+      <div class="area-req-row">
+        <div class="area-req-info"><div class="area-req-name">Finanzas</div><div class="area-req-desc">Analiza la solidez financiera del proveedor</div></div>
+        <div class="area-req-toggle on" id="art-finanzas" onclick="toggleRequiredArea('finanzas')"></div>
+      </div>
+      <div class="area-req-row">
+        <div class="area-req-info"><div class="area-req-name">Legal</div><div class="area-req-desc">Valida la constitución legal del proveedor</div></div>
+        <div class="area-req-toggle on" id="art-legal" onclick="toggleRequiredArea('legal')"></div>
+      </div>
+      <div class="area-req-row">
+        <div class="area-req-info"><div class="area-req-name">Subcontratación</div><div class="area-req-desc">Aplica cuando el servicio involucra personal en faena</div></div>
+        <div class="area-req-toggle on" id="art-subcontratacion" onclick="toggleRequiredArea('subcontratacion')"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 6: RESUMEN DE ROLES + EXPECTATIVAS ── -->
+<div class="slide slide-std" data-n="6">
+<div class="slide slide-std" data-n="5">
+  <div class="s-head"><div class="s-tag">Flujo de trabajo</div>
+    <h2>¿Cómo funciona esto?</h2>
+    <p>3 fases para construir una política alineada en todo el equipo.</p>
   </div>
   <div class="s-body scrollable">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1.5rem 0;">
@@ -521,11 +562,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 6: ÁREA ABASTECIMIENTO ── -->
-<div class="slide slide-std" data-n="6">
-  <div class="s-head"><div class="s-tag">Revisión por área — 2 de 6</div>
+<!-- ── 7: ÁREA ABASTECIMIENTO ── -->
+<div class="slide slide-std" data-n="7">
+  <div class="s-head"><div class="s-tag">Revisión por área — 1 de 5</div>
     <h2>Abastecimiento</h2>
-    <p>Coordina el proceso completo. Opera Plutto día a día y asegura que cada proveedor sea evaluado correctamente.</p>
+    <p id="desc-abastecimiento">Coordina el proceso y configura las alertas.</p>
     <div class="area-status" id="badge-abastecimiento">⏳ Pendiente</div>
   </div>
   <div class="s-body scrollable">
@@ -536,30 +577,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="step-row"><div class="step-num">4</div><div class="step-body"><h4>Registrar la decisión y cerrar el proceso</h4><p>Con todas las revisiones completadas, registrar aprobación o rechazo. El informe se adjunta al contrato o ERP.</p></div></div>
     </div>
     <div class="warn-box">⏱ <strong>Tiempos objetivo:</strong> Exprés: máx. 5 días hábiles. Completa o Reforzada: máx. 10 días hábiles.</div>
-    <div class="divider"></div>
-    <div class="req-areas-section">
-      <div class="req-areas-title">Áreas que participan en este proceso</div>
-      <div class="area-req-row">
-        <div class="area-req-info"><div class="area-req-name">Abastecimiento</div><div class="area-req-desc">Coordina el proceso y opera Plutto</div></div>
-        <div class="area-req-toggle on" id="art-abastecimiento" onclick="toggleRequiredArea('abastecimiento')"></div>
-      </div>
-      <div class="area-req-row">
-        <div class="area-req-info"><div class="area-req-name">Cumplimiento</div><div class="area-req-desc">Clasifica el riesgo y da recomendación final</div></div>
-        <div class="area-req-toggle on" id="art-cumplimiento" onclick="toggleRequiredArea('cumplimiento')"></div>
-      </div>
-      <div class="area-req-row">
-        <div class="area-req-info"><div class="area-req-name">Finanzas</div><div class="area-req-desc">Analiza la solidez financiera del proveedor</div></div>
-        <div class="area-req-toggle on" id="art-finanzas" onclick="toggleRequiredArea('finanzas')"></div>
-      </div>
-      <div class="area-req-row">
-        <div class="area-req-info"><div class="area-req-name">Legal</div><div class="area-req-desc">Valida la constitución legal del proveedor</div></div>
-        <div class="area-req-toggle on" id="art-legal" onclick="toggleRequiredArea('legal')"></div>
-      </div>
-      <div class="area-req-row">
-        <div class="area-req-info"><div class="area-req-name">Subcontratación</div><div class="area-req-desc">Aplica cuando el servicio involucra personal en faena</div></div>
-        <div class="area-req-toggle on" id="art-subcontratacion" onclick="toggleRequiredArea('subcontratacion')"></div>
-      </div>
-    </div>
     <div class="divider"></div>
     <div class="recap-box">
       <div class="recap-title">Procesos de evaluación activos</div>
@@ -600,11 +617,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 7: ÁREA CUMPLIMIENTO ── -->
-<div class="slide slide-std" data-n="7">
-  <div class="s-head"><div class="s-tag">Revisión por área — 3 de 6</div>
+<!-- ── 8: ÁREA CUMPLIMIENTO ── -->
+<div class="slide slide-std" data-n="8">
+  <div class="s-head"><div class="s-tag">Revisión por área — 2 de 5</div>
     <h2>Cumplimiento</h2>
-    <p>Dueño del proceso normativo. Clasifica el riesgo y da la recomendación final en cada evaluación.</p>
+    <p id="desc-cumplimiento">Clasifica el riesgo y da recomendación final en cada evaluación.</p>
     <div class="area-status" id="badge-cumplimiento">⏳ Pendiente</div>
   </div>
   <div class="s-body scrollable">
@@ -655,11 +672,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 8: ÁREA FINANZAS ── -->
-<div class="slide slide-std" data-n="8">
-  <div class="s-head"><div class="s-tag">Revisión por área — 4 de 6</div>
+<!-- ── 9: ÁREA FINANZAS ── -->
+<div class="slide slide-std" data-n="9">
+  <div class="s-head"><div class="s-tag">Revisión por área — 3 de 5</div>
     <h2>Finanzas</h2>
-    <p>Revisor en evaluaciones Completa, Reforzada y Subcontratación. Analiza la solidez financiera del proveedor.</p>
+    <p id="desc-finanzas">Analiza la solidez financiera del proveedor.</p>
     <div class="area-status" id="badge-finanzas">⏳ Pendiente</div>
   </div>
   <div class="s-body scrollable">
@@ -708,11 +725,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 9: ÁREA LEGAL ── -->
-<div class="slide slide-std" data-n="9">
-  <div class="s-head"><div class="s-tag">Revisión por área — 5 de 6</div>
+<!-- ── 10: ÁREA LEGAL ── -->
+<div class="slide slide-std" data-n="10">
+  <div class="s-head"><div class="s-tag">Revisión por área — 4 de 5</div>
     <h2>Legal</h2>
-    <p>Revisor en evaluaciones Completa y Reforzada. Valida la constitución legal del proveedor.</p>
+    <p id="desc-legal">Valida la constitución legal del proveedor.</p>
     <div class="area-status" id="badge-legal">⏳ Pendiente</div>
   </div>
   <div class="s-body scrollable">
@@ -756,11 +773,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 10: ÁREA SUBCONTRATACIÓN ── -->
-<div class="slide slide-std" data-n="10">
-  <div class="s-head"><div class="s-tag">Revisión por área — 6 de 6</div>
+<!-- ── 11: ÁREA SUBCONTRATACIÓN ── -->
+<div class="slide slide-std" data-n="11">
+  <div class="s-head"><div class="s-tag">Revisión por área — 5 de 5</div>
     <h2>Subcontratación</h2>
-    <p>Revisor adicional cuando el servicio involucra personal en instalaciones propias (Ley 20.123).</p>
+    <p id="desc-subcontratacion">Especialista en proveedores con personal en faena (Ley 20.123).</p>
     <div class="area-status" id="badge-subcontratacion">⏳ Pendiente</div>
   </div>
   <div class="s-body scrollable">
@@ -804,8 +821,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 11: SESIÓN SINCRONIZADA ── -->
-<div class="slide slide-std" data-n="11">
+<!-- ── 12: SESIÓN SINCRONIZADA ── -->
+<div class="slide slide-std" data-n="12">
   <div class="s-head"><div class="s-tag">Sesión sincronizada</div>
     <h2>Alineación final del equipo</h2>
     <p>Últimos cambios, decisiones finales y cierre de la política.</p>
@@ -829,8 +846,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 12: REPORTE FINAL ── -->
-<div class="slide slide-std" data-n="12">
+<!-- ── 13: REPORTE FINAL ── -->
+<div class="slide slide-std" data-n="13">
   <div class="s-head"><div class="s-tag">Reporte archivado</div>
     <h2>Resumen completo de la sesión</h2>
     <p>Vista consolidada de todo lo acordado. Este reporte fue enviado al equipo Plutto.</p>
@@ -869,12 +886,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 12;
+const TOTAL = 13;
 let cur = 1;
 
 const AREAS = ['abastecimiento','cumplimiento','finanzas','legal','subcontratacion'];
 const AREA_LABELS = { solicitante:'Comprador del proyecto', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal', subcontratacion:'Subcontratación' };
-const AREA_SLIDE = { solicitante:5, abastecimiento:6, cumplimiento:7, finanzas:8, legal:9, subcontratacion:10 };
+const AREA_SLIDE = { owner:5, abastecimiento:7, cumplimiento:8, finanzas:9, legal:10, subcontratacion:11 };
 const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => [v, k]));
 
 // Metadata de las 23 alertas: etiqueta, grupo, área revisora dueña y severidad recomendada por Plutto.
@@ -997,6 +1014,18 @@ function updateNav() {
   updateAreaTags();
 }
 
+function renderAreaDescription(area) {
+  // Mostrar dinámicamente qué roles participan (excepto el actual)
+  const otherAreas = AREAS.filter(a => a !== area && st.requiredAreas[a]).map(a => AREA_LABELS[a]);
+  const descEl = document.getElementById('desc-' + area);
+  if (!descEl) return;
+  if (otherAreas.length > 0) {
+    descEl.textContent = `Participa con: ${otherAreas.join(', ')}`;
+  } else {
+    descEl.textContent = 'Es el único área que participa en esta política';
+  }
+}
+
 // "Revisión por área — X de N": N y X se calculan según las áreas activas,
 // para que al desactivar áreas no quede un "5 de 5" desactualizado.
 function updateAreaTags() {
@@ -1005,6 +1034,8 @@ function updateAreaTags() {
   visAreas.forEach((a, i) => {
     const tag = document.querySelector(`.slide[data-n="${AREA_SLIDE[a]}"] .s-tag`);
     if (tag) tag.textContent = `Revisión por área — ${i + 1} de ${total}`;
+    // También actualizar descripción dinámicamente
+    renderAreaDescription(a);
   });
 }
 
