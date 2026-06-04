@@ -1345,20 +1345,19 @@ const DOC_SEGMENTS = [
   { label:'Financieros',           indices:[9,10,11,12] }
 ];
 
-function renderCPDocPicker(i) {
+function renderCPDocRows(i) {
   const p = st.customProcesses[i];
   const cfg = p.docConfig || {};
+  const btnBase = 'font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:.25rem;border:1px solid;cursor:pointer;transition:all .15s;';
+  const reqSel = 'background:#DCFCE7;color:#166534;border-color:#86EFAC;';
+  const opcSel = 'background:#FFFBEB;color:#D97706;border-color:#FCD34D;';
+  const off    = 'background:transparent;color:var(--gray);border-color:var(--gray-border);';
   return DOC_SEGMENTS.map(seg => `
     <div style="margin-bottom:.625rem;">
       <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);opacity:.5;margin-bottom:.3rem;">${seg.label}</div>
       ${seg.indices.map(j => {
         const s = cfg[j] || null;
-        const btnBase = 'font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:.25rem;border:1px solid;cursor:pointer;transition:all .15s;';
-        const reqSel = 'background:#DCFCE7;color:#166534;border-color:#86EFAC;';
-        const opcSel = 'background:#FFFBEB;color:#D97706;border-color:#FCD34D;';
-        const offSel = 'background:var(--gray-light);color:var(--gray);border-color:var(--gray-border);';
-        const off    = 'background:transparent;color:var(--gray);border-color:var(--gray-border);';
-        return `<div style="display:flex;align-items:center;gap:.5rem;padding:.25rem 0;border-bottom:1px solid var(--gray-light);">
+        return `<div style="display:flex;align-items:center;gap:.5rem;padding:.25rem 0;border-bottom:1px solid rgba(0,0,0,.06);">
           <span style="flex:1;font-size:.76rem;color:var(--text);">${DOCS[j].name}</span>
           <div style="display:flex;gap:.2rem;">
             <button onclick="setCPDoc(${i},${j},${s==='req'?null:"'req'"})" style="${btnBase}${s==='req'?reqSel:off}">Req</button>
@@ -1377,6 +1376,7 @@ function renderCustomProcesses() {
   }
   cont.innerHTML = st.customProcesses.map((p, i) => {
     if (!p.saved) {
+      // Modo edición: nombre + descripción + docs + guardar en un solo formulario
       return `<div class="custom-process-card" id="cp-card-${i}" style="margin-bottom:.75rem;">
         <div class="cp-header">
           <div style="flex:1;min-width:0;">
@@ -1387,30 +1387,31 @@ function renderCustomProcesses() {
           </div>
           <button class="cp-remove" onclick="removeCustomProcess(${i})" title="Eliminar">✕</button>
         </div>
-        <div style="display:flex;justify-content:flex-end;margin-top:.25rem;">
+        <div style="background:var(--gray-light);border-radius:.625rem;padding:.75rem;margin-bottom:.75rem;">
+          <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin-bottom:.5rem;">Documentos</div>
+          <div id="cp-doc-rows-${i}">${renderCPDocRows(i)}</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;">
           <button onclick="saveCustomProcess(${i})" style="background:var(--navy);color:white;border:none;padding:.45rem 1.375rem;border-radius:.5rem;font-size:.8rem;font-weight:700;cursor:pointer;transition:background .2s;">Guardar proceso →</button>
         </div>
       </div>`;
     }
+    // Modo guardado: card compacta como procesos estándar
     const reqDocs = DOCS.filter((_,j) => p.docConfig?.[j]==='req');
     const opcDocs = DOCS.filter((_,j) => p.docConfig?.[j]==='opc');
-    const docsLabel = reqDocs.length ? reqDocs.map(d=>d.name).join(' · ') : 'Sin documentos configurados';
     return `<div class="eval-card active" style="align-items:flex-start;padding:.75rem .875rem;margin-bottom:.5rem;" id="cp-card-${i}">
       <div class="eval-toggle on" style="margin-top:.2rem;flex-shrink:0;"></div>
       <div style="flex:1;min-width:0;">
         <h4 style="font-size:.875rem;font-weight:700;color:var(--navy);margin-bottom:.1rem;">${p.name}</h4>
         ${p.description?`<div style="font-size:.72rem;color:var(--accent-dark);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem;">${p.description}</div>`:''}
-        <div class="eval-docs-list" style="display:block;">
+        <div class="eval-docs-list" id="cp-summary-${i}" style="display:block;">
           ${reqDocs.length?`<strong>Requeridos:</strong> ${reqDocs.map(d=>d.name).join(' · ')}<br>`:''}
           ${opcDocs.length?`<strong>Opcionales:</strong> ${opcDocs.map(d=>d.name).join(' · ')}`:''}
           ${!reqDocs.length&&!opcDocs.length?'<em style="color:var(--gray)">Sin documentos configurados</em>':''}
         </div>
-        <button class="eval-docs-toggle" onclick="toggleCPDocs(event,${i},this)" style="margin-top:.375rem;">▾ Configurar documentos</button>
+        <button class="eval-docs-toggle" onclick="toggleCPDocs(event,${i},this)" style="margin-top:.375rem;">▾ Editar documentos</button>
         <div id="cp-docs-${i}" style="display:none;margin-top:.5rem;padding:.625rem .75rem;background:var(--gray-light);border-radius:.5rem;">
-          ${renderCPDocPicker(i)}
-          <div style="display:flex;justify-content:flex-end;margin-top:.625rem;padding-top:.5rem;border-top:1px solid var(--gray-border);">
-            <button onclick="closeCPDocs(event,${i})" style="background:var(--navy);color:white;border:none;padding:.4rem 1.25rem;border-radius:.5rem;font-size:.78rem;font-weight:700;cursor:pointer;">Guardar ✓</button>
-          </div>
+          <div id="cp-doc-rows-${i}">${renderCPDocRows(i)}</div>
         </div>
         <button onclick="editCustomProcess(${i})" style="font-size:.7rem;color:var(--gray);background:none;border:none;cursor:pointer;padding:.25rem 0 0;display:block;margin-top:.1rem;">✏️ Editar nombre</button>
       </div>
@@ -1423,8 +1424,8 @@ function addCustomProcess() {
   st.customProcesses.push({ name:'', description:'', docs:[], docConfig:{}, saved:false });
   renderCustomProcesses(); save();
   setTimeout(() => {
-    const newCard = document.getElementById('cp-card-'+(st.customProcesses.length-1));
-    if (newCard) newCard.scrollIntoView({ behavior:'smooth', block:'start' });
+    const card = document.getElementById('cp-card-'+(st.customProcesses.length-1));
+    if (card) card.scrollIntoView({ behavior:'smooth', block:'start' });
   }, 50);
 }
 function saveCustomProcess(i) {
@@ -1452,34 +1453,26 @@ function setCPDoc(i, j, state) {
   if (!st.customProcesses[i].docConfig) st.customProcesses[i].docConfig = {};
   if (state === null) delete st.customProcesses[i].docConfig[j];
   else st.customProcesses[i].docConfig[j] = state;
-  const picker = document.getElementById('cp-docs-'+i);
-  if (picker) picker.innerHTML = renderCPDocPicker(i);
-  // actualizar resumen visible
+  // Solo actualiza las filas de docs, sin tocar el resto del card
+  const rows = document.getElementById('cp-doc-rows-'+i);
+  if (rows) rows.innerHTML = renderCPDocRows(i);
+  // Actualiza resumen si el card ya está guardado
   const p = st.customProcesses[i];
   const reqDocs = DOCS.filter((_,jj) => p.docConfig?.[jj]==='req');
   const opcDocs = DOCS.filter((_,jj) => p.docConfig?.[jj]==='opc');
-  const docsList = document.querySelector(`#cp-card-${i} .eval-docs-list`);
-  if (docsList) {
-    docsList.innerHTML = (reqDocs.length?`<strong>Requeridos:</strong> ${reqDocs.map(d=>d.name).join(' · ')}<br>`:'')
-      + (opcDocs.length?`<strong>Opcionales:</strong> ${opcDocs.map(d=>d.name).join(' · ')}`:'')
-      + (!reqDocs.length&&!opcDocs.length?'<em style="color:var(--gray)">Sin documentos configurados</em>':'');
-  }
+  const summary = document.getElementById('cp-summary-'+i);
+  if (summary) summary.innerHTML =
+    (reqDocs.length?`<strong>Requeridos:</strong> ${reqDocs.map(d=>d.name).join(' · ')}<br>`:'')
+    +(opcDocs.length?`<strong>Opcionales:</strong> ${opcDocs.map(d=>d.name).join(' · ')}`:'')
+    +(!reqDocs.length&&!opcDocs.length?'<em style="color:var(--gray)">Sin documentos configurados</em>':'');
   save();
 }
 function toggleCPDocs(event, i, btn) {
   event.stopPropagation();
-  const el = document.getElementById('cp-docs-'+i);
-  if (!el) return;
+  const el = document.getElementById('cp-docs-'+i); if (!el) return;
   const open = el.style.display !== 'none';
   el.style.display = open ? 'none' : 'block';
-  btn.textContent = open ? '▾ Configurar documentos' : '▴ Ocultar documentos';
-}
-function closeCPDocs(event, i) {
-  event.stopPropagation();
-  const el = document.getElementById('cp-docs-'+i);
-  if (el) el.style.display = 'none';
-  const btn = document.querySelector(`#cp-card-${i} .eval-docs-toggle`);
-  if (btn) btn.textContent = '▾ Configurar documentos';
+  btn.textContent = open ? '▾ Editar documentos' : '▴ Ocultar documentos';
 }
 
 function renderAllAlerts() {
