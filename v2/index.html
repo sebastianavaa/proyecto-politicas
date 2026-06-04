@@ -1026,7 +1026,7 @@ function go(n, dir) {
   to.style.opacity = '0'; to.classList.add('active');
   requestAnimationFrame(() => requestAnimationFrame(() => { to.style.transform = ''; to.style.opacity = ''; }));
   cur = n;
-  if (n === TOTAL) buildReport();
+  if (n >= TOTAL - 1) buildReport(); // Slide 12 (sync) y 13 (reporte)
   updateNav(); save();
 }
 function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
