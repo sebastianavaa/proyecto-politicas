@@ -1558,14 +1558,18 @@ function renderCompactAreaAlerts(containerId) {
     const estadoLabel = { aprobado:'Aprobado', rechazado:'Rechazado', observacion:'Con observaciones', pendiente:'Pendiente' }[estado] || 'Pendiente';
     const groups = [...new Set(ALERTS.map(a=>a.group))].filter(g => DOMAIN[area]?.(g));
     const domainActive = ALERTS.map((m,i)=>({m,i})).filter(({m,i})=>DOMAIN[area]?.(m.group)&&st.alerts[i].activa);
-    if (!domainActive.length && !d.locked) return; // skip pending areas with no alerts
     const groupsHtml = groups.map(g => {
-      const active = ALERTS.map((m,i)=>({m,i})).filter(({m,i})=>m.group===g&&st.alerts[i].activa);
-      if (!active.length) return '';
+      const groupAlerts = ALERTS.map((m,i)=>({m,i})).filter(({m})=>m.group===g);
+      if (!groupAlerts.length) return '';
       const icon = ALERTS.find(a=>a.group===g)?.icon||'';
-      const pills = active.map(({m,i}) => {
+      const pills = groupAlerts.map(({m,i}) => {
+        const active = st.alerts[i].activa;
         const s = st.alerts[i].severidad;
-        return `<span style="display:inline-flex;align-items:center;gap:.2rem;background:${SEV_BG[s]};color:${SEV_COLOR[s]};font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:.25rem;white-space:nowrap;">${m.label}</span>`;
+        if (active) {
+          return `<span style="display:inline-flex;background:${SEV_BG[s]};color:${SEV_COLOR[s]};font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:.25rem;white-space:nowrap;">${m.label}</span>`;
+        } else {
+          return `<span style="display:inline-flex;background:#F1F5F9;color:#94A3B8;font-size:.65rem;font-weight:500;padding:.1rem .4rem;border-radius:.25rem;white-space:nowrap;text-decoration:line-through;">${m.label}</span>`;
+        }
       }).join(' ');
       return `<div style="display:flex;gap:.5rem;align-items:flex-start;margin-bottom:.3rem;">
         <span style="font-size:.65rem;font-weight:700;color:var(--gray);width:7.5rem;flex-shrink:0;padding-top:.1rem;">${icon} ${g}</span>
