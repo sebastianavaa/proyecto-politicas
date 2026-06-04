@@ -259,7 +259,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .btn-copy:hover{background:var(--accent-dark);}
 .btn-copy.copied{background:var(--success);color:white;}
 
-/* REQUIRED AREAS TOGGLES (en slide Solicitante) */
+/* REQUIRED AREAS TOGGLES (en slide Abastecimiento) */
 .req-areas-section{margin-top:.875rem;background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem 1.125rem;}
 .req-areas-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;}
 .area-req-row{display:flex;align-items:center;gap:.875rem;padding:.5rem 0;border-bottom:1px solid var(--gray-border);}
@@ -463,7 +463,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="s-body scrollable">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1.5rem 0;">
-      <!-- Fase 1: Comprador de Plutto -->
+      <!-- Fase 1: Comprador del proyecto -->
       <div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem;display:flex;flex-direction:column;gap:.625rem;">
         <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem;">
           <span style="font-size:1.5rem">🏢</span>
@@ -472,7 +472,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
             <div style="font-size:.7rem;color:var(--gray);font-weight:600">PANORAMA GENERAL</div>
           </div>
         </div>
-        <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.375rem;">Comprador de Plutto</div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.375rem;">Comprador del proyecto</div>
         <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.25rem;display:flex;flex-direction:column;line-height:1.6;">
           <li>✓ Revisa el panorama general</li>
           <li>✓ Activa/desactiva tipos de evaluación</li>
@@ -873,7 +873,7 @@ const TOTAL = 12;
 let cur = 1;
 
 const AREAS = ['abastecimiento','cumplimiento','finanzas','legal','subcontratacion'];
-const AREA_LABELS = { solicitante:'Solicitante', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal', subcontratacion:'Subcontratación' };
+const AREA_LABELS = { solicitante:'Comprador del proyecto', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal', subcontratacion:'Subcontratación' };
 const AREA_SLIDE = { solicitante:5, abastecimiento:6, cumplimiento:7, finanzas:8, legal:9, subcontratacion:10 };
 const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => [v, k]));
 
