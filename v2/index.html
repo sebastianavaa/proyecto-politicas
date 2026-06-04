@@ -1266,8 +1266,8 @@ function normalizeAlerts(arr) {
   });
 }
 
-function setAlertActive(i)        { st.alerts[i].activa = !st.alerts[i].activa; renderAbastAlerts(); save(); }
-function setAlertSeverity(i, sev) { st.alerts[i].severidad = sev; renderAbastAlerts(); save(); }
+function setAlertActive(i)        { st.alerts[i].activa = !st.alerts[i].activa; renderAllAlerts(); save(); }
+function setAlertSeverity(i, sev) { st.alerts[i].severidad = sev; renderAllAlerts(); save(); }
 function setAlertComment(i, val)  { st.alerts[i].comentario = val; save(); } // sin re-render: no pierde foco
 
 function renderAbastAlerts() {
@@ -1615,14 +1615,13 @@ function startPolling() {
       if (!res.ok) return;
       const data = await res.json();
       if (!data.state) return;
-      // Solo actualizar áreas que NO son la activa (para no pisar edición en vivo)
       const currentArea = SLIDE_AREA[cur];
+      // Sincronizar áreas que NO son la activa (para no pisar edición en vivo)
       AREAS.forEach(area => {
         if (area === currentArea) return;
         if (data.state.areas?.[area]) {
           const oldDecision = st.areas[area].decision;
           Object.assign(st.areas[area], data.state.areas[area]);
-          // Si cambió la decisión, re-renderizar badge
           if (oldDecision !== data.state.areas[area].decision) {
             const badge = document.getElementById('badge-' + area);
             if (badge) {
@@ -1634,7 +1633,15 @@ function startPolling() {
           }
         }
       });
-      // Re-renderizar resúmenes cruzados en pantalla actual
+      // Sincronizar alertas (compartidas entre áreas — "PR entre áreas")
+      // Solo actualizar si ningún textarea de alertas tiene el foco (para no pisar edición activa)
+      const focused = document.activeElement;
+      const editingAlert = focused && focused.classList.contains('alert-cmt');
+      if (!editingAlert && Array.isArray(data.state.alerts)) {
+        st.alerts = normalizeAlerts(data.state.alerts);
+        renderAllAlerts(); // Re-renderiza todas las áreas para reflejar cambios
+      }
+      // Re-renderizar resúmenes cruzados
       if (currentArea && AREAS.includes(currentArea)) renderCrossAreaSummary(currentArea);
     } catch(e) {}
   }, 4000);
