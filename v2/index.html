@@ -171,6 +171,14 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .alert-group-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);
   margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;}
 .ag-count{background:var(--navy);color:white;padding:.1rem .45rem;border-radius:.25rem;font-size:.65rem;}
+.alert-tabs{display:flex;gap:.3rem;margin-bottom:.75rem;flex-wrap:wrap;border-bottom:2px solid var(--gray-border);padding-bottom:.5rem;}
+.alert-tab{padding:.3rem .75rem;border-radius:.375rem .375rem 0 0;border:1px solid transparent;background:transparent;font-size:.72rem;font-weight:600;cursor:pointer;color:var(--gray);transition:all .15s;font-family:var(--font);white-space:nowrap;}
+.alert-tab:hover{background:var(--gray-light);color:var(--navy);}
+.alert-tab.active{background:var(--navy);color:white;border-color:var(--navy);}
+.alert-tab-badge{display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.25);color:inherit;border-radius:.75rem;font-size:.6rem;font-weight:700;padding:.05rem .35rem;margin-left:.3rem;min-width:1rem;}
+.alert-tab:not(.active) .alert-tab-badge{background:var(--gray-border);color:var(--gray);}
+.alert-tab-panel{display:none;}
+.alert-tab-panel.active{display:block;}
 .alert-rows{display:flex;flex-direction:column;gap:.3rem;}
 .alert-row{display:flex;align-items:center;gap:.75rem;background:var(--white);border:1px solid var(--gray-border);
   border-radius:.5rem;padding:.55rem .875rem;transition:all .18s;cursor:pointer;}
@@ -1240,55 +1248,51 @@ function setAlertActive(i)        { st.alerts[i].activa = !st.alerts[i].activa; 
 function setAlertSeverity(i, sev) { st.alerts[i].severidad = sev; renderAllAlerts(); save(); }
 function setAlertComment(i, val)  { st.alerts[i].comentario = val; save(); } // sin re-render: no pierde foco
 
+function buildAlertTabsHTML(containerId, placeholder) {
+  const groups = [...new Set(ALERTS.map(a => a.group))];
+  const tabsHtml = `<div class="alert-tabs">${groups.map((g, idx) => {
+    const activeCount = ALERTS.filter((meta,i) => meta.group === g && st.alerts[i].activa).length;
+    const total = ALERTS.filter(meta => meta.group === g).length;
+    const icon = ALERTS.find(a => a.group === g)?.icon || '';
+    return `<button class="alert-tab${idx===0?' active':''}" onclick="switchAlertTab('${containerId}','${g}')">${icon} ${g}<span class="alert-tab-badge">${activeCount}/${total}</span></button>`;
+  }).join('')}</div>`;
+  const panelsHtml = groups.map((g, idx) => {
+    const rows = ALERTS.map((meta,i) => ({meta,i})).filter(({meta}) => meta.group === g).map(({meta,i}) => {
+      const a = st.alerts[i];
+      const sevBtns = SEV_ORDER.map(s =>
+        `<button class="sev-opt ${a.severidad===s?'on':''}" data-sev="${s}" onclick="setAlertSeverity(${i},'${s}')">${SEV_LABEL[s]}</button>`
+      ).join('');
+      return `<div class="alert-cfg ${a.activa?'on':'off'}">
+        <div class="alert-cfg-top">
+          <div class="a-toggle" onclick="setAlertActive(${i})"></div>
+          <span class="a-label">${meta.label}</span>
+          <span class="sev-sel">${sevBtns}</span>
+        </div>
+        <textarea class="alert-cmt" rows="1" placeholder="${placeholder}" oninput="setAlertComment(${i},this.value)">${a.comentario||''}</textarea>
+      </div>`;
+    }).join('');
+    return `<div class="alert-tab-panel${idx===0?' active':''}" data-group="${g}">${rows}</div>`;
+  }).join('');
+  return tabsHtml + panelsHtml;
+}
+
+function switchAlertTab(containerId, group) {
+  const cont = document.getElementById(containerId); if (!cont) return;
+  cont.querySelectorAll('.alert-tab').forEach(btn => {
+    const btnGroup = btn.textContent.replace(/\d+\/\d+/,'').trim().replace(/^[^\s]+\s/,'');
+    btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${group}'`));
+  });
+  cont.querySelectorAll('.alert-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.group === group));
+}
+
 function renderAbastAlerts() {
   const cont = document.getElementById('abast-alerts'); if (!cont) return;
-  let html = '', lastGroup = null;
-  ALERTS.forEach((meta, i) => {
-    const a = st.alerts[i];
-    if (meta.group !== lastGroup) {
-      const count = ALERTS.filter(x => x.group === meta.group).length;
-      html += `<div class="alert-group-title" style="margin-top:.75rem">${meta.icon} ${meta.group} <span class="ag-count">${count}</span></div>`;
-      lastGroup = meta.group;
-    }
-    const sevBtns = SEV_ORDER.map(s =>
-      `<button class="sev-opt ${a.severidad === s ? 'on' : ''}" data-sev="${s}" onclick="setAlertSeverity(${i},'${s}')">${SEV_LABEL[s]}</button>`
-    ).join('');
-    html += `<div class="alert-cfg ${a.activa ? 'on' : 'off'}">
-      <div class="alert-cfg-top">
-        <div class="a-toggle" onclick="setAlertActive(${i})"></div>
-        <span class="a-label">${meta.label}</span>
-        <span class="sev-sel">${sevBtns}</span>
-      </div>
-      <textarea class="alert-cmt" rows="1" placeholder="Comentario sobre esta alerta (opcional)…" oninput="setAlertComment(${i},this.value)">${a.comentario || ''}</textarea>
-    </div>`;
-  });
-  cont.innerHTML = html;
+  cont.innerHTML = buildAlertTabsHTML('abast-alerts', 'Comentario sobre esta alerta (opcional)…');
 }
 
 function renderReviewAlerts(area) {
-  const cont = document.getElementById('alerts-' + area); if (!cont) return;
-  let html = '', lastGroup = null;
-  ALERTS.forEach((meta, i) => {
-    const a = st.alerts[i];
-    if (meta.group !== lastGroup) {
-      const count = ALERTS.filter(x => x.group === meta.group).length;
-      html += `<div class="alert-group-title" style="margin-top:.75rem">${meta.icon} ${meta.group} <span class="ag-count">${count}</span></div>`;
-      lastGroup = meta.group;
-    }
-    // Todas las alertas editables — toggle + severidad + comentario
-    const sevBtns = SEV_ORDER.map(s =>
-      `<button class="sev-opt ${a.severidad === s ? 'on' : ''}" data-sev="${s}" onclick="setAlertSeverity(${i},'${s}')">${SEV_LABEL[s]}</button>`
-    ).join('');
-    html += `<div class="alert-cfg ${a.activa ? 'on' : 'off'}">
-      <div class="alert-cfg-top">
-        <div class="a-toggle" onclick="setAlertActive(${i})"></div>
-        <span class="a-label">${meta.label}</span>
-        <span class="sev-sel">${sevBtns}</span>
-      </div>
-      <textarea class="alert-cmt" rows="1" placeholder="Comentario del área…" oninput="setAlertComment(${i},this.value)">${a.comentario || ''}</textarea>
-    </div>`;
-  });
-  cont.innerHTML = html;
+  const cont = document.getElementById('alerts-'+area); if (!cont) return;
+  cont.innerHTML = buildAlertTabsHTML('alerts-'+area, 'Comentario del área…');
 }
 
 function renderAbastRecap() {
