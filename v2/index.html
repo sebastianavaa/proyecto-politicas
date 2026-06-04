@@ -949,13 +949,12 @@ const st = {
   evalTypes:{ express:true, completa:true, reforzada:true, internacional:true },
   requiredAreas:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
   areas:{
-    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0},
-    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0},
-    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0},
-    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0}
+    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts()},
+    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts()},
+    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts()},
+    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts()}
   },
   customProcesses: [],
-  alerts: defaultAlerts(),
   sentAt:'',
   syncNotes:'',
 };
@@ -1253,35 +1252,35 @@ function normalizeAlerts(arr) {
   });
 }
 
-function setAlertActive(i)        { st.alerts[i].activa = !st.alerts[i].activa; renderAllAlerts(); save(); }
-function setAlertSeverity(i, sev) { st.alerts[i].severidad = sev; renderAllAlerts(); save(); }
-function setAlertComment(i, val)  { st.alerts[i].comentario = val; save(); } // sin re-render: no pierde foco
+function setAlertActive(area, i)        { st.areas[area].alerts[i].activa = !st.areas[area].alerts[i].activa; renderAllAlerts(); save(); }
+function setAlertSeverity(area, i, sev) { st.areas[area].alerts[i].severidad = sev; renderAllAlerts(); save(); }
+function setAlertComment(area, i, val)  { st.areas[area].alerts[i].comentario = val; save(); }
 
 const _activeAlertTab = {};
 
-function buildAlertTabsHTML(containerId, placeholder) {
+function buildAlertTabsHTML(containerId, area, placeholder) {
+  const aAlerts = st.areas[area].alerts;
   const groups = [...new Set(ALERTS.map(a => a.group))];
   const savedGroup = _activeAlertTab[containerId] || groups[0];
   const tabsHtml = `<div class="alert-tabs">${groups.map(g => {
-    const activeCount = ALERTS.filter((meta,i) => meta.group === g && st.alerts[i].activa).length;
+    const activeCount = ALERTS.filter((meta,i) => meta.group === g && aAlerts[i].activa).length;
     const total = ALERTS.filter(meta => meta.group === g).length;
     const icon = ALERTS.find(a => a.group === g)?.icon || '';
-    const isActive = g === savedGroup;
-    return `<button class="alert-tab${isActive?' active':''}" onclick="switchAlertTab('${containerId}','${g}')">${icon} ${g}<span class="alert-tab-badge">${activeCount}/${total}</span></button>`;
+    return `<button class="alert-tab${g===savedGroup?' active':''}" onclick="switchAlertTab('${containerId}','${g}')">${icon} ${g}<span class="alert-tab-badge">${activeCount}/${total}</span></button>`;
   }).join('')}</div>`;
   const panelsHtml = groups.map(g => {
     const rows = ALERTS.map((meta,i) => ({meta,i})).filter(({meta}) => meta.group === g).map(({meta,i}) => {
-      const a = st.alerts[i];
+      const a = aAlerts[i];
       const sevBtns = SEV_ORDER.map(s =>
-        `<button class="sev-opt ${a.severidad===s?'on':''}" data-sev="${s}" onclick="setAlertSeverity(${i},'${s}')">${SEV_LABEL[s]}</button>`
+        `<button class="sev-opt ${a.severidad===s?'on':''}" data-sev="${s}" onclick="setAlertSeverity('${area}',${i},'${s}')">${SEV_LABEL[s]}</button>`
       ).join('');
       return `<div class="alert-cfg ${a.activa?'on':'off'}">
         <div class="alert-cfg-top">
-          <div class="a-toggle" onclick="setAlertActive(${i})"></div>
+          <div class="a-toggle" onclick="setAlertActive('${area}',${i})"></div>
           <span class="a-label">${meta.label}</span>
           <span class="sev-sel">${sevBtns}</span>
         </div>
-        <textarea class="alert-cmt" rows="1" placeholder="${placeholder}" oninput="setAlertComment(${i},this.value)">${a.comentario||''}</textarea>
+        <textarea class="alert-cmt" rows="1" placeholder="${placeholder}" oninput="setAlertComment('${area}',${i},this.value)">${a.comentario||''}</textarea>
       </div>`;
     }).join('');
     return `<div class="alert-tab-panel${g===savedGroup?' active':''}" data-group="${g}">${rows}</div>`;
@@ -1300,12 +1299,12 @@ function switchAlertTab(containerId, group) {
 
 function renderAbastAlerts() {
   const cont = document.getElementById('abast-alerts'); if (!cont) return;
-  cont.innerHTML = buildAlertTabsHTML('abast-alerts', 'Comentario sobre esta alerta (opcional)…');
+  cont.innerHTML = buildAlertTabsHTML('abast-alerts', 'abastecimiento', 'Comentario sobre esta alerta (opcional)…');
 }
 
 function renderReviewAlerts(area) {
   const cont = document.getElementById('alerts-'+area); if (!cont) return;
-  cont.innerHTML = buildAlertTabsHTML('alerts-'+area, 'Comentario del área…');
+  cont.innerHTML = buildAlertTabsHTML('alerts-'+area, area, 'Comentario del área…');
 }
 
 function renderAbastRecap() {
@@ -1347,14 +1346,15 @@ function renderCrossAreaSummary(area) {
 
     // Alertas del dominio de esta área
     const domainFilter = AREA_ALERT_DOMAIN[a] || (() => true);
+    const aAlerts = st.areas[a].alerts;
     const domainAlerts = ALERTS.map((meta,i) => ({meta,i})).filter(({meta}) => domainFilter(meta));
-    const activeInDomain = domainAlerts.filter(({i}) => st.alerts[i].activa);
+    const activeInDomain = domainAlerts.filter(({i}) => aAlerts[i].activa);
     const total = domainAlerts.length;
     const activeTotal = activeInDomain.length;
 
     // Severidades (solo de alertas activas del dominio)
     const sevCount = { leve:0, media:0, grave:0 };
-    activeInDomain.forEach(({i}) => sevCount[st.alerts[i].severidad]++);
+    activeInDomain.forEach(({i}) => sevCount[aAlerts[i].severidad]++);
     const sevPills = activeTotal ? ['grave','media','leve'].filter(s => sevCount[s] > 0).map(s => {
       const pct = Math.round(sevCount[s]/activeTotal*100);
       return `<span class="cross-area-sev-pill ${s}">${pct}% ${s}</span>`;
@@ -1364,7 +1364,7 @@ function renderCrossAreaSummary(area) {
     const groups = [...new Set(domainAlerts.map(({meta}) => meta.group))];
     const groupRows = groups.map(g => {
       const gAlerts = domainAlerts.filter(({meta}) => meta.group === g);
-      const gActive = gAlerts.filter(({i}) => st.alerts[i].activa).length;
+      const gActive = gAlerts.filter(({i}) => aAlerts[i].activa).length;
       const gTotal = gAlerts.length;
       const pct = gTotal ? Math.round(gActive/gTotal*100) : 0;
       const icon = ALERTS.find(x => x.group === g)?.icon || '';
@@ -1556,14 +1556,15 @@ function renderCompactAreaAlerts(containerId) {
     const estado = d.locked ? (d.decision||'aprobado') : 'pendiente';
     const estadoLabel = { aprobado:'Aprobado', rechazado:'Rechazado', observacion:'Con observaciones', pendiente:'Pendiente' }[estado] || 'Pendiente';
     const groups = [...new Set(ALERTS.map(a=>a.group))].filter(g => DOMAIN[area]?.(g));
-    const domainActive = ALERTS.map((m,i)=>({m,i})).filter(({m,i})=>DOMAIN[area]?.(m.group)&&st.alerts[i].activa);
+    const aAlerts = st.areas[area].alerts;
+    const domainActive = ALERTS.map((m,i)=>({m,i})).filter(({m,i})=>DOMAIN[area]?.(m.group)&&aAlerts[i].activa);
     const groupsHtml = groups.map(g => {
       const groupAlerts = ALERTS.map((m,i)=>({m,i})).filter(({m})=>m.group===g);
       if (!groupAlerts.length) return '';
       const icon = ALERTS.find(a=>a.group===g)?.icon||'';
       const pills = groupAlerts.map(({m,i}) => {
-        const active = st.alerts[i].activa;
-        const s = st.alerts[i].severidad;
+        const active = aAlerts[i].activa;
+        const s = aAlerts[i].severidad;
         if (active) {
           return `<span style="display:inline-flex;background:${SEV_BG[s]};color:${SEV_COLOR[s]};font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:.25rem;white-space:nowrap;">${m.label}</span>`;
         } else {
@@ -1595,13 +1596,14 @@ function renderSyncAreaComments() {
   AREAS.forEach(area => {
     if (!st.requiredAreas[area]) return;
     // Encontrar alertas que esta área configura (meta.area === area)
+    const aAlerts = st.areas[area].alerts;
     const areaAlerts = ALERTS.map((meta, i) => ({ meta, i })).filter(({meta}) => meta.area === area);
-    const activeAlerts = areaAlerts.filter(({i}) => st.alerts[i].activa).map(({meta, i}) => ({
+    const activeAlerts = areaAlerts.filter(({i}) => aAlerts[i].activa).map(({meta, i}) => ({
       label: meta.label,
-      sev: st.alerts[i].severidad,
-      cmt: st.alerts[i].comentario
+      sev: aAlerts[i].severidad,
+      cmt: aAlerts[i].comentario
     }));
-    const inactiveCount = areaAlerts.filter(({i}) => !st.alerts[i].activa).length;
+    const inactiveCount = areaAlerts.filter(({i}) => !aAlerts[i].activa).length;
 
     html += `<div style="padding:.75rem 0;border-bottom:1px solid var(--gray-border);">
       <div style="font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:.5rem;">${AREA_LABELS[area]}</div>
@@ -1641,20 +1643,6 @@ function buildReport() {
         ${resp}</div>`;
     }).join('');
   }
-  const syncAlerts = document.getElementById('syncReportAlerts');
-  if (syncAlerts) {
-    let html = '';
-    ALERTS.forEach((meta, i) => {
-      const a = st.alerts[i];
-      if (!a.activa) return;
-      html += `<div style="padding:.2rem 0;border-bottom:1px solid var(--gray-border)">
-        <div style="display:flex;gap:.5rem;align-items:center;font-size:.75rem">
-          <span style="flex:1">${meta.label}</span>
-          <span class="sev sev-${a.severidad}">${SEV_LABEL[a.severidad]}</span>
-        </div></div>`;
-    });
-    syncAlerts.innerHTML = html || '<div style="font-size:.75rem;color:var(--gray);padding:.5rem;">Sin alertas activas</div>';
-  }
   const syncNotesEl = document.getElementById('syncNotes');
   if (syncNotesEl) syncNotesEl.value = st.syncNotes || '';
   renderSyncAreaComments();
@@ -1683,29 +1671,10 @@ function buildReport() {
     cfg.innerHTML = `<strong style="color:var(--navy)">Empresa:</strong> ${st.client||'—'}<br>
       <strong style="color:var(--navy)">Email:</strong> ${st.email||'—'}<br>
       <strong style="color:var(--navy)">Evaluaciones activas:</strong> ${types||'Ninguna'}<br>
-      <strong style="color:var(--navy)">Alertas activadas:</strong> ${st.alerts.filter(a=>a.activa).length} de 23`;
+      <strong style="color:var(--navy)">Áreas configuradas:</strong> ${AREAS.filter(a=>st.requiredAreas[a]&&st.areas[a].locked).length} de ${AREAS.filter(a=>st.requiredAreas[a]).length}`;
   }
 
   renderCompactAreaAlerts('reportCompactAlerts');
-  const ra = document.getElementById('reportAlerts');
-  if (ra) {
-    let html = '', lastGroup = null;
-    ALERTS.forEach((meta, i) => {
-      const a = st.alerts[i];
-      if (meta.group !== lastGroup) {
-        html += `<div style="font-size:.7rem;font-weight:800;color:var(--navy);margin:.7rem 0 .25rem">${meta.icon} ${meta.group}</div>`;
-        lastGroup = meta.group;
-      }
-      const tag = a.activa
-        ? `<span class="sev sev-${a.severidad}">${SEV_LABEL[a.severidad]}</span>`
-        : `<span class="alert-off-tag">No monitoreada</span>`;
-      const cmt = a.comentario
-        ? `<div style="font-size:.7rem;color:var(--gray);margin-top:.15rem">💬 ${a.comentario}</div>` : '';
-      html += `<div style="padding:.3rem 0;border-bottom:1px solid var(--gray-border)">
-        <div style="display:flex;gap:.5rem;align-items:center;font-size:.78rem"><span style="flex:1;${a.activa ? '' : 'opacity:.5'}">${meta.label}</span>${tag}</div>${cmt}</div>`;
-    });
-    ra.innerHTML = html;
-  }
 
   // Validar encargados de áreas requeridas
   const allRequired = Object.keys(st.requiredAreas).filter(a => st.requiredAreas[a]);
@@ -1751,11 +1720,10 @@ async function enviar() {
       ...(a==='finanzas' ? { signals: st.areas[a].signals } : {}),
     }])),
     syncNotes: st.syncNotes,
-    alertsActive: st.alerts.filter(a => a.activa).length,
-    alerts: ALERTS.map((m, i) => ({
-      alerta: m.label, grupo: m.group, area: m.area,
-      activa: st.alerts[i].activa, severidad: st.alerts[i].severidad, comentario: st.alerts[i].comentario
-    })),
+    alertsPorArea: Object.fromEntries(AREAS.map(a => [a, ALERTS.map((m,i) => ({
+      alerta: m.label, grupo: m.group,
+      activa: st.areas[a].alerts[i].activa, severidad: st.areas[a].alerts[i].severidad, comentario: st.areas[a].alerts[i].comentario
+    }))])),
   };
   let success = false;
   try {
@@ -1865,11 +1833,15 @@ function startPolling() {
         }
       });
 
-      // 4. Sincronizar alertas — no pisar si el usuario está escribiendo un comentario
+      // 4. Sincronizar alertas por área — no pisar si el usuario está escribiendo un comentario
       const focused = document.activeElement;
       const editingAlert = focused && focused.classList.contains('alert-cmt');
-      if (!editingAlert && Array.isArray(data.state.alerts)) {
-        st.alerts = normalizeAlerts(data.state.alerts);
+      if (!editingAlert && data.state.areas) {
+        AREAS.forEach(a => {
+          if (Array.isArray(data.state.areas[a]?.alerts)) {
+            st.areas[a].alerts = normalizeAlerts(data.state.areas[a].alerts);
+          }
+        });
         renderAllAlerts();
         changed = true;
       }
@@ -1913,8 +1885,17 @@ function mergeState(d) {
   if (Array.isArray(d.customProcesses)) st.customProcesses = d.customProcesses;
   if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
   if (d.requiredAreas) Object.assign(st.requiredAreas, d.requiredAreas);
-  if (d.areas) AREAS.forEach(a => { if (d.areas[a]) Object.assign(st.areas[a], d.areas[a]); });
-  if (Array.isArray(d.alerts)) st.alerts = normalizeAlerts(d.alerts);
+  if (d.areas) AREAS.forEach(a => {
+    if (d.areas[a]) {
+      Object.assign(st.areas[a], d.areas[a]);
+      if (Array.isArray(d.areas[a].alerts)) st.areas[a].alerts = normalizeAlerts(d.areas[a].alerts);
+    }
+  });
+  // Migración: si había alerts globales, copiarlos a todas las áreas
+  if (Array.isArray(d.alerts)) {
+    const normalized = normalizeAlerts(d.alerts);
+    AREAS.forEach(a => { if (!d.areas?.[a]?.alerts) st.areas[a].alerts = normalized.map(x=>({...x})); });
+  }
 }
 
 function applyStateToUI() {
