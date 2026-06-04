@@ -531,9 +531,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           </div>
         </div>
         <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.375rem;">Cada área (asincrónica)</div>
+        <div id="roles-fase2-areas" style="font-size:.75rem;color:var(--blue);font-weight:600;margin-bottom:.375rem;"></div>
         <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.25rem;display:flex;flex-direction:column;line-height:1.6;">
           <li>✓ Revisa su especialidad</li>
-          <li>✓ Configura sus alertas</li>
+          <li>✓ Ajusta severidad de sus alertas</li>
           <li>✓ Comenta y propone cambios</li>
           <li>✓ Da visto bueno</li>
         </ul>
@@ -1016,6 +1017,13 @@ function updateNav() {
   updateAreaTags();
 }
 
+function renderRolesSummary() {
+  const el = document.getElementById('roles-fase2-areas');
+  if (!el) return;
+  const active = AREAS.filter(a => st.requiredAreas[a]).map(a => AREA_LABELS[a]);
+  el.textContent = active.length ? active.join(' · ') : 'Sin áreas seleccionadas';
+}
+
 function renderAreaDescription(area) {
   // Mostrar dinámicamente qué roles participan (excepto el actual)
   const otherAreas = AREAS.filter(a => a !== area && st.requiredAreas[a]).map(a => AREA_LABELS[a]);
@@ -1036,9 +1044,9 @@ function updateAreaTags() {
   visAreas.forEach((a, i) => {
     const tag = document.querySelector(`.slide[data-n="${AREA_SLIDE[a]}"] .s-tag`);
     if (tag) tag.textContent = `Revisión por área — ${i + 1} de ${total}`;
-    // También actualizar descripción dinámicamente
     renderAreaDescription(a);
   });
+  renderRolesSummary();
 }
 
 document.addEventListener('keydown', e => {
@@ -1616,7 +1624,29 @@ function startPolling() {
       const data = await res.json();
       if (!data.state) return;
       const currentArea = SLIDE_AREA[cur];
-      // Sincronizar áreas que NO son la activa (para no pisar edición en vivo)
+      let changed = false;
+
+      // 1. Sincronizar qué áreas participan (definido por Owner)
+      if (data.state.requiredAreas) {
+        Object.assign(st.requiredAreas, data.state.requiredAreas);
+        Object.entries(st.requiredAreas).forEach(([area, on]) => {
+          document.getElementById('art-' + area)?.classList.toggle('on', on);
+        });
+        changed = true;
+      }
+
+      // 2. Sincronizar tipos de evaluación (definido por Owner/Abastecimiento)
+      if (data.state.evalTypes) {
+        Object.assign(st.evalTypes, data.state.evalTypes);
+        Object.entries(st.evalTypes).forEach(([type, on]) => {
+          document.getElementById('et-' + type)?.classList.toggle('on', on);
+          document.getElementById('ec-' + type)?.classList.toggle('active', on);
+          document.getElementById('ec-' + type)?.classList.toggle('inactive', !on);
+        });
+        changed = true;
+      }
+
+      // 3. Sincronizar decisiones de áreas (sin pisar el área activa)
       AREAS.forEach(area => {
         if (area === currentArea) return;
         if (data.state.areas?.[area]) {
@@ -1633,15 +1663,23 @@ function startPolling() {
           }
         }
       });
-      // Sincronizar alertas (compartidas entre áreas — "PR entre áreas")
-      // Solo actualizar si ningún textarea de alertas tiene el foco (para no pisar edición activa)
+
+      // 4. Sincronizar alertas — no pisar si el usuario está escribiendo un comentario
       const focused = document.activeElement;
       const editingAlert = focused && focused.classList.contains('alert-cmt');
       if (!editingAlert && Array.isArray(data.state.alerts)) {
         st.alerts = normalizeAlerts(data.state.alerts);
-        renderAllAlerts(); // Re-renderiza todas las áreas para reflejar cambios
+        renderAllAlerts();
+        changed = true;
       }
-      // Re-renderizar resúmenes cruzados
+
+      // 5. Si cambió la configuración del Owner, refrescar navegación y descripciones
+      if (changed) {
+        updateNav();
+        renderAbastRecap();
+      }
+
+      // 6. Re-renderizar resúmenes cruzados
       if (currentArea && AREAS.includes(currentArea)) renderCrossAreaSummary(currentArea);
     } catch(e) {}
   }, 4000);
