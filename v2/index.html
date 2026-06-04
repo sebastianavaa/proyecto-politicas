@@ -1334,10 +1334,10 @@ function renderCrossAreaSummary(area) {
   if (!container) return;
 
   const AREA_ALERT_DOMAIN = {
-    finanzas:      a => a.group === 'Tributario' || a.group === 'Financiero',
-    legal:         a => a.group === 'Legal y Societario',
-    cumplimiento:  a => a.group === 'Laboral' || a.group === 'Cumplimiento',
-    abastecimiento:() => true
+    finanzas:     a => a.group === 'Tributario' || a.group === 'Financiero',
+    legal:        a => a.group === 'Legal y Societario',
+    cumplimiento: a => a.group === 'Laboral' || a.group === 'Cumplimiento',
+    abastecimiento: a => false
   };
 
   const cards = AREAS.filter(a => a !== area && st.requiredAreas[a]).map(a => {
@@ -1545,10 +1545,9 @@ function renderCompactAreaAlerts(containerId) {
   const SEV_COLOR = { leve:'#16A34A', media:'#D97706', grave:'#DC2626' };
   const SEV_BG    = { leve:'#F0FDF4', media:'#FFFBEB', grave:'#FEF2F2' };
   const DOMAIN = {
-    finanzas:      g => g==='Tributario'||g==='Financiero',
-    legal:         g => g==='Legal y Societario',
-    cumplimiento:  g => g==='Laboral'||g==='Cumplimiento',
-    abastecimiento:() => true
+    finanzas:     g => g==='Tributario'||g==='Financiero',
+    legal:        g => g==='Legal y Societario',
+    cumplimiento: g => g==='Laboral'||g==='Cumplimiento'
   };
   let html = '';
   AREAS.forEach(area => {
