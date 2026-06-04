@@ -831,6 +831,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;">Resumen de decisiones</div>
     <div class="report-areas" id="syncReportAreas"></div>
     <div class="divider"></div>
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;">Perspectiva de cada área sobre sus alertas</div>
+    <div id="syncAreaComments" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:1rem;font-size:.8rem;line-height:1.7;max-height:300px;overflow-y:auto;"></div>
+    <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;">Alertas configuradas (solo activas)</div>
     <div id="syncReportAlerts" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem 1rem;font-size:.8rem;line-height:1.7;max-height:200px;overflow-y:auto;"></div>
     <div class="divider"></div>
@@ -1295,25 +1298,39 @@ function renderAbastAlerts() {
 
 function renderReviewAlerts(area) {
   const cont = document.getElementById('alerts-' + area); if (!cont) return;
-  let html = '', lastGroup = null, any = false;
+  let html = '', lastGroup = null;
   ALERTS.forEach((meta, i) => {
-    if (meta.area !== area) return;
-    any = true;
     const a = st.alerts[i];
     if (meta.group !== lastGroup) {
-      const count = ALERTS.filter(x => x.area === area && x.group === meta.group).length;
-      html += `<div class="alert-group-title" style="margin-top:.6rem">${meta.icon} ${meta.group} <span class="ag-count">${count}</span></div>`;
+      const count = ALERTS.filter(x => x.group === meta.group).length;
+      html += `<div class="alert-group-title" style="margin-top:.75rem">${meta.icon} ${meta.group} <span class="ag-count">${count}</span></div>`;
       lastGroup = meta.group;
     }
-    const tag = a.activa
-      ? `<span class="sev sev-${a.severidad}">${SEV_LABEL[a.severidad]}</span>`
-      : `<span class="alert-off-tag">No monitoreada</span>`;
-    html += `<div class="alert-rev ${a.activa ? '' : 'off'}">
-      <div class="alert-rev-top"><span class="a-label">${meta.label}</span>${tag}</div>
-      <textarea class="alert-cmt" rows="1" placeholder="Comentario del área sobre esta alerta…" oninput="setAlertComment(${i},this.value)">${a.comentario || ''}</textarea>
-    </div>`;
+    const isOwn = meta.area === area;
+    if (isOwn) {
+      // Editable: toggle + severidad + comentario (como Abastecimiento)
+      const sevBtns = SEV_ORDER.map(s =>
+        `<button class="sev-opt ${a.severidad === s ? 'on' : ''}" data-sev="${s}" onclick="setAlertSeverity(${i},'${s}')">${SEV_LABEL[s]}</button>`
+      ).join('');
+      html += `<div class="alert-cfg ${a.activa ? 'on' : 'off'}">
+        <div class="alert-cfg-top">
+          <div class="a-toggle" onclick="setAlertActive(${i})"></div>
+          <span class="a-label">${meta.label}</span>
+          <span class="sev-sel">${sevBtns}</span>
+        </div>
+        <textarea class="alert-cmt" rows="1" placeholder="Por qué es importante para ${AREA_LABELS[area]}…" oninput="setAlertComment(${i},this.value)">${a.comentario || ''}</textarea>
+      </div>`;
+    } else {
+      // Lectura: solo badge severidad
+      const tag = a.activa
+        ? `<span class="sev sev-${a.severidad}">${SEV_LABEL[a.severidad]}</span>`
+        : `<span class="alert-off-tag">No monitoreada</span>`;
+      html += `<div class="alert-rev ${a.activa ? '' : 'off'}">
+        <div class="alert-rev-top"><span class="a-label">${meta.label}</span><span style="font-size:.65rem;color:var(--gray);font-weight:600">${AREA_LABELS[meta.area]}</span>${tag}</div>
+      </div>`;
+    }
   });
-  cont.innerHTML = any ? html : '';
+  cont.innerHTML = html;
 }
 
 function renderAbastRecap() {
@@ -1363,6 +1380,44 @@ function renderAllAlerts() {
   });
 }
 
+function renderSyncAreaComments() {
+  const cont = document.getElementById('syncAreaComments');
+  if (!cont) return;
+  let html = '';
+  AREAS.forEach(area => {
+    if (!st.requiredAreas[area]) return;
+    // Encontrar alertas que esta área configura (meta.area === area)
+    const areaAlerts = ALERTS.map((meta, i) => ({ meta, i })).filter(({meta}) => meta.area === area);
+    const activeAlerts = areaAlerts.filter(({i}) => st.alerts[i].activa).map(({meta, i}) => ({
+      label: meta.label,
+      sev: st.alerts[i].severidad,
+      cmt: st.alerts[i].comentario
+    }));
+    const inactiveCount = areaAlerts.filter(({i}) => !st.alerts[i].activa).length;
+
+    html += `<div style="padding:.75rem 0;border-bottom:1px solid var(--gray-border);">
+      <div style="font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:.5rem;">${AREA_LABELS[area]}</div>
+      <div style="font-size:.75rem;color:var(--gray);margin-bottom:.375rem;">
+        ✓ <strong>${activeAlerts.length}</strong> alerta(s) activada(s) ${inactiveCount > 0 ? `| ✕ ${inactiveCount} desactivada(s)` : ''}
+      </div>`;
+
+    if (activeAlerts.length > 0) {
+      html += `<div style="background:var(--gray-light);border-radius:.5rem;padding:.5rem;font-size:.75rem;margin-bottom:.5rem;">`;
+      activeAlerts.forEach(a => {
+        html += `<div style="margin-bottom:.5rem;padding-bottom:.5rem;border-bottom:1px solid #e2e8f0;">
+          <div style="display:flex;gap:.5rem;align-items:flex-start;">
+            <span class="sev sev-${a.sev}">${SEV_LABEL[a.sev]}</span>
+            <div style="flex:1;line-height:1.5;">${a.label}${a.cmt ? `<div style="margin-top:.25rem;font-style:italic;color:var(--gray);">💬 ${a.cmt}</div>` : ''}</div>
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+    html += `</div>`;
+  });
+  cont.innerHTML = html;
+}
+
 // ── REPORT ──
 function buildReport() {
   // Slide 11: Sesión sincronizada
@@ -1394,8 +1449,9 @@ function buildReport() {
   }
   const syncNotesEl = document.getElementById('syncNotes');
   if (syncNotesEl) syncNotesEl.value = st.syncNotes || '';
+  renderSyncAreaComments();
 
-  // Slide 12: Reporte final (archivado)
+  // Slide 13: Reporte final (archivado)
   const areas = document.getElementById('reportAreas');
   if (areas) {
     areas.innerHTML = AREAS.filter(a => st.requiredAreas[a]).map(a => {
