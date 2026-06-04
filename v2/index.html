@@ -346,10 +346,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 /* CROSS-AREA SUMMARY (resumen dinámico de otras áreas) */
 .cross-area-summary{background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem;margin-bottom:.875rem;}
 .cross-area-summary-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;}
-.cross-area-cards{display:flex;flex-direction:column;gap:.5rem;}
-.cross-area-card{background:var(--white);border:1px solid var(--gray-border);border-radius:.625rem;padding:.75rem .875rem;}
-.cross-area-card-header{display:flex;align-items:center;gap:.625rem;margin-bottom:.5rem;}
-.cross-area-card-name{font-size:.8rem;font-weight:700;color:var(--navy);flex:1;}
+.cross-area-cards{display:flex;flex-wrap:wrap;gap:.5rem;}
+.cross-area-card{background:var(--white);border:1px solid var(--gray-border);border-radius:.625rem;padding:.625rem .75rem;width:220px;flex-shrink:0;}
+.cross-area-card-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;}
+.cross-area-card-name{font-size:.76rem;font-weight:700;color:var(--navy);flex:1;}
 .cross-area-badge{display:inline-flex;align-items:center;gap:.25rem;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:.15rem .45rem;border-radius:.25rem;width:fit-content;}
 .cross-area-badge.aprobado{background:var(--success-bg);color:var(--success);}
 .cross-area-badge.rechazado{background:var(--danger-bg);color:var(--danger);}
@@ -358,7 +358,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .cross-area-notes{font-size:.7rem;color:var(--gray);line-height:1.4;margin-top:.375rem;font-style:italic;}
 .cross-area-alert-groups{display:flex;flex-direction:column;gap:.25rem;margin-bottom:.5rem;}
 .cross-area-group-row{display:flex;align-items:center;gap:.5rem;}
-.cross-area-group-label{font-size:.68rem;color:var(--gray);width:9rem;flex-shrink:0;}
+.cross-area-group-label{font-size:.65rem;color:var(--gray);width:5.5rem;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .cross-area-group-bar{flex:1;height:.35rem;background:var(--gray-border);border-radius:.25rem;overflow:hidden;}
 .cross-area-group-fill{height:100%;background:var(--blue);border-radius:.25rem;transition:width .3s;}
 .cross-area-group-count{font-size:.68rem;font-weight:700;color:var(--navy);width:2rem;text-align:right;flex-shrink:0;}
