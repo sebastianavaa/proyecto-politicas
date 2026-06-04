@@ -70,7 +70,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .s-head h2{font-size:clamp(1.4rem,2.6vw,2rem);font-weight:800;line-height:1.15;letter-spacing:-.02em;}
 .s-head p{color:rgba(255,255,255,.5);font-size:.8375rem;margin-top:.3rem;max-width:680px;line-height:1.5;}
 .s-body{padding:1.5rem 3rem;flex:1;overflow-y:auto;}
-.scrollable{overflow-y:auto;max-height:calc(100vh - 175px);}
+.scrollable{overflow-y:auto;max-height:calc(100vh - 175px);padding-bottom:5rem;}
 .divider{height:.875rem;}
 
 /* CARDS */
@@ -892,6 +892,7 @@ const ALERTS = [
   { label:'Tiene hallazgos de Adverse Media',                      group:'Cumplimiento',       icon:'🔎', area:'cumplimiento',    sev:'leve'  },
 ];
 function defaultAlerts() { return ALERTS.map(a => ({ activa:true, severidad:a.sev, comentario:'' })); }
+
 
 // Matriz de documentos por tipo de evaluación (para el recap de Abastecimiento).
 const DOCS = [
