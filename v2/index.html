@@ -1248,15 +1248,19 @@ function setAlertActive(i)        { st.alerts[i].activa = !st.alerts[i].activa; 
 function setAlertSeverity(i, sev) { st.alerts[i].severidad = sev; renderAllAlerts(); save(); }
 function setAlertComment(i, val)  { st.alerts[i].comentario = val; save(); } // sin re-render: no pierde foco
 
+const _activeAlertTab = {};
+
 function buildAlertTabsHTML(containerId, placeholder) {
   const groups = [...new Set(ALERTS.map(a => a.group))];
-  const tabsHtml = `<div class="alert-tabs">${groups.map((g, idx) => {
+  const savedGroup = _activeAlertTab[containerId] || groups[0];
+  const tabsHtml = `<div class="alert-tabs">${groups.map(g => {
     const activeCount = ALERTS.filter((meta,i) => meta.group === g && st.alerts[i].activa).length;
     const total = ALERTS.filter(meta => meta.group === g).length;
     const icon = ALERTS.find(a => a.group === g)?.icon || '';
-    return `<button class="alert-tab${idx===0?' active':''}" onclick="switchAlertTab('${containerId}','${g}')">${icon} ${g}<span class="alert-tab-badge">${activeCount}/${total}</span></button>`;
+    const isActive = g === savedGroup;
+    return `<button class="alert-tab${isActive?' active':''}" onclick="switchAlertTab('${containerId}','${g}')">${icon} ${g}<span class="alert-tab-badge">${activeCount}/${total}</span></button>`;
   }).join('')}</div>`;
-  const panelsHtml = groups.map((g, idx) => {
+  const panelsHtml = groups.map(g => {
     const rows = ALERTS.map((meta,i) => ({meta,i})).filter(({meta}) => meta.group === g).map(({meta,i}) => {
       const a = st.alerts[i];
       const sevBtns = SEV_ORDER.map(s =>
@@ -1271,17 +1275,17 @@ function buildAlertTabsHTML(containerId, placeholder) {
         <textarea class="alert-cmt" rows="1" placeholder="${placeholder}" oninput="setAlertComment(${i},this.value)">${a.comentario||''}</textarea>
       </div>`;
     }).join('');
-    return `<div class="alert-tab-panel${idx===0?' active':''}" data-group="${g}">${rows}</div>`;
+    return `<div class="alert-tab-panel${g===savedGroup?' active':''}" data-group="${g}">${rows}</div>`;
   }).join('');
   return tabsHtml + panelsHtml;
 }
 
 function switchAlertTab(containerId, group) {
+  _activeAlertTab[containerId] = group;
   const cont = document.getElementById(containerId); if (!cont) return;
-  cont.querySelectorAll('.alert-tab').forEach(btn => {
-    const btnGroup = btn.textContent.replace(/\d+\/\d+/,'').trim().replace(/^[^\s]+\s/,'');
-    btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${group}'`));
-  });
+  cont.querySelectorAll('.alert-tab').forEach(btn =>
+    btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${group}'`))
+  );
   cont.querySelectorAll('.alert-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.group === group));
 }
 
