@@ -1330,39 +1330,102 @@ function renderCrossAreaSummary(area) {
 }
 
 // ── PROCESOS PERSONALIZADOS ──
-function renderCustomProcesses() {
-  const cont = document.getElementById('custom-processes-list'); if (!cont) return;
-  if (!st.customProcesses.length) {
-    cont.innerHTML = '<div style="font-size:.8rem;color:var(--gray);text-align:center;padding:1.5rem 0;">Sin procesos personalizados aún. Haz click en "+ Agregar proceso" para comenzar.</div>';
-    return;
-  }
-  cont.innerHTML = st.customProcesses.map((p, i) => `
-    <div class="custom-process-card" id="cp-card-${i}">
-      <div class="cp-header">
-        <div style="flex:1;min-width:0;">
-          <input class="cp-name-input" placeholder="Nombre del proceso *" value="${(p.name||'').replace(/"/g,'&quot;')}"
-            oninput="updateCustomProcess(${i},'name',this.value)">
-          <textarea class="cp-desc-input" placeholder="¿Cuándo aplica este proceso?" rows="2"
-            oninput="updateCustomProcess(${i},'description',this.value)">${p.description||''}</textarea>
-        </div>
-        <button class="cp-remove" onclick="removeCustomProcess(${i})" title="Eliminar proceso">✕</button>
-      </div>
-      <div class="cp-docs">
-        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin-bottom:.375rem;">Documentos requeridos</div>
-        <div class="cp-doc-tags" id="cp-doc-tags-${i}">${(p.docs||[]).map((d,j)=>`<span class="extra-tag">${d}<button onclick="removeCustomDoc(${i},${j})">×</button></span>`).join('')}</div>
-        <div class="extra-row" style="margin-top:.375rem;">
-          <input type="text" id="cp-doc-input-${i}" placeholder="Agregar documento..." onkeydown="if(event.key==='Enter'){addCustomDoc(${i});event.preventDefault();}">
-          <button class="btn-add" onclick="addCustomDoc(${i})">+ Agregar</button>
-        </div>
-      </div>
+const DOC_SEGMENTS = [
+  { label:'Declarativos',          indices:[0,1,2] },
+  { label:'Societarios / Legales', indices:[3,5,6,8] },
+  { label:'Tributarios',           indices:[4,7] },
+  { label:'Financieros',           indices:[9,10,11,12] }
+];
+
+function renderCPDocPicker(i) {
+  const p = st.customProcesses[i];
+  const cfg = p.docConfig || {};
+  return DOC_SEGMENTS.map(seg => `
+    <div style="margin-bottom:.625rem;">
+      <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);opacity:.5;margin-bottom:.3rem;">${seg.label}</div>
+      ${seg.indices.map(j => {
+        const s = cfg[j] || null;
+        const btnBase = 'font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:.25rem;border:1px solid;cursor:pointer;transition:all .15s;';
+        const reqSel = 'background:#DCFCE7;color:#166534;border-color:#86EFAC;';
+        const opcSel = 'background:#FFFBEB;color:#D97706;border-color:#FCD34D;';
+        const offSel = 'background:var(--gray-light);color:var(--gray);border-color:var(--gray-border);';
+        const off    = 'background:transparent;color:var(--gray);border-color:var(--gray-border);';
+        return `<div style="display:flex;align-items:center;gap:.5rem;padding:.25rem 0;border-bottom:1px solid var(--gray-light);">
+          <span style="flex:1;font-size:.76rem;color:var(--text);">${DOCS[j].name}</span>
+          <div style="display:flex;gap:.2rem;">
+            <button onclick="setCPDoc(${i},${j},'req')" style="${btnBase}${s==='req'?reqSel:off}">Req</button>
+            <button onclick="setCPDoc(${i},${j},'opc')" style="${btnBase}${s==='opc'?opcSel:off}">Opc</button>
+            <button onclick="setCPDoc(${i},${j},null)" style="${btnBase}${!s?offSel:off}">—</button>
+          </div>
+        </div>`;
+      }).join('')}
     </div>`).join('');
 }
 
+function renderCustomProcesses() {
+  const cont = document.getElementById('custom-processes-list'); if (!cont) return;
+  if (!st.customProcesses.length) {
+    cont.innerHTML = '<div style="font-size:.8rem;color:var(--gray);text-align:center;padding:1.5rem 0;">Sin procesos personalizados aún.</div>';
+    return;
+  }
+  cont.innerHTML = st.customProcesses.map((p, i) => {
+    if (!p.saved) {
+      return `<div class="custom-process-card" id="cp-card-${i}" style="margin-bottom:.75rem;">
+        <div class="cp-header">
+          <div style="flex:1;min-width:0;">
+            <input class="cp-name-input" placeholder="Nombre del proceso *" value="${(p.name||'').replace(/"/g,'&quot;')}"
+              oninput="updateCustomProcess(${i},'name',this.value)">
+            <textarea class="cp-desc-input" placeholder="¿Cuándo aplica este proceso?" rows="2"
+              oninput="updateCustomProcess(${i},'description',this.value)">${p.description||''}</textarea>
+          </div>
+          <button class="cp-remove" onclick="removeCustomProcess(${i})" title="Eliminar">✕</button>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:.25rem;">
+          <button onclick="saveCustomProcess(${i})" style="background:var(--navy);color:white;border:none;padding:.45rem 1.375rem;border-radius:.5rem;font-size:.8rem;font-weight:700;cursor:pointer;transition:background .2s;">Guardar proceso →</button>
+        </div>
+      </div>`;
+    }
+    const reqDocs = DOCS.filter((_,j) => p.docConfig?.[j]==='req');
+    const opcDocs = DOCS.filter((_,j) => p.docConfig?.[j]==='opc');
+    const docsLabel = reqDocs.length ? reqDocs.map(d=>d.name).join(' · ') : 'Sin documentos configurados';
+    return `<div class="eval-card active" style="align-items:flex-start;padding:.75rem .875rem;margin-bottom:.5rem;" id="cp-card-${i}">
+      <div class="eval-toggle on" style="margin-top:.2rem;flex-shrink:0;"></div>
+      <div style="flex:1;min-width:0;">
+        <h4 style="font-size:.875rem;font-weight:700;color:var(--navy);margin-bottom:.1rem;">${p.name}</h4>
+        ${p.description?`<div style="font-size:.72rem;color:var(--accent-dark);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem;">${p.description}</div>`:''}
+        <div class="eval-docs-list" style="display:block;">
+          ${reqDocs.length?`<strong>Requeridos:</strong> ${reqDocs.map(d=>d.name).join(' · ')}<br>`:''}
+          ${opcDocs.length?`<strong>Opcionales:</strong> ${opcDocs.map(d=>d.name).join(' · ')}`:''}
+          ${!reqDocs.length&&!opcDocs.length?'<em style="color:var(--gray)">Sin documentos configurados</em>':''}
+        </div>
+        <button class="eval-docs-toggle" onclick="toggleCPDocs(event,${i},this)" style="margin-top:.375rem;">▾ Configurar documentos</button>
+        <div id="cp-docs-${i}" style="display:none;margin-top:.5rem;padding:.625rem .75rem;background:var(--gray-light);border-radius:.5rem;">
+          ${renderCPDocPicker(i)}
+        </div>
+        <button onclick="editCustomProcess(${i})" style="font-size:.7rem;color:var(--gray);background:none;border:none;cursor:pointer;padding:.25rem 0 0;display:block;margin-top:.1rem;">✏️ Editar nombre</button>
+      </div>
+      <button class="cp-remove" onclick="removeCustomProcess(${i})" title="Eliminar">✕</button>
+    </div>`;
+  }).join('');
+}
+
 function addCustomProcess() {
-  st.customProcesses.push({ name:'', description:'', docs:[] });
+  st.customProcesses.push({ name:'', description:'', docs:[], docConfig:{}, saved:false });
   renderCustomProcesses(); save();
-  const toast = document.getElementById('add-process-toast');
-  if (toast) { toast.style.display='block'; setTimeout(()=>toast.style.display='none',3000); }
+}
+function saveCustomProcess(i) {
+  const p = st.customProcesses[i];
+  if (!(p.name||'').trim()) {
+    const inp = document.querySelector(`#cp-card-${i} .cp-name-input`);
+    if (inp) { inp.style.borderColor='var(--danger)'; inp.focus(); setTimeout(()=>inp.style.borderColor='',1500); }
+    return;
+  }
+  p.saved = true;
+  renderCustomProcesses(); save();
+}
+function editCustomProcess(i) {
+  st.customProcesses[i].saved = false;
+  renderCustomProcesses(); save();
 }
 function removeCustomProcess(i) {
   st.customProcesses.splice(i, 1);
@@ -1371,15 +1434,31 @@ function removeCustomProcess(i) {
 function updateCustomProcess(i, field, val) {
   st.customProcesses[i][field] = val; save();
 }
-function addCustomDoc(i) {
-  const inp = document.getElementById('cp-doc-input-'+i);
-  const val = inp.value.trim(); if (!val) return;
-  st.customProcesses[i].docs.push(val); inp.value = '';
-  renderCustomProcesses(); save();
+function setCPDoc(i, j, state) {
+  if (!st.customProcesses[i].docConfig) st.customProcesses[i].docConfig = {};
+  if (state === null) delete st.customProcesses[i].docConfig[j];
+  else st.customProcesses[i].docConfig[j] = state;
+  const picker = document.getElementById('cp-docs-'+i);
+  if (picker) picker.innerHTML = renderCPDocPicker(i);
+  // actualizar resumen visible
+  const p = st.customProcesses[i];
+  const reqDocs = DOCS.filter((_,jj) => p.docConfig?.[jj]==='req');
+  const opcDocs = DOCS.filter((_,jj) => p.docConfig?.[jj]==='opc');
+  const docsList = document.querySelector(`#cp-card-${i} .eval-docs-list`);
+  if (docsList) {
+    docsList.innerHTML = (reqDocs.length?`<strong>Requeridos:</strong> ${reqDocs.map(d=>d.name).join(' · ')}<br>`:'')
+      + (opcDocs.length?`<strong>Opcionales:</strong> ${opcDocs.map(d=>d.name).join(' · ')}`:'')
+      + (!reqDocs.length&&!opcDocs.length?'<em style="color:var(--gray)">Sin documentos configurados</em>':'');
+  }
+  save();
 }
-function removeCustomDoc(i, j) {
-  st.customProcesses[i].docs.splice(j, 1);
-  renderCustomProcesses(); save();
+function toggleCPDocs(event, i, btn) {
+  event.stopPropagation();
+  const el = document.getElementById('cp-docs-'+i);
+  if (!el) return;
+  const open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? '▾ Configurar documentos' : '▴ Ocultar documentos';
 }
 
 function renderAllAlerts() {
