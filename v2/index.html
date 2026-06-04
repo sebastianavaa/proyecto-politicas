@@ -815,11 +815,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;">Resumen de decisiones</div>
     <div class="report-areas" id="syncReportAreas"></div>
     <div class="divider"></div>
-    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;">Perspectiva de cada área sobre sus alertas</div>
-    <div id="syncAreaComments" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:1rem;font-size:.8rem;line-height:1.7;max-height:300px;overflow-y:auto;"></div>
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Alertas activas por área</div>
+    <div id="syncCompactAlerts"></div>
     <div class="divider"></div>
-    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;">Alertas configuradas (solo activas)</div>
-    <div id="syncReportAlerts" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem 1rem;font-size:.8rem;line-height:1.7;max-height:200px;overflow-y:auto;"></div>
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;">Perspectiva de cada área</div>
+    <div id="syncAreaComments" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:1rem;font-size:.8rem;line-height:1.7;max-height:280px;overflow-y:auto;"></div>
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Notas finales de alineación</div>
     <textarea class="notes-ta" id="syncNotes" placeholder="Observaciones finales, puntos de acuerdo, próximos pasos…" oninput="st.syncNotes=this.value;save()" style="min-height:100px;"></textarea>
@@ -845,6 +845,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Configuración acordada</div>
     <div id="reportConfig" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem;font-size:.8rem;color:var(--gray);line-height:1.9;margin-bottom:1rem;"></div>
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Alertas activas por área</div>
+    <div id="reportCompactAlerts" style="margin-bottom:1rem;"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Alertas configuradas</div>
     <div id="reportAlerts" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:.5rem 1rem 1rem;margin-bottom:1rem;"></div>
     <div style="background:var(--gray-light);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
@@ -1543,6 +1545,51 @@ function renderAllAlerts() {
   });
 }
 
+function renderCompactAreaAlerts(containerId) {
+  const cont = document.getElementById(containerId); if (!cont) return;
+  const SEV_COLOR = { leve:'#16A34A', media:'#D97706', grave:'#DC2626' };
+  const SEV_BG    = { leve:'#F0FDF4', media:'#FFFBEB', grave:'#FEF2F2' };
+  const DOMAIN = {
+    finanzas:      g => g==='Tributario'||g==='Financiero',
+    legal:         g => g==='Legal y Societario',
+    cumplimiento:  g => g==='Laboral'||g==='Cumplimiento',
+    abastecimiento:() => true
+  };
+  let html = '';
+  AREAS.forEach(area => {
+    if (!st.requiredAreas[area]) return;
+    const d = st.areas[area];
+    const estado = d.locked ? (d.decision||'aprobado') : 'pendiente';
+    const estadoLabel = { aprobado:'Aprobado', rechazado:'Rechazado', observacion:'Con observaciones', pendiente:'Pendiente' }[estado] || 'Pendiente';
+    const groups = [...new Set(ALERTS.map(a=>a.group))].filter(g => DOMAIN[area]?.(g));
+    const domainActive = ALERTS.map((m,i)=>({m,i})).filter(({m,i})=>DOMAIN[area]?.(m.group)&&st.alerts[i].activa);
+    if (!domainActive.length && !d.locked) return; // skip pending areas with no alerts
+    const groupsHtml = groups.map(g => {
+      const active = ALERTS.map((m,i)=>({m,i})).filter(({m,i})=>m.group===g&&st.alerts[i].activa);
+      if (!active.length) return '';
+      const icon = ALERTS.find(a=>a.group===g)?.icon||'';
+      const pills = active.map(({m,i}) => {
+        const s = st.alerts[i].severidad;
+        return `<span style="display:inline-flex;align-items:center;gap:.2rem;background:${SEV_BG[s]};color:${SEV_COLOR[s]};font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:.25rem;white-space:nowrap;">${m.label}</span>`;
+      }).join(' ');
+      return `<div style="display:flex;gap:.5rem;align-items:flex-start;margin-bottom:.3rem;">
+        <span style="font-size:.65rem;font-weight:700;color:var(--gray);width:7.5rem;flex-shrink:0;padding-top:.1rem;">${icon} ${g}</span>
+        <div style="display:flex;flex-wrap:wrap;gap:.25rem;">${pills}</div>
+      </div>`;
+    }).filter(Boolean).join('');
+    if (!groupsHtml) return;
+    const badgeStyle = { aprobado:'background:#F0FDF4;color:#16A34A', rechazado:'background:#FEF2F2;color:#DC2626', observacion:'background:#FFFBEB;color:#D97706', pendiente:'background:var(--gray-light);color:var(--gray)' }[estado];
+    html += `<div style="padding:.625rem .75rem;background:var(--white);border:1px solid var(--gray-border);border-radius:.625rem;margin-bottom:.375rem;">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;">
+        <span style="font-size:.78rem;font-weight:700;color:var(--navy);flex:1;">${AREA_LABELS[area]}</span>
+        <span style="font-size:.62rem;font-weight:800;padding:.1rem .4rem;border-radius:.25rem;${badgeStyle}">${estadoLabel}</span>
+      </div>
+      ${groupsHtml}
+    </div>`;
+  });
+  cont.innerHTML = html || '<div style="font-size:.75rem;color:var(--gray);padding:.25rem">Sin alertas configuradas aún</div>';
+}
+
 function renderSyncAreaComments() {
   const cont = document.getElementById('syncAreaComments');
   if (!cont) return;
@@ -1613,6 +1660,7 @@ function buildReport() {
   const syncNotesEl = document.getElementById('syncNotes');
   if (syncNotesEl) syncNotesEl.value = st.syncNotes || '';
   renderSyncAreaComments();
+  renderCompactAreaAlerts('syncCompactAlerts');
 
   // Slide 13: Reporte final (archivado)
   const areas = document.getElementById('reportAreas');
@@ -1640,6 +1688,7 @@ function buildReport() {
       <strong style="color:var(--navy)">Alertas activadas:</strong> ${st.alerts.filter(a=>a.activa).length} de 23`;
   }
 
+  renderCompactAreaAlerts('reportCompactAlerts');
   const ra = document.getElementById('reportAlerts');
   if (ra) {
     let html = '', lastGroup = null;
