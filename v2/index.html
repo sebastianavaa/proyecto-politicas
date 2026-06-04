@@ -302,6 +302,19 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 #sent-banner-close{background:none;border:none;color:rgba(255,255,255,.7);
   font-size:1rem;cursor:pointer;margin-left:.75rem;line-height:1;}
 #sent-banner-close:hover{color:white;}
+
+/* CROSS-AREA SUMMARY (resumen dinámico de otras áreas) */
+.cross-area-summary{background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem;margin-bottom:.875rem;}
+.cross-area-summary-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;}
+.cross-area-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.5rem;}
+.cross-area-card{background:var(--gray-light);border:1px solid var(--gray-border);border-radius:.625rem;padding:.75rem;display:flex;flex-direction:column;gap:.375rem;}
+.cross-area-card-name{font-size:.75rem;font-weight:700;color:var(--navy);}
+.cross-area-badge{display:inline-flex;align-items:center;gap:.25rem;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:.15rem .45rem;border-radius:.25rem;width:fit-content;}
+.cross-area-badge.aprobado{background:var(--success-bg);color:var(--success);}
+.cross-area-badge.rechazado{background:var(--danger-bg);color:var(--danger);}
+.cross-area-badge.observacion{background:var(--warn-bg);color:var(--accent-dark);}
+.cross-area-badge.pendiente{background:rgba(100,116,139,.1);color:var(--gray);}
+.cross-area-notes{font-size:.7rem;color:var(--gray);line-height:1.4;margin-top:.25rem;font-style:italic;}
 </style>
 </head>
 <body>
@@ -359,7 +372,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="eval-toggle on" id="et-express"></div>
         <div class="eval-info">
           <div class="eval-subtitle">Compra menor a USD 20.000 — Proveedor spot</div>
-          <h4>Debida Diligencia Exprés</h4>
+          <h4>Evaluación Exprés</h4>
           <p>Evaluación simplificada para friccionar lo menos posible el proceso de compras menores, manteniendo un nivel básico de due diligence.</p>
         </div>
       </div>
@@ -367,7 +380,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="eval-toggle on" id="et-completa"></div>
         <div class="eval-info">
           <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000 — Proveedor general</div>
-          <h4>Debida Diligencia Completa</h4>
+          <h4>Evaluación Completa</h4>
           <p>Evaluación más robusta acorde al volumen del contrato, con revisión más profunda en términos legales y financieros para mitigar riesgos.</p>
         </div>
       </div>
@@ -375,7 +388,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="eval-toggle on" id="et-subcontratacion"></div>
         <div class="eval-info">
           <div class="eval-subtitle">Compra a subcontratista — Proveedor servicios</div>
-          <h4>Debida Diligencia Subcontratación</h4>
+          <h4>Evaluación Subcontratación</h4>
           <p>Evaluación especializada con documentación específica para un análisis completo de proveedores subcontratados (Ley 20.123).</p>
         </div>
       </div>
@@ -383,7 +396,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="eval-toggle on" id="et-reforzada"></div>
         <div class="eval-info">
           <div class="eval-subtitle">Compra mayor a USD 100.000 — Proveedor crítico o estratégico</div>
-          <h4>Debida Diligencia Reforzada</h4>
+          <h4>Evaluación Reforzada</h4>
           <p>El nivel más exhaustivo de evaluación, con revisión detallada en cada área para una mitigación de riesgos integral.</p>
         </div>
       </div>
@@ -391,7 +404,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="eval-toggle on" id="et-internacional"></div>
         <div class="eval-info">
           <div class="eval-subtitle">Proveedor con domicilio fuera de Chile</div>
-          <h4>Debida Diligencia Internacional</h4>
+          <h4>Evaluación Internacional</h4>
           <p>Evaluación adaptada a proveedores extranjeros: documentación equivalente y verificación de sanciones globales (OFAC/ONU/UE).</p>
         </div>
       </div>
@@ -442,20 +455,87 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 5: ÁREA SOLICITANTE ── -->
+<!-- ── 5: RESUMEN DE ROLES + EXPECTATIVAS ── -->
 <div class="slide slide-std" data-n="5">
-  <div class="s-head"><div class="s-tag">Revisión por área — 1 de 6</div>
-    <h2>Solicitante</h2>
-    <p>Quien detecta la necesidad y abre el proceso. Puede ser cualquier área de la empresa.</p>
-    <div class="area-status" id="badge-solicitante">⏳ Pendiente</div>
+  <div class="s-head"><div class="s-tag">Preparación</div>
+    <h2>Roles y responsabilidades</h2>
+    <p>¿Quién participa en cada fase de la construcción de esta política?</p>
+  </div>
+  <div class="s-body scrollable">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1.5rem 0;">
+      <!-- Fase 1: Comprador de Plutto -->
+      <div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem;display:flex;flex-direction:column;gap:.625rem;">
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem;">
+          <span style="font-size:1.5rem">🏢</span>
+          <div>
+            <div style="font-size:.85rem;font-weight:800;color:var(--navy)">FASE 1</div>
+            <div style="font-size:.7rem;color:var(--gray);font-weight:600">PANORAMA GENERAL</div>
+          </div>
+        </div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.375rem;">Comprador de Plutto</div>
+        <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.25rem;display:flex;flex-direction:column;line-height:1.6;">
+          <li>✓ Revisa el panorama general</li>
+          <li>✓ Activa/desactiva tipos de evaluación</li>
+          <li>✓ Selecciona qué áreas participan</li>
+          <li>✓ Hace cambios iniciales en alertas</li>
+        </ul>
+      </div>
+
+      <!-- Fase 2: Áreas revisoras -->
+      <div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem;display:flex;flex-direction:column;gap:.625rem;">
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem;">
+          <span style="font-size:1.5rem">👥</span>
+          <div>
+            <div style="font-size:.85rem;font-weight:800;color:var(--navy)">FASE 2</div>
+            <div style="font-size:.7rem;color:var(--gray);font-weight:600">REVISIÓN POR ÁREA</div>
+          </div>
+        </div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.375rem;">Cada área (asincrónica)</div>
+        <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.25rem;display:flex;flex-direction:column;line-height:1.6;">
+          <li>✓ Revisa su especialidad</li>
+          <li>✓ Configura sus alertas</li>
+          <li>✓ Comenta y propone cambios</li>
+          <li>✓ Da visto bueno</li>
+        </ul>
+      </div>
+
+      <!-- Fase 3: Sesión sincronizada -->
+      <div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem;display:flex;flex-direction:column;gap:.625rem;">
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem;">
+          <span style="font-size:1.5rem">✅</span>
+          <div>
+            <div style="font-size:.85rem;font-weight:800;color:var(--navy)">FASE 3</div>
+            <div style="font-size:.7rem;color:var(--gray);font-weight:600">ALINEACIÓN FINAL</div>
+          </div>
+        </div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.375rem;">Todo el equipo (en vivo)</div>
+        <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.25rem;display:flex;flex-direction:column;line-height:1.6;">
+          <li>✓ Revisan cambios acumulados</li>
+          <li>✓ Toman decisiones finales</li>
+          <li>✓ Cierran la política</li>
+          <li>✓ Exportan la versión acordada</li>
+        </ul>
+      </div>
+    </div>
+    <div class="warn-box" style="margin-top:1.5rem">💡 <strong>Importante:</strong> Cada área verá TODAS las alertas (contexto completo), pero solo podrá editar las de su especialidad. El estado se actualiza en tiempo real conforme cada persona comenta y hace cambios.</div>
+  </div>
+</div>
+
+<!-- ── 6: ÁREA ABASTECIMIENTO ── -->
+<div class="slide slide-std" data-n="6">
+  <div class="s-head"><div class="s-tag">Revisión por área — 2 de 6</div>
+    <h2>Abastecimiento</h2>
+    <p>Coordina el proceso completo. Opera Plutto día a día y asegura que cada proveedor sea evaluado correctamente.</p>
+    <div class="area-status" id="badge-abastecimiento">⏳ Pendiente</div>
   </div>
   <div class="s-body scrollable">
     <div class="step-list">
-      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Ingresar la solicitud en Plutto</h4><p>Completar el formulario con nombre, RUT, servicio, monto estimado anual y datos de contacto del proveedor.</p></div></div>
-      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Adjuntar contexto relevante</h4><p>Si ya conoces al proveedor o tienes información sobre posibles riesgos, agrégala como comentario en Plutto.</p></div></div>
-      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Enviar a Abastecimiento y esperar</h4><p>Recibirás notificación cuando el proveedor sea aprobado o rechazado. No se requiere seguimiento manual.</p></div></div>
+      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Validar la solicitud y responder el filtro</h4><p>Verificar que los datos estén completos y responder las 6 preguntas del filtro de clasificación.</p></div></div>
+      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Enviar el portal al proveedor</h4><p>Plutto genera y envía automáticamente el enlace al portal. Hacer seguimiento si no responde en 3 días hábiles.</p></div></div>
+      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Asignar revisores según tipo de evaluación</h4><p>Cumplimiento siempre participa. Finanzas y Legal se suman en evaluaciones Completa, Reforzada y Subcontratación.</p></div></div>
+      <div class="step-row"><div class="step-num">4</div><div class="step-body"><h4>Registrar la decisión y cerrar el proceso</h4><p>Con todas las revisiones completadas, registrar aprobación o rechazo. El informe se adjunta al contrato o ERP.</p></div></div>
     </div>
-    <div class="warn-box">⚠️ <strong>Importante:</strong> No se debe contratar a un proveedor ni solicitarle servicios antes de que el proceso esté completado y aprobado en Plutto.</div>
+    <div class="warn-box">⏱ <strong>Tiempos objetivo:</strong> Exprés: máx. 5 días hábiles. Completa o Reforzada: máx. 10 días hábiles.</div>
     <div class="divider"></div>
     <div class="req-areas-section">
       <div class="req-areas-title">Áreas que participan en este proceso</div>
@@ -480,49 +560,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="area-req-toggle on" id="art-subcontratacion" onclick="toggleRequiredArea('subcontratacion')"></div>
       </div>
     </div>
-    <div class="divider"></div>
-    <div class="decision-section">
-      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
-      <div class="resp-row">
-        <input type="text" id="resp-name-solicitante" placeholder="Nombre completo" oninput="saveResp('solicitante','name',this.value)">
-        <input type="email" id="resp-email-solicitante" placeholder="email@empresa.com" oninput="saveResp('solicitante','email',this.value)">
-      </div>
-      <div class="decision-title">Decisión del área sobre este proceso <span style="color:var(--danger)">*</span></div>
-      <div class="decision-btns">
-        <button class="btn-dec" onclick="setDecision('solicitante','aprobado',this)">✅ Aprobado</button>
-        <button class="btn-dec" onclick="setDecision('solicitante','rechazado',this)">❌ Rechazado</button>
-        <button class="btn-dec" onclick="setDecision('solicitante','observacion',this)">✏️ Con observaciones</button>
-      </div>
-      <textarea class="notes-ta" id="notes-solicitante" placeholder="Observaciones, modificaciones o comentarios del área..." oninput="saveNotes('solicitante',this.value)"></textarea>
-      <div class="extra-row">
-        <input type="text" id="extra-solicitante" placeholder="Solicitar documento adicional..." onkeydown="if(event.key==='Enter')addExtra('solicitante')">
-        <button class="btn-add" onclick="addExtra('solicitante')">+ Agregar</button>
-      </div>
-      <div class="extra-tags" id="tags-solicitante"></div>
-      <div class="area-save-row">
-        <button class="btn-area-save" id="save-btn-solicitante" onclick="guardarArea('solicitante')">💾 Guardar sección</button>
-        <button class="btn-area-edit" id="edit-btn-solicitante" onclick="editarArea('solicitante')">✏️ Editar</button>
-        <span class="area-save-status" id="save-status-solicitante"></span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── 6: ÁREA ABASTECIMIENTO ── -->
-<div class="slide slide-std" data-n="6">
-  <div class="s-head"><div class="s-tag">Revisión por área — 2 de 6</div>
-    <h2>Abastecimiento</h2>
-    <p>Coordina el proceso completo. Opera Plutto día a día y asegura que cada proveedor sea evaluado correctamente.</p>
-    <div class="area-status" id="badge-abastecimiento">⏳ Pendiente</div>
-  </div>
-  <div class="s-body scrollable">
-    <div class="step-list">
-      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Validar la solicitud y responder el filtro</h4><p>Verificar que los datos estén completos y responder las 6 preguntas del filtro de clasificación.</p></div></div>
-      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Enviar el portal al proveedor</h4><p>Plutto genera y envía automáticamente el enlace al portal. Hacer seguimiento si no responde en 3 días hábiles.</p></div></div>
-      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Asignar revisores según tipo de evaluación</h4><p>Cumplimiento siempre participa. Finanzas y Legal se suman en evaluaciones Completa, Reforzada y Subcontratación.</p></div></div>
-      <div class="step-row"><div class="step-num">4</div><div class="step-body"><h4>Registrar la decisión y cerrar el proceso</h4><p>Con todas las revisiones completadas, registrar aprobación o rechazo. El informe se adjunta al contrato o ERP.</p></div></div>
-    </div>
-    <div class="warn-box">⏱ <strong>Tiempos objetivo:</strong> Exprés: máx. 5 días hábiles. Completa o Reforzada: máx. 10 días hábiles.</div>
     <div class="divider"></div>
     <div class="recap-box">
       <div class="recap-title">Procesos de evaluación activos</div>
@@ -571,6 +608,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="area-status" id="badge-cumplimiento">⏳ Pendiente</div>
   </div>
   <div class="s-body scrollable">
+    <div class="cross-area-summary" id="cross-summary-cumplimiento">
+      <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
+      <div class="cross-area-cards" id="cross-summary-cumplimiento-cards"></div>
+    </div>
     <div class="step-list">
       <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Revisar la declaración jurada y el formulario</h4><p>Verificar que el proveedor completó correctamente las declaraciones y que los beneficiarios finales estén identificados.</p></div></div>
       <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Analizar el screening automático de Plutto</h4><p>Revisar cada alerta, determinar si es falso positivo o riesgo real, y registrar la justificación.</p></div></div>
@@ -622,6 +663,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="area-status" id="badge-finanzas">⏳ Pendiente</div>
   </div>
   <div class="s-body scrollable">
+    <div class="cross-area-summary" id="cross-summary-finanzas">
+      <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
+      <div class="cross-area-cards" id="cross-summary-finanzas-cards"></div>
+    </div>
     <div class="step-list">
       <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Revisar la carpeta tributaria y el informe DICOM</h4><p>Verificar ingresos de los últimos 24 meses, detectar meses sin facturación y revisar morosidades.</p></div></div>
       <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Proponer condiciones financieras según el riesgo</h4><p>Si hay fragilidad financiera, proponer: garantía bancaria, seguro de cumplimiento, anticipo cero o pagos por hito.</p></div></div>
@@ -671,6 +716,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="area-status" id="badge-legal">⏳ Pendiente</div>
   </div>
   <div class="s-body scrollable">
+    <div class="cross-area-summary" id="cross-summary-legal">
+      <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
+      <div class="cross-area-cards" id="cross-summary-legal-cards"></div>
+    </div>
     <div class="step-list">
       <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Validar la personería y vigencia societaria</h4><p>Verificar en el Registro de Comercio que la empresa existe, el representante legal tiene poderes vigentes y no hay restricciones societarias.</p></div></div>
       <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Revisar cláusulas requeridas del contrato</h4><p>Cláusula anticorrupción, derecho de auditoría, terminación por incumplimiento de DD, protección de datos personales.</p></div></div>
@@ -715,6 +764,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="area-status" id="badge-subcontratacion">⏳ Pendiente</div>
   </div>
   <div class="s-body scrollable">
+    <div class="cross-area-summary" id="cross-summary-subcontratacion">
+      <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
+      <div class="cross-area-cards" id="cross-summary-subcontratacion-cards"></div>
+    </div>
     <div class="step-list">
       <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Verificar F-30 y F-30-1 actualizados</h4><p>Formularios de la Dirección del Trabajo que acreditan cotizaciones previsionales al día. Deben ser del mes en curso.</p></div></div>
       <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Revisar SSOMA y certificado de siniestralidad</h4><p>Validar que el proveedor tiene protocolos de seguridad activos y tasa de accidentabilidad aceptable.</p></div></div>
@@ -751,11 +804,36 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 11: REPORTE FINAL ── -->
+<!-- ── 11: SESIÓN SINCRONIZADA ── -->
 <div class="slide slide-std" data-n="11">
-  <div class="s-head"><div class="s-tag">Reporte final</div>
-    <h2>Resumen de la sesión</h2>
-    <p>Vista consolidada de todo lo acordado. Envía para registrar el acuerdo con el equipo Plutto.</p>
+  <div class="s-head"><div class="s-tag">Sesión sincronizada</div>
+    <h2>Alineación final del equipo</h2>
+    <p>Últimos cambios, decisiones finales y cierre de la política.</p>
+  </div>
+  <div class="s-body scrollable">
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;">Resumen de decisiones</div>
+    <div class="report-areas" id="syncReportAreas"></div>
+    <div class="divider"></div>
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;">Alertas configuradas (solo activas)</div>
+    <div id="syncReportAlerts" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem 1rem;font-size:.8rem;line-height:1.7;max-height:200px;overflow-y:auto;"></div>
+    <div class="divider"></div>
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Notas finales de alineación</div>
+    <textarea class="notes-ta" id="syncNotes" placeholder="Observaciones finales, puntos de acuerdo, próximos pasos…" oninput="st.syncNotes=this.value;save()" style="min-height:100px;"></textarea>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-top:1rem;">
+      <div>
+        <div style="font-size:.875rem;font-weight:700;color:var(--navy);">¿Política cerrada?</div>
+        <div style="font-size:.8rem;color:var(--gray);">Se enviará el reporte y la política quedará registrada.</div>
+      </div>
+      <button class="btn-send" id="syncSendBtn" onclick="enviar()">📤 Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 12: REPORTE FINAL ── -->
+<div class="slide slide-std" data-n="12">
+  <div class="s-head"><div class="s-tag">Reporte archivado</div>
+    <h2>Resumen completo de la sesión</h2>
+    <p>Vista consolidada de todo lo acordado. Este reporte fue enviado al equipo Plutto.</p>
   </div>
   <div class="s-body scrollable">
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;">Estado por área</div>
@@ -791,12 +869,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 11;
+const TOTAL = 12;
 let cur = 1;
 
-const AREAS = ['solicitante','abastecimiento','cumplimiento','finanzas','legal','subcontratacion'];
+const AREAS = ['abastecimiento','cumplimiento','finanzas','legal','subcontratacion'];
 const AREA_LABELS = { solicitante:'Solicitante', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal', subcontratacion:'Subcontratación' };
 const AREA_SLIDE = { solicitante:5, abastecimiento:6, cumplimiento:7, finanzas:8, legal:9, subcontratacion:10 };
+const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => [v, k]));
 
 // Metadata de las 23 alertas: etiqueta, grupo, área revisora dueña y severidad recomendada por Plutto.
 // La severidad y el on/off se CONFIGURAN en Abastecimiento (hub central).
@@ -852,9 +931,8 @@ const DOCS = [
 
 function isSlideVisible(n) {
   const entry = Object.entries(AREA_SLIDE).find(([,s]) => s === n);
-  if (!entry) return true;
+  if (!entry) return true; // Slides no-área (cover, legal, tipos, docs, roles, sync, reporte) siempre visibles
   const [area] = entry;
-  if (area === 'solicitante') return true;
   return st.requiredAreas[area] !== false;
 }
 
@@ -881,6 +959,7 @@ const st = {
   },
   alerts: defaultAlerts(),
   sentAt:'',
+  syncNotes:'',
 };
 
 // ── NAVIGATION ──
@@ -919,9 +998,9 @@ function updateNav() {
 }
 
 // "Revisión por área — X de N": N y X se calculan según las áreas activas,
-// para que al desactivar áreas no quede un "6 de 6" desactualizado.
+// para que al desactivar áreas no quede un "5 de 5" desactualizado.
 function updateAreaTags() {
-  const visAreas = AREAS.filter(a => a === 'solicitante' || st.requiredAreas[a]);
+  const visAreas = AREAS.filter(a => st.requiredAreas[a]);
   const total = visAreas.length;
   visAreas.forEach((a, i) => {
     const tag = document.querySelector(`.slide[data-n="${AREA_SLIDE[a]}"] .s-tag`);
@@ -1227,17 +1306,68 @@ function renderAbastRecap() {
   }
 }
 
+function renderCrossAreaSummary(area) {
+  const container = document.getElementById('cross-summary-' + area + '-cards');
+  if (!container) return;
+  const cards = AREAS.filter(a => a !== area && st.requiredAreas[a]).map(a => {
+    const d = st.areas[a];
+    const decision = d.decision || 'pendiente';
+    const decisionLabels = { aprobado:'✅ Aprobado', rechazado:'❌ Rechazado', observacion:'✏️ Con observaciones', pendiente:'⏳ Pendiente' };
+    const notesPreview = d.notes ? d.notes.substring(0, 50) + (d.notes.length > 50 ? '…' : '') : '';
+    return `<div class="cross-area-card">
+      <div class="cross-area-card-name">${AREA_LABELS[a]}</div>
+      <div class="cross-area-badge ${decision}">${decisionLabels[decision]}</div>
+      ${notesPreview ? `<div class="cross-area-notes">"${notesPreview}"</div>` : ''}
+    </div>`;
+  }).join('');
+  container.innerHTML = cards || '<div style="grid-column:1/-1;font-size:.75rem;color:var(--gray);padding:.5rem">Sin áreas activas</div>';
+}
+
 function renderAllAlerts() {
   renderAbastAlerts();
   renderAbastRecap();
-  ['cumplimiento','finanzas','legal','subcontratacion'].forEach(renderReviewAlerts);
+  ['cumplimiento','finanzas','legal','subcontratacion'].forEach(a => {
+    renderReviewAlerts(a);
+    renderCrossAreaSummary(a);
+  });
 }
 
 // ── REPORT ──
 function buildReport() {
+  // Slide 11: Sesión sincronizada
+  const syncAreas = document.getElementById('syncReportAreas');
+  if (syncAreas) {
+    syncAreas.innerHTML = AREAS.filter(a => st.requiredAreas[a]).map(a => {
+      const d = st.areas[a];
+      const s = d.decision || 'pendiente';
+      const sl = {aprobado:'✅ Aprobado',rechazado:'❌ Rechazado',observacion:'✏️ Con observaciones',pendiente:'⏳ Pendiente'};
+      const resp = d.responsible?.name ? `<div style="font-size:.7rem;color:var(--gray);margin-top:.2rem;">👤 ${d.responsible.name}</div>` : '';
+      return `<div class="report-area"><h4>${AREA_LABELS[a]}</h4>
+        <div class="rs ${s}">${sl[s]}</div>
+        ${resp}</div>`;
+    }).join('');
+  }
+  const syncAlerts = document.getElementById('syncReportAlerts');
+  if (syncAlerts) {
+    let html = '';
+    ALERTS.forEach((meta, i) => {
+      const a = st.alerts[i];
+      if (!a.activa) return;
+      html += `<div style="padding:.2rem 0;border-bottom:1px solid var(--gray-border)">
+        <div style="display:flex;gap:.5rem;align-items:center;font-size:.75rem">
+          <span style="flex:1">${meta.label}</span>
+          <span class="sev sev-${a.severidad}">${SEV_LABEL[a.severidad]}</span>
+        </div></div>`;
+    });
+    syncAlerts.innerHTML = html || '<div style="font-size:.75rem;color:var(--gray);padding:.5rem;">Sin alertas activas</div>';
+  }
+  const syncNotesEl = document.getElementById('syncNotes');
+  if (syncNotesEl) syncNotesEl.value = st.syncNotes || '';
+
+  // Slide 12: Reporte final (archivado)
   const areas = document.getElementById('reportAreas');
   if (areas) {
-    areas.innerHTML = AREAS.filter(a => a === 'solicitante' || st.requiredAreas[a]).map(a => {
+    areas.innerHTML = AREAS.filter(a => st.requiredAreas[a]).map(a => {
       const d = st.areas[a];
       const s = d.decision || 'pendiente';
       const sl = {aprobado:'✅ Aprobado',rechazado:'❌ Rechazado',observacion:'✏️ Con observaciones',pendiente:'⏳ Pendiente','no-aplica':'— No aplica'};
@@ -1282,7 +1412,7 @@ function buildReport() {
   }
 
   // Validar áreas requeridas con detalle de qué falta
-  const allRequired = ['solicitante', ...Object.keys(st.requiredAreas).filter(a => st.requiredAreas[a])];
+  const allRequired = Object.keys(st.requiredAreas).filter(a => st.requiredAreas[a]);
   const areaErrors = allRequired.reduce((acc, a) => {
     const d = st.areas[a];
     const missing = [];
@@ -1306,8 +1436,12 @@ function buildReport() {
 
 // ── SEND ──
 async function enviar() {
-  const btn = document.getElementById('sendBtn');
-  if (btn) { btn.textContent='⏳ Enviando…'; btn.classList.add('saving'); }
+  // Detectar qué botón fue clickeado (slide 11 o 12)
+  const btn = document.getElementById('sendBtn') || document.getElementById('syncSendBtn');
+  const btnBoth = [document.getElementById('sendBtn'), document.getElementById('syncSendBtn')];
+  btnBoth.forEach(b => {
+    if (b) { b.textContent='⏳ Enviando…'; b.classList.add('saving'); }
+  });
   const payload = {
     sessionId: st.sessionId,
     email: st.email, client: st.client, timestamp: new Date().toISOString(),
@@ -1321,6 +1455,7 @@ async function enviar() {
       ...(a==='cumplimiento' ? { exceptions: st.areas[a].exceptions } : {}),
       ...(a==='finanzas' ? { signals: st.areas[a].signals } : {}),
     }])),
+    syncNotes: st.syncNotes,
     alertsActive: st.alerts.filter(a => a.activa).length,
     alerts: ALERTS.map((m, i) => ({
       alerta: m.label, grupo: m.group, area: m.area,
@@ -1347,13 +1482,17 @@ async function enviar() {
     st.sentAt = sentAt;
     save(); // persiste el envío en el estado compartido (lo ven todas las áreas)
     showSentBanner(sentAt);
-    if (btn) { btn.textContent='✅ Enviado'; btn.classList.remove('saving'); btn.classList.add('ok'); }
+    btnBoth.forEach(b => {
+      if (b) { b.textContent='✅ Enviado'; b.classList.remove('saving'); b.classList.add('ok'); }
+    });
     const toast = document.getElementById('send-toast');
     if (toast) { toast.style.display='block'; setTimeout(()=>toast.style.display='none',4000); }
-    setTimeout(()=>{ if(btn){ btn.textContent='📤 Enviar reporte'; btn.classList.remove('ok'); }},3000);
+    setTimeout(()=>{ btnBoth.forEach(b => { if(b){ b.textContent='📤 Enviar reporte'; b.classList.remove('ok'); }});},3000);
   } else {
-    if (btn) { btn.textContent='❌ Error al enviar'; btn.classList.remove('saving'); btn.classList.add('error'); }
-    setTimeout(()=>{ if(btn){ btn.textContent='📤 Enviar reporte'; btn.classList.remove('error'); }},4000);
+    btnBoth.forEach(b => {
+      if (b) { b.textContent='❌ Error al enviar'; b.classList.remove('saving'); b.classList.add('error'); }
+    });
+    setTimeout(()=>{ btnBoth.forEach(b => { if(b){ b.textContent='📤 Enviar reporte'; b.classList.remove('error'); }});},4000);
   }
 }
 
@@ -1380,6 +1519,44 @@ function saveRemote() {
   }, 1000);
 }
 
+let _pollInterval = null;
+function startPolling() {
+  if (_pollInterval || !st.sessionId) return;
+  _pollInterval = setInterval(async () => {
+    if (!st.sessionId) return;
+    try {
+      const res = await fetch(API_URL + '?s=' + encodeURIComponent(st.sessionId));
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.state) return;
+      // Solo actualizar áreas que NO son la activa (para no pisar edición en vivo)
+      const currentArea = SLIDE_AREA[cur];
+      AREAS.forEach(area => {
+        if (area === currentArea) return;
+        if (data.state.areas?.[area]) {
+          const oldDecision = st.areas[area].decision;
+          Object.assign(st.areas[area], data.state.areas[area]);
+          // Si cambió la decisión, re-renderizar badge
+          if (oldDecision !== data.state.areas[area].decision) {
+            const badge = document.getElementById('badge-' + area);
+            if (badge) {
+              const d = data.state.areas[area].decision || 'pendiente';
+              badge.className = 'area-status ' + d;
+              const labels = { aprobado:'✅ Aprobado', rechazado:'❌ Rechazado', observacion:'✏️ Con observaciones', pendiente:'⏳ Pendiente' };
+              badge.textContent = labels[d] || '⏳ Pendiente';
+            }
+          }
+        }
+      });
+      // Re-renderizar resúmenes cruzados en pantalla actual
+      if (currentArea && AREAS.includes(currentArea)) renderCrossAreaSummary(currentArea);
+    } catch(e) {}
+  }, 4000);
+}
+function stopPolling() {
+  if (_pollInterval) { clearInterval(_pollInterval); _pollInterval = null; }
+}
+
 async function loadRemote() {
   if (!st.sessionId) return;
   try {
@@ -1389,6 +1566,7 @@ async function loadRemote() {
     if (data && data.state) {
       mergeState(data.state);
       applyStateToUI();
+      startPolling(); // Iniciar polling después de cargar estado
     }
   } catch(e) {}
 }
@@ -1399,6 +1577,7 @@ function mergeState(d) {
   if (d.email) st.email = d.email;
   if (d.client) st.client = d.client;
   if (d.sentAt) st.sentAt = d.sentAt;
+  if (d.syncNotes) st.syncNotes = d.syncNotes;
   if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
   if (d.requiredAreas) Object.assign(st.requiredAreas, d.requiredAreas);
   if (d.areas) AREAS.forEach(a => { if (d.areas[a]) Object.assign(st.areas[a], d.areas[a]); });
