@@ -1414,6 +1414,10 @@ function renderCustomProcesses() {
 function addCustomProcess() {
   st.customProcesses.push({ name:'', description:'', docs:[], docConfig:{}, saved:false });
   renderCustomProcesses(); save();
+  setTimeout(() => {
+    const newCard = document.getElementById('cp-card-'+(st.customProcesses.length-1));
+    if (newCard) newCard.scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 50);
 }
 function saveCustomProcess(i) {
   const p = st.customProcesses[i];
