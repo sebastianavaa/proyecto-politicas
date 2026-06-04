@@ -364,51 +364,47 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <!-- ── 3: TIPOS DE EVALUACIÓN ── -->
 <div class="slide slide-std" data-n="3">
-  <div class="s-head"><div class="s-tag">Recomendación de Plutto</div><h2>Plutto te recomienda estos 5 procesos</h2>
-  <p>Según tu operación, estos son los tipos de evaluación que recomendamos activar. Puedes activar o desactivar cada uno según tu realidad.</p></div>
+  <div class="s-head"><div class="s-tag">Los 5 procesos</div><h2>¿Qué evalúa Plutto según el tipo de proveedor?</h2>
+  <p>Cada proveedor entra por un proceso distinto según su riesgo y volumen de compra. Así defines qué tan profundo va el análisis.</p></div>
   <div class="s-body scrollable">
     <div class="eval-cards">
-      <div class="eval-card active" id="ec-express" onclick="toggleEval('express')">
-        <div class="eval-toggle on" id="et-express"></div>
+      <div class="eval-card active" style="cursor:default;">
         <div class="eval-info">
-          <div class="eval-subtitle">Compra menor a USD 20.000 — Proveedor spot</div>
+          <div class="eval-subtitle">Compra menor a USD 20.000</div>
           <h4>Proveedor Spot</h4>
           <p>Evaluación simplificada para friccionar lo menos posible el proceso de compras menores, manteniendo un nivel básico de due diligence.</p>
         </div>
       </div>
-      <div class="eval-card active" id="ec-completa" onclick="toggleEval('completa')">
-        <div class="eval-toggle on" id="et-completa"></div>
+      <div class="eval-card active" style="cursor:default;">
         <div class="eval-info">
-          <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000 — Proveedor general</div>
+          <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000</div>
           <h4>Proveedor General</h4>
           <p>Evaluación más robusta acorde al volumen del contrato, con revisión más profunda en términos legales y financieros para mitigar riesgos.</p>
         </div>
       </div>
-      <div class="eval-card active" id="ec-subcontratacion" onclick="toggleEval('subcontratacion')">
-        <div class="eval-toggle on" id="et-subcontratacion"></div>
+      <div class="eval-card active" style="cursor:default;">
         <div class="eval-info">
-          <div class="eval-subtitle">Compra a subcontratista — Proveedor servicios</div>
-          <h4>Subcontratista</h4>
-          <p>Evaluación especializada con documentación específica para un análisis completo de proveedores subcontratados (Ley 20.123).</p>
+          <div class="eval-subtitle">Servicio con personal en faena</div>
+          <h4>Proveedor de Servicios</h4>
+          <p>Evaluación especializada con documentación laboral y previsional para proveedores subcontratados. Aplica Ley 20.123.</p>
         </div>
       </div>
-      <div class="eval-card active" id="ec-reforzada" onclick="toggleEval('reforzada')">
-        <div class="eval-toggle on" id="et-reforzada"></div>
+      <div class="eval-card active" style="cursor:default;">
         <div class="eval-info">
-          <div class="eval-subtitle">Compra mayor a USD 100.000 — Proveedor crítico o estratégico</div>
+          <div class="eval-subtitle">Compra mayor a USD 100.000</div>
           <h4>Proveedor Crítico</h4>
           <p>El nivel más exhaustivo de evaluación, con revisión detallada en cada área para una mitigación de riesgos integral.</p>
         </div>
       </div>
-      <div class="eval-card active" id="ec-internacional" onclick="toggleEval('internacional')">
-        <div class="eval-toggle on" id="et-internacional"></div>
+      <div class="eval-card active" style="cursor:default;">
         <div class="eval-info">
           <div class="eval-subtitle">Proveedor con domicilio fuera de Chile</div>
-          <h4>Internacional</h4>
+          <h4>Proveedor Internacional</h4>
           <p>Evaluación adaptada a proveedores extranjeros: documentación equivalente y verificación de sanciones globales (OFAC/ONU/UE).</p>
         </div>
       </div>
     </div>
+    <div class="warn-box" style="margin-top:.875rem">💡 <strong>En la siguiente etapa</strong> el Owner seleccionará qué procesos activar para su empresa y qué áreas participarán en cada evaluación.</div>
   </div>
 </div>
 
@@ -423,9 +419,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <th style="min-width:210px;">Documento</th>
           <th style="text-align:center;">Spot</th>
           <th style="text-align:center;">General</th>
-          <th style="text-align:center;">Subcontratista</th>
+          <th style="text-align:center;">Proveedor de Servicios</th>
           <th style="text-align:center;">Crítico</th>
-          <th style="text-align:center;">Internacional</th>
+          <th style="text-align:center;">Proveedor Internacional</th>
         </tr></thead>
         <tbody>
           <tr><td>Declaración jurada del proveedor</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
@@ -463,10 +459,45 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="area-status" id="badge-owner">⏳ Pendiente</div>
   </div>
   <div class="s-body scrollable">
-    <div class="step-list">
-      <div class="step-row"><div class="step-num">1</div><div class="step-body"><h4>Selecciona los tipos de evaluación que necesitas</h4><p>Define cuáles procesos de due diligence serán obligatorios en tu empresa según el riesgo y monto de las compras.</p></div></div>
-      <div class="step-row"><div class="step-num">2</div><div class="step-body"><h4>Elige qué áreas participan</h4><p>Selecciona cuáles equipos revisarán a los proveedores. Cumplimiento siempre participa, el resto es opcional.</p></div></div>
-      <div class="step-row"><div class="step-num">3</div><div class="step-body"><h4>Revisa la configuración de alertas</h4><p>Abastecimiento definirá la severidad (Leve/Media/Grave) y comentarios en cada alerta durante la próxima fase.</p></div></div>
+    <div class="req-areas-section" style="margin-bottom:0;border-bottom:none;border-radius:.875rem .875rem 0 0;">
+      <div class="req-areas-title">Procesos de evaluación activos</div>
+      <div class="eval-cards" style="gap:.4rem;">
+        <div class="eval-card active" id="ec-express" onclick="toggleEval('express')" style="padding:.65rem .875rem;">
+          <div class="eval-toggle on" id="et-express"></div>
+          <div class="eval-info">
+            <div class="eval-subtitle">Compra menor a USD 20.000</div>
+            <h4>Proveedor Spot</h4>
+          </div>
+        </div>
+        <div class="eval-card active" id="ec-completa" onclick="toggleEval('completa')" style="padding:.65rem .875rem;">
+          <div class="eval-toggle on" id="et-completa"></div>
+          <div class="eval-info">
+            <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000</div>
+            <h4>Proveedor General</h4>
+          </div>
+        </div>
+        <div class="eval-card active" id="ec-subcontratacion" onclick="toggleEval('subcontratacion')" style="padding:.65rem .875rem;">
+          <div class="eval-toggle on" id="et-subcontratacion"></div>
+          <div class="eval-info">
+            <div class="eval-subtitle">Servicio con personal en faena</div>
+            <h4>Proveedor de Servicios</h4>
+          </div>
+        </div>
+        <div class="eval-card active" id="ec-reforzada" onclick="toggleEval('reforzada')" style="padding:.65rem .875rem;">
+          <div class="eval-toggle on" id="et-reforzada"></div>
+          <div class="eval-info">
+            <div class="eval-subtitle">Compra mayor a USD 100.000</div>
+            <h4>Proveedor Crítico</h4>
+          </div>
+        </div>
+        <div class="eval-card active" id="ec-internacional" onclick="toggleEval('internacional')" style="padding:.65rem .875rem;">
+          <div class="eval-toggle on" id="et-internacional"></div>
+          <div class="eval-info">
+            <div class="eval-subtitle">Proveedor con domicilio fuera de Chile</div>
+            <h4>Proveedor Internacional</h4>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="divider"></div>
     <div class="req-areas-section">
@@ -1341,7 +1372,7 @@ function renderReviewAlerts(area) {
 }
 
 function renderAbastRecap() {
-  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', subcontratacion:'Subcontratista', reforzada:'Proveedor Crítico', internacional:'Internacional' };
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', subcontratacion:'Proveedor de Servicios', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional' };
   const active = Object.entries(st.evalTypes).filter(([,v]) => v).map(([k]) => k);
   const et = document.getElementById('abast-evaltypes');
   if (et) et.innerHTML = active.length
@@ -1477,7 +1508,7 @@ function buildReport() {
   const cfg = document.getElementById('reportConfig');
   if (cfg) {
     const types = Object.entries(st.evalTypes).filter(([,v])=>v).map(([k])=>({
-      express:'Proveedor Spot',completa:'Proveedor General',subcontratacion:'Subcontratista',reforzada:'Proveedor Crítico',internacional:'Internacional'
+      express:'Proveedor Spot',completa:'Proveedor General',subcontratacion:'Proveedor de Servicios',reforzada:'Proveedor Crítico',internacional:'Proveedor Internacional'
     }[k])).join(', ');
     cfg.innerHTML = `<strong style="color:var(--navy)">Empresa:</strong> ${st.client||'—'}<br>
       <strong style="color:var(--navy)">Email:</strong> ${st.email||'—'}<br>
