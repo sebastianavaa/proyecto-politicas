@@ -372,7 +372,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="eval-toggle on" id="et-express"></div>
         <div class="eval-info">
           <div class="eval-subtitle">Compra menor a USD 20.000 — Proveedor spot</div>
-          <h4>Evaluación Exprés</h4>
+          <h4>Proveedor Spot</h4>
           <p>Evaluación simplificada para friccionar lo menos posible el proceso de compras menores, manteniendo un nivel básico de due diligence.</p>
         </div>
       </div>
@@ -380,7 +380,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="eval-toggle on" id="et-completa"></div>
         <div class="eval-info">
           <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000 — Proveedor general</div>
-          <h4>Evaluación Completa</h4>
+          <h4>Proveedor General</h4>
           <p>Evaluación más robusta acorde al volumen del contrato, con revisión más profunda en términos legales y financieros para mitigar riesgos.</p>
         </div>
       </div>
@@ -388,7 +388,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="eval-toggle on" id="et-subcontratacion"></div>
         <div class="eval-info">
           <div class="eval-subtitle">Compra a subcontratista — Proveedor servicios</div>
-          <h4>Evaluación Subcontratación</h4>
+          <h4>Subcontratista</h4>
           <p>Evaluación especializada con documentación específica para un análisis completo de proveedores subcontratados (Ley 20.123).</p>
         </div>
       </div>
@@ -396,7 +396,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="eval-toggle on" id="et-reforzada"></div>
         <div class="eval-info">
           <div class="eval-subtitle">Compra mayor a USD 100.000 — Proveedor crítico o estratégico</div>
-          <h4>Evaluación Reforzada</h4>
+          <h4>Proveedor Crítico</h4>
           <p>El nivel más exhaustivo de evaluación, con revisión detallada en cada área para una mitigación de riesgos integral.</p>
         </div>
       </div>
@@ -404,7 +404,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div class="eval-toggle on" id="et-internacional"></div>
         <div class="eval-info">
           <div class="eval-subtitle">Proveedor con domicilio fuera de Chile</div>
-          <h4>Evaluación Internacional</h4>
+          <h4>Internacional</h4>
           <p>Evaluación adaptada a proveedores extranjeros: documentación equivalente y verificación de sanciones globales (OFAC/ONU/UE).</p>
         </div>
       </div>
@@ -421,10 +421,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <table class="dt" style="min-width:660px;">
         <thead><tr>
           <th style="min-width:210px;">Documento</th>
-          <th style="text-align:center;">Exprés</th>
-          <th style="text-align:center;">Completa</th>
-          <th style="text-align:center;">Subcontratación</th>
-          <th style="text-align:center;">Reforzada</th>
+          <th style="text-align:center;">Spot</th>
+          <th style="text-align:center;">General</th>
+          <th style="text-align:center;">Subcontratista</th>
+          <th style="text-align:center;">Crítico</th>
           <th style="text-align:center;">Internacional</th>
         </tr></thead>
         <tbody>
@@ -1341,7 +1341,7 @@ function renderReviewAlerts(area) {
 }
 
 function renderAbastRecap() {
-  const TYPE_LABEL = { express:'Exprés', completa:'Completa', subcontratacion:'Subcontratación', reforzada:'Reforzada', internacional:'Internacional' };
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', subcontratacion:'Subcontratista', reforzada:'Proveedor Crítico', internacional:'Internacional' };
   const active = Object.entries(st.evalTypes).filter(([,v]) => v).map(([k]) => k);
   const et = document.getElementById('abast-evaltypes');
   if (et) et.innerHTML = active.length
@@ -1477,7 +1477,7 @@ function buildReport() {
   const cfg = document.getElementById('reportConfig');
   if (cfg) {
     const types = Object.entries(st.evalTypes).filter(([,v])=>v).map(([k])=>({
-      express:'Exprés',completa:'Completa',subcontratacion:'Subcontratación',reforzada:'Reforzada',internacional:'Internacional'
+      express:'Proveedor Spot',completa:'Proveedor General',subcontratacion:'Subcontratista',reforzada:'Proveedor Crítico',internacional:'Internacional'
     }[k])).join(', ');
     cfg.innerHTML = `<strong style="color:var(--navy)">Empresa:</strong> ${st.client||'—'}<br>
       <strong style="color:var(--navy)">Email:</strong> ${st.email||'—'}<br>
