@@ -488,8 +488,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Compra menor a USD 20.000</div>
             <h4>Proveedor Spot</h4>
-            <button class="eval-docs-toggle" onclick="toggleEvalDocs(event,'docs-express')">▾ Ver documentos</button>
-            <div class="eval-docs-list" id="docs-express">
+            <div class="eval-docs-list" id="docs-express" style="display:block;">
               <strong>Requeridos:</strong> Declaración jurada del proveedor · Declaración vínculo PEP · E-RUT<br>
               <strong>Opcionales:</strong> Certificado cuenta bancaria
             </div>
@@ -501,8 +500,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000</div>
             <h4>Proveedor General</h4>
-            <button class="eval-docs-toggle" onclick="toggleEvalDocs(event,'docs-completa')">▾ Ver documentos</button>
-            <div class="eval-docs-list" id="docs-completa">
+            <div class="eval-docs-list" id="docs-completa" style="display:block;">
               <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Conflicto de Interés · E-RUT · Certificado Vigencia Sociedad · DNI Representante Legal · Carpeta tributaria SII · Certificado Vigencia Poderes · Certificado cuenta bancaria · DICOM<br>
               <strong>Opcionales:</strong> Constitución de la Sociedad · Deuda Fiscal TGR
             </div>
@@ -514,8 +512,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Compra mayor a USD 100.000</div>
             <h4>Proveedor Crítico</h4>
-            <button class="eval-docs-toggle" onclick="toggleEvalDocs(event,'docs-reforzada')">▾ Ver documentos</button>
-            <div class="eval-docs-list" id="docs-reforzada">
+            <div class="eval-docs-list" id="docs-reforzada" style="display:block;">
               <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Conflicto de Interés · Constitución de la Sociedad · E-RUT · Certificado Vigencia Sociedad · DNI Representante Legal · Carpeta tributaria SII · Certificado Vigencia Poderes · Cuenta bancaria · Deuda Fiscal TGR · DICOM<br>
               <strong>Opcionales:</strong> Estado Financiero
             </div>
@@ -527,8 +524,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Proveedor con domicilio fuera de Chile</div>
             <h4>Proveedor Internacional</h4>
-            <button class="eval-docs-toggle" onclick="toggleEvalDocs(event,'docs-internacional')">▾ Ver documentos</button>
-            <div class="eval-docs-list" id="docs-internacional">
+            <div class="eval-docs-list" id="docs-internacional" style="display:block;">
               <strong>Requeridos:</strong> Declaración jurada del proveedor · Declaración vínculo PEP · Estado Financiero
             </div>
           </div>
@@ -570,6 +566,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <button onclick="addCustomProcess()" style="width:100%;background:transparent;border:2px dashed var(--gray-border);border-radius:.875rem;padding:.875rem;font-size:.875rem;font-weight:700;color:var(--blue);cursor:pointer;transition:all .2s;margin-top:.25rem;">
       + Agregar proceso personalizado
     </button>
+    <div id="add-process-toast" style="display:none;margin-top:.75rem;padding:.625rem 1rem;background:var(--success-bg);border:1px solid var(--success);border-radius:.5rem;font-size:.8rem;color:var(--success);font-weight:600;">✅ Proceso agregado</div>
   </div>
 </div>
 
@@ -1363,6 +1360,8 @@ function renderCustomProcesses() {
 function addCustomProcess() {
   st.customProcesses.push({ name:'', description:'', docs:[] });
   renderCustomProcesses(); save();
+  const toast = document.getElementById('add-process-toast');
+  if (toast) { toast.style.display='block'; setTimeout(()=>toast.style.display='none',3000); }
 }
 function removeCustomProcess(i) {
   st.customProcesses.splice(i, 1);
