@@ -1340,8 +1340,8 @@ function renderCrossAreaSummary(area) {
 
   const cards = AREAS.filter(a => a !== area && st.requiredAreas[a]).map(a => {
     const d = st.areas[a];
-    const estado = d.locked ? (d.decision || 'aprobado') : 'pendiente';
-    const estadoLabel = d.locked ? ({ aprobado:'Aprobado', rechazado:'Rechazado', observacion:'Con observaciones' }[d.decision] || 'Completado') : 'Pendiente';
+    const estado = d.locked ? 'aprobado' : 'pendiente';
+    const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
 
     // Alertas del dominio de esta área
     const domainFilter = AREA_ALERT_DOMAIN[a] || (() => true);
@@ -1561,8 +1561,8 @@ function renderAllAreasSummary(containerId) {
   if (!container) return;
   const cards = AREAS.filter(a => st.requiredAreas[a]).map(a => {
     const d = st.areas[a];
-    const estado = d.locked ? (d.decision || 'aprobado') : 'pendiente';
-    const estadoLabel = d.locked ? ({ aprobado:'Aprobado', rechazado:'Rechazado', observacion:'Con observaciones' }[d.decision] || 'Completado') : 'Pendiente';
+    const estado = d.locked ? 'aprobado' : 'pendiente';
+    const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
     const aAlerts = st.areas[a].alerts;
     const groups = [...new Set(ALERTS.map(m => m.group))];
     const groupRows = groups.map(g => {
@@ -1610,8 +1610,8 @@ function renderCompactAreaAlerts(containerId) {
   AREAS.forEach(area => {
     if (!st.requiredAreas[area]) return;
     const d = st.areas[area];
-    const estado = d.locked ? (d.decision||'aprobado') : 'pendiente';
-    const estadoLabel = { aprobado:'Aprobado', rechazado:'Rechazado', observacion:'Con observaciones', pendiente:'Pendiente' }[estado] || 'Pendiente';
+    const estado = d.locked ? 'aprobado' : 'pendiente';
+    const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
     const aAlerts = st.areas[area].alerts;
     const domainActive = ALERTS.map((m,i)=>({m,i})).filter(({_,i})=>aAlerts[i].activa);
     const groupsHtml = groups.map(g => {
