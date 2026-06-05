@@ -1880,7 +1880,7 @@ function renderAreaDocReview(area) {
         ${customDocTags ? `<div style="display:flex;flex-wrap:wrap;gap:.3rem;">${customDocTags}</div>` : ''}
       </div>
       <textarea placeholder="Comentarios sobre los documentos de este proceso…"
-        style="width:100%;margin-top:.5rem;padding:.4rem .625rem;font-size:.75rem;border:1px solid var(--gray-border);border-radius:.375rem;resize:vertical;min-height:48px;font-family:var(--font);color:var(--text);background:var(--gray-light);box-sizing:border-box;"
+        style="width:100%;margin-top:.5rem;padding:.4rem .625rem;font-size:.75rem;border:1px solid var(--gray-border);border-radius:.375rem;resize:vertical;min-height:48px;font-family:var(--font);color:var(--text);background:var(--white);box-sizing:border-box;"
         oninput="saveDocComment('${area}','${pk}',this.value)">${comment}</textarea>
     </div>`;
   }).join('');
