@@ -526,7 +526,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 </div>
 
 <!-- ── 3: OWNER DEL PROYECTO ── -->
-<div class="slide slide-std" data-n="4">
+<div class="slide slide-std" data-n="3">
   <div class="s-head"><div class="s-tag">Configuración inicial</div>
     <h2>Owner del proyecto</h2>
     <p>Activa los procesos que aplican a tu empresa y selecciona qué áreas revisarán a los proveedores.</p>
@@ -628,8 +628,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 3: RESUMEN DE ROLES + EXPECTATIVAS ── -->
-<div class="slide slide-std" data-n="3">
+<!-- ── 4: RESUMEN DE ROLES + EXPECTATIVAS ── -->
+<div class="slide slide-std" data-n="4">
   <div class="s-head"><div class="s-tag">Flujo de trabajo</div>
     <h2>¿Cómo funciona esto?</h2>
     <p>3 fases para construir una política alineada en todo el equipo.</p>
@@ -695,22 +695,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 5: ALERTAS UNIFICADAS ── -->
+<!-- ── 5: ÁREA ABASTECIMIENTO ── -->
 <div class="slide slide-std" data-n="5">
-  <div class="s-head"><div class="s-tag">Configuración de alertas</div>
-    <h2>Alertas de evaluación</h2>
-    <p>Define la severidad y monitoreo de cada alerta. Todas las áreas activas aparecen aquí — puedes configurarlas todas o dejar que cada área lo haga en su sección.</p>
-  </div>
-  <div class="s-body scrollable">
-    <div id="unified-alerts-container"></div>
-    <div style="display:flex;justify-content:flex-end;margin-top:1.25rem;">
-      <button class="btn-area-save-main" onclick="save();next()">Guardar y continuar →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── 6: ÁREA ABASTECIMIENTO ── -->
-<div class="slide slide-std" data-n="6">
   <div class="s-head"><div class="s-tag">Revisión por área — 1 de 4</div>
     <h2>Abastecimiento</h2>
     <p id="desc-abastecimiento">Coordina el proceso y configura las alertas.</p>
@@ -725,6 +711,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="recap-title">Documentos que se solicitarán al proveedor</div>
       <div class="recap-chips" id="abast-docs"></div>
     </div>
+    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:.25rem">⚙️ Configuración de alertas — severidad y monitoreo</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Define qué alertas activar y con qué severidad. Leve: se registra. Media: requiere revisión. Grave: el área responsable actúa como revisor del proceso.</p>
+    <div id="abast-alerts"></div>
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
     <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
@@ -750,8 +739,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 7: ÁREA CUMPLIMIENTO ── -->
-<div class="slide slide-std" data-n="7">
+<!-- ── 6: ÁREA CUMPLIMIENTO ── -->
+<div class="slide slide-std" data-n="6">
   <div class="s-head"><div class="s-tag">Revisión por área — 2 de 4</div>
     <h2>Cumplimiento</h2>
     <p id="desc-cumplimiento">Clasifica el riesgo y da recomendación final en cada evaluación.</p>
@@ -766,6 +755,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
       <div class="cross-area-cards" id="cross-summary-cumplimiento-cards"></div>
     </div>
+    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
+    <div id="alerts-cumplimiento"></div>
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
     <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
@@ -791,8 +783,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 8: ÁREA FINANZAS ── -->
-<div class="slide slide-std" data-n="8">
+<!-- ── 7: ÁREA FINANZAS ── -->
+<div class="slide slide-std" data-n="7">
   <div class="s-head"><div class="s-tag">Revisión por área — 3 de 4</div>
     <h2>Finanzas</h2>
     <p id="desc-finanzas">Analiza la solidez financiera del proveedor.</p>
@@ -807,6 +799,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
       <div class="cross-area-cards" id="cross-summary-finanzas-cards"></div>
     </div>
+    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
+    <div id="alerts-finanzas"></div>
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
     <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
@@ -832,8 +827,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 9: ÁREA LEGAL ── -->
-<div class="slide slide-std" data-n="9">
+<!-- ── 8: ÁREA LEGAL ── -->
+<div class="slide slide-std" data-n="8">
   <div class="s-head"><div class="s-tag">Revisión por área — 4 de 4</div>
     <h2>Legal</h2>
     <p id="desc-legal">Valida la constitución legal del proveedor.</p>
@@ -848,6 +843,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
       <div class="cross-area-cards" id="cross-summary-legal-cards"></div>
     </div>
+    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
+    <div id="alerts-legal"></div>
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
     <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
@@ -873,8 +871,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 10: SESIÓN SINCRONIZADA ── -->
-<div class="slide slide-std" data-n="10">
+<!-- ── 9: SESIÓN SINCRONIZADA ── -->
+<div class="slide slide-std" data-n="9">
   <div class="s-head"><div class="s-tag">Sesión sincronizada</div>
     <h2>Alineación final del equipo</h2>
     <p>Últimos cambios, decisiones finales y cierre de la política.</p>
@@ -896,8 +894,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 11: REPORTE FINAL ── -->
-<div class="slide slide-std" data-n="11">
+<!-- ── 10: REPORTE FINAL ── -->
+<div class="slide slide-std" data-n="10">
   <div class="s-head"><div class="s-tag">Reporte archivado</div>
     <h2>Resumen completo de la sesión</h2>
     <p>Vista consolidada de todo lo acordado. Este reporte fue enviado al equipo Plutto.</p>
@@ -932,18 +930,18 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <div id="nav">
   <button class="nav-btn" id="prevBtn" onclick="prev()" disabled>←</button>
-  <span id="counter">1 / 11</span>
+  <span id="counter">1 / 10</span>
   <button class="nav-btn" id="nextBtn" onclick="next()">→</button>
 </div>
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 11;
+const TOTAL = 10;
 let cur = 1;
 
 const AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];
 const AREA_LABELS = { solicitante:'Comprador del proyecto', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal' };
-const AREA_SLIDE = { owner:4, abastecimiento:6, cumplimiento:7, finanzas:8, legal:9 };
+const AREA_SLIDE = { owner:3, abastecimiento:5, cumplimiento:6, finanzas:7, legal:8 };
 const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => [v, k]));
 
 // Metadata de las 23 alertas: etiqueta, grupo, área revisora dueña y severidad recomendada por Plutto.
@@ -1001,7 +999,7 @@ const DOCS = [
 
 function isAreaAssigned(processKey, area) {
   const pa = (st.processAreas || {})[processKey];
-  return pa ? !!pa[area] : false;
+  return pa ? !!pa[area] : true; // default true si no configurado
 }
 
 function isAreaRequired(area) {
@@ -1033,14 +1031,19 @@ const st = {
   email:'', client:'', sessionId:'',
   evalTypes:{ express:true, completa:true, reforzada:true, internacional:true, subcontratacion:true },
   requiredAreas:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
-  processAreas:{},
-  areas:{
-    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,docReview:{},docComments:{},customDocs:{}},
-    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,docReview:{},docComments:{},customDocs:{}},
-    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,docReview:{},docComments:{},customDocs:{}},
-    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,docReview:{},docComments:{},customDocs:{}}
+  processAreas:{
+    express:        { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
+    completa:       { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
+    reforzada:      { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
+    internacional:  { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
+    subcontratacion:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true }
   },
-  alerts: defaultAlerts(),
+  areas:{
+    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{},customDocs:{}},
+    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{},customDocs:{}},
+    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{},customDocs:{}},
+    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{},customDocs:{}}
+  },
   customProcesses: [],
   processDocConfig: {},
   sentAt:'',
@@ -1060,7 +1063,7 @@ function go(n, dir) {
   to.style.opacity = '0'; to.classList.add('active');
   requestAnimationFrame(() => requestAnimationFrame(() => { to.style.transform = ''; to.style.opacity = ''; }));
   cur = n;
-  if (n >= TOTAL - 1) buildReport(); // Slide 10 (sync) y 11 (reporte)
+  if (n >= TOTAL - 1) buildReport(); // Slide 9 (sync) y 10 (reporte)
   updateNav(); save();
 }
 function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
@@ -1180,14 +1183,13 @@ async function startSession() {
 function toggleProcessArea(processKey, area) {
   if (!st.processAreas) st.processAreas = {};
   if (!st.processAreas[processKey]) {
-    st.processAreas[processKey] = Object.fromEntries(AREAS.map(a => [a, false]));
+    st.processAreas[processKey] = Object.fromEntries(AREAS.map(a => [a, true]));
   }
   st.processAreas[processKey][area] = !st.processAreas[processKey][area];
   if (!isAreaRequired(area) && cur === AREA_SLIDE[area]) next();
   renderProcessAreaMatrix();
   updateNav();
   renderAbastRecap();
-  renderUnifiedAlerts();
   AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
   AREAS.forEach(a => renderAreaDocReview(a));
   save();
@@ -1209,7 +1211,7 @@ function renderProcessAreaMatrix() {
   let rows = '';
   activeStd.forEach(k => {
     const cells = AREAS.map(a => {
-      const on = pa[k] ? !!pa[k][a] : false;
+      const on = pa[k] ? !!pa[k][a] : true;
       return `<td style="text-align:center;padding:.35rem .4rem;"><button onclick="toggleProcessArea('${k}','${a}')" title="${AREA_LABELS[a]}" style="width:2.25rem;height:1.25rem;border-radius:.625rem;border:2px solid ${on?'var(--success)':'var(--gray-border)'};cursor:pointer;transition:all .2s;background:${on?'var(--success)':'var(--white)'};"></button></td>`;
     }).join('');
     rows += `<tr style="border-top:1px solid var(--gray-border);"><td style="padding:.5rem .75rem;font-size:.8rem;font-weight:600;color:var(--navy);">${TYPE_LABEL[k]}</td>${cells}</tr>`;
@@ -1217,7 +1219,7 @@ function renderProcessAreaMatrix() {
   activeCPs.forEach(p => {
     const key = 'cp_' + st.customProcesses.indexOf(p);
     const cells = AREAS.map(a => {
-      const on = pa[key] ? !!pa[key][a] : false;
+      const on = pa[key] ? !!pa[key][a] : true;
       return `<td style="text-align:center;padding:.35rem .4rem;"><button onclick="toggleProcessArea('${key}','${a}')" title="${AREA_LABELS[a]}" style="width:2.25rem;height:1.25rem;border-radius:.625rem;border:2px solid ${on?'var(--blue)':'var(--gray-border)'};cursor:pointer;transition:all .2s;background:${on?'var(--blue)':'var(--white)'};"></button></td>`;
     }).join('');
     rows += `<tr style="border-top:1px solid var(--gray-border);"><td style="padding:.5rem .75rem;font-size:.8rem;font-weight:600;color:var(--blue);">${p.name} <span style="font-size:.65rem;color:var(--gray);font-weight:400;">(custom)</span></td>${cells}</tr>`;
@@ -1385,14 +1387,14 @@ function normalizeAlerts(arr) {
   });
 }
 
-function setAlertActive(i)        { st.alerts[i].activa = !st.alerts[i].activa; renderAllAlerts(); save(); }
-function setAlertSeverity(i, sev) { st.alerts[i].severidad = sev; renderAllAlerts(); save(); }
-function setAlertComment(i, val)  { st.alerts[i].comentario = val; save(); }
+function setAlertActive(area, i)        { st.areas[area].alerts[i].activa = !st.areas[area].alerts[i].activa; renderAllAlerts(); save(); }
+function setAlertSeverity(area, i, sev) { st.areas[area].alerts[i].severidad = sev; renderAllAlerts(); save(); }
+function setAlertComment(area, i, val)  { st.areas[area].alerts[i].comentario = val; save(); }
 
 const _activeAlertTab = {};
 
-function buildAlertTabsHTML(containerId, placeholder) {
-  const aAlerts = st.alerts;
+function buildAlertTabsHTML(containerId, area, placeholder) {
+  const aAlerts = st.areas[area].alerts;
   const groups = [...new Set(ALERTS.map(a => a.group))];
   const savedGroup = _activeAlertTab[containerId] || groups[0];
   const tabsHtml = `<div class="alert-tabs">${groups.map(g => {
@@ -1405,15 +1407,15 @@ function buildAlertTabsHTML(containerId, placeholder) {
     const rows = ALERTS.map((meta,i) => ({meta,i})).filter(({meta}) => meta.group === g).map(({meta,i}) => {
       const a = aAlerts[i];
       const sevBtns = SEV_ORDER.map(s =>
-        `<button class="sev-opt ${a.severidad===s?'on':''}" data-sev="${s}" onclick="setAlertSeverity(${i},'${s}')">${SEV_LABEL[s]}</button>`
+        `<button class="sev-opt ${a.severidad===s?'on':''}" data-sev="${s}" onclick="setAlertSeverity('${area}',${i},'${s}')">${SEV_LABEL[s]}</button>`
       ).join('');
       return `<div class="alert-cfg ${a.activa?'on':'off'}">
         <div class="alert-cfg-top">
-          <div class="a-toggle" onclick="setAlertActive(${i})"></div>
+          <div class="a-toggle" onclick="setAlertActive('${area}',${i})"></div>
           <span class="a-label">${meta.label}</span>
           <span class="sev-sel">${sevBtns}</span>
         </div>
-        <textarea class="alert-cmt" rows="1" placeholder="${placeholder}" oninput="setAlertComment(${i},this.value)">${a.comentario||''}</textarea>
+        <textarea class="alert-cmt" rows="1" placeholder="${placeholder}" oninput="setAlertComment('${area}',${i},this.value)">${a.comentario||''}</textarea>
       </div>`;
     }).join('');
     return `<div class="alert-tab-panel${g===savedGroup?' active':''}" data-group="${g}">${rows}</div>`;
@@ -1430,10 +1432,14 @@ function switchAlertTab(containerId, group) {
   cont.querySelectorAll('.alert-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.group === group));
 }
 
-function renderUnifiedAlerts() {
-  const cont = document.getElementById('unified-alerts-container');
-  if (!cont) return;
-  cont.innerHTML = buildAlertTabsHTML('unified-alerts-container', 'Comentario sobre esta alerta (opcional)…');
+function renderAbastAlerts() {
+  const cont = document.getElementById('abast-alerts'); if (!cont) return;
+  cont.innerHTML = buildAlertTabsHTML('abast-alerts', 'abastecimiento', 'Comentario sobre esta alerta (opcional)…');
+}
+
+function renderReviewAlerts(area) {
+  const cont = document.getElementById('alerts-'+area); if (!cont) return;
+  cont.innerHTML = buildAlertTabsHTML('alerts-'+area, area, 'Comentario del área…');
 }
 
 function renderAbastRecap() {
@@ -1493,7 +1499,7 @@ function renderCrossAreaSummary(area) {
 
     // Alertas del dominio de esta área
     const domainFilter = AREA_ALERT_DOMAIN[a] || (() => true);
-    const aAlerts = st.alerts;
+    const aAlerts = st.areas[a].alerts;
     const domainAlerts = ALERTS.map((meta,i) => ({meta,i})).filter(({meta}) => domainFilter(meta));
     const activeInDomain = domainAlerts.filter(({i}) => aAlerts[i].activa);
     const total = domainAlerts.length;
@@ -1920,12 +1926,14 @@ function removeAreaCustomDoc(area, processKey, idx) {
 }
 
 function renderAllAlerts() {
-  renderUnifiedAlerts();
+  renderAbastAlerts();
   renderAbastRecap();
   ['cumplimiento','finanzas','legal'].forEach(a => {
     renderScopeChips('scope-procs-' + a);
+    renderReviewAlerts(a);
     renderCrossAreaSummary(a);
   });
+  // Actualizar resumen comprimido en slides 12/13 si están visibles
   renderCompactAreaAlerts('syncCompactAlerts');
   renderCompactAreaAlerts('reportCompactAlerts');
   renderAllAreasSummary('syncAllAreaCards');
@@ -1939,7 +1947,7 @@ function renderAllAreasSummary(containerId) {
     const d = st.areas[a];
     const estado = d.locked ? 'aprobado' : 'pendiente';
     const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
-    const aAlerts = st.alerts;
+    const aAlerts = st.areas[a].alerts;
     const groups = [...new Set(ALERTS.map(m => m.group))];
     const groupRows = groups.map(g => {
       const gAlerts = ALERTS.map((meta, i) => ({ meta, i })).filter(({ meta }) => meta.group === g);
@@ -1988,7 +1996,7 @@ function renderCompactAreaAlerts(containerId) {
     const d = st.areas[area];
     const estado = d.locked ? 'aprobado' : 'pendiente';
     const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
-    const aAlerts = st.alerts;
+    const aAlerts = st.areas[area].alerts;
     const domainActive = ALERTS.map((m,i)=>({m,i})).filter(({_,i})=>aAlerts[i].activa);
     const groupsHtml = groups.map(g => {
       const groupAlerts = ALERTS.map((m,i)=>({m,i})).filter(({m})=>m.group===g);
@@ -2027,7 +2035,8 @@ function renderSyncAreaComments() {
   let html = '';
   AREAS.forEach(area => {
     if (!isAreaRequired(area)) return;
-    const aAlerts = st.alerts;
+    // Encontrar alertas que esta área configura (meta.area === area)
+    const aAlerts = st.areas[area].alerts;
     const areaAlerts = ALERTS.map((meta, i) => ({ meta, i })).filter(({meta}) => meta.area === area);
     const activeAlerts = areaAlerts.filter(({i}) => aAlerts[i].activa).map(({meta, i}) => ({
       label: meta.label,
@@ -2129,10 +2138,10 @@ async function enviar() {
       ...(a==='finanzas' ? { signals: st.areas[a].signals } : {}),
     }])),
     syncNotes: st.syncNotes,
-    alertas: ALERTS.map((m,i) => ({
-      alerta: m.label, grupo: m.group, area: m.area,
-      activa: st.alerts[i].activa, severidad: st.alerts[i].severidad, comentario: st.alerts[i].comentario
-    })),
+    alertsPorArea: Object.fromEntries(AREAS.map(a => [a, ALERTS.map((m,i) => ({
+      alerta: m.label, grupo: m.group,
+      activa: st.areas[a].alerts[i].activa, severidad: st.areas[a].alerts[i].severidad, comentario: st.areas[a].alerts[i].comentario
+    }))])),
   };
   let success = false;
   try {
@@ -2243,11 +2252,15 @@ function startPolling() {
         }
       });
 
-      // 4. Sincronizar alertas — no pisar si el usuario está escribiendo un comentario
+      // 4. Sincronizar alertas por área — no pisar si el usuario está escribiendo un comentario
       const focused = document.activeElement;
       const editingAlert = focused && focused.classList.contains('alert-cmt');
-      if (!editingAlert && Array.isArray(data.state.alerts)) {
-        st.alerts = normalizeAlerts(data.state.alerts);
+      if (!editingAlert && data.state.areas) {
+        AREAS.forEach(a => {
+          if (Array.isArray(data.state.areas[a]?.alerts)) {
+            st.areas[a].alerts = normalizeAlerts(data.state.areas[a].alerts);
+          }
+        });
         renderAllAlerts();
         changed = true;
       }
@@ -2301,14 +2314,15 @@ function mergeState(d) {
   if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
   if (d.requiredAreas) Object.assign(st.requiredAreas, d.requiredAreas);
   if (d.areas) AREAS.forEach(a => {
-    if (d.areas[a]) Object.assign(st.areas[a], d.areas[a]);
-  });
-  if (Array.isArray(d.alerts)) st.alerts = normalizeAlerts(d.alerts);
-  // Migración: si venía en formato per-área, tomar del primero que tenga datos
-  else if (d.areas) {
-    for (const a of AREAS) {
-      if (Array.isArray(d.areas[a]?.alerts)) { st.alerts = normalizeAlerts(d.areas[a].alerts); break; }
+    if (d.areas[a]) {
+      Object.assign(st.areas[a], d.areas[a]);
+      if (Array.isArray(d.areas[a].alerts)) st.areas[a].alerts = normalizeAlerts(d.areas[a].alerts);
     }
+  });
+  // Migración: si había alerts globales, copiarlos a todas las áreas
+  if (Array.isArray(d.alerts)) {
+    const normalized = normalizeAlerts(d.alerts);
+    AREAS.forEach(a => { if (!d.areas?.[a]?.alerts) st.areas[a].alerts = normalized.map(x=>({...x})); });
   }
 }
 
