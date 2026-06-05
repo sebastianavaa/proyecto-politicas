@@ -628,6 +628,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Define qué alertas activar y con qué severidad. Leve: se registra. Media: requiere revisión. Grave: el área responsable actúa como revisor del proceso.</p>
     <div id="abast-alerts"></div>
     <div class="divider"></div>
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
+    <div id="doc-review-abastecimiento"></div>
+    <div class="divider"></div>
     <div class="decision-section">
       <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
       <div class="resp-row">
@@ -667,6 +671,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
     <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
     <div id="alerts-cumplimiento"></div>
+    <div class="divider"></div>
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
+    <div id="doc-review-cumplimiento"></div>
     <div class="divider"></div>
     <div class="decision-section">
       <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
@@ -708,6 +716,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
     <div id="alerts-finanzas"></div>
     <div class="divider"></div>
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
+    <div id="doc-review-finanzas"></div>
+    <div class="divider"></div>
     <div class="decision-section">
       <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
       <div class="resp-row">
@@ -747,6 +759,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
     <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
     <div id="alerts-legal"></div>
+    <div class="divider"></div>
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
+    <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
+    <div id="doc-review-legal"></div>
     <div class="divider"></div>
     <div class="decision-section">
       <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
@@ -936,10 +952,10 @@ const st = {
     subcontratacion:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true }
   },
   areas:{
-    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts()},
-    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts()},
-    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts()},
-    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts()}
+    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{}},
+    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{}},
+    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{}},
+    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{}}
   },
   customProcesses: [],
   processDocConfig: {},
@@ -1678,6 +1694,87 @@ function toggleCPDocs(event, i, btn) {
   btn.textContent = open ? '▾ Editar documentos' : '▴ Ocultar documentos';
 }
 
+// ── DOC REVIEW POR ÁREA ──
+
+function getAreaActiveDocs(area) {
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  const result = [];
+  Object.entries(st.evalTypes).forEach(([k, v]) => {
+    if (!v || !isAreaAssigned(k, area)) return;
+    const cfg = getProcessDocConfig(k);
+    const docs = Object.entries(cfg).map(([j, s]) => ({ idx:+j, name:DOCS[+j]?.name, req:s })).filter(d => d.name);
+    if (docs.length) result.push({ processKey:k, label:TYPE_LABEL[k]||k, docs });
+  });
+  (st.customProcesses||[]).forEach((p, i) => {
+    if (!p.saved || p.active===false || !isAreaAssigned('cp_'+i, area)) return;
+    const cfg = p.docConfig||{};
+    const docs = Object.entries(cfg).map(([j, s]) => ({ idx:+j, name:DOCS[+j]?.name, req:s })).filter(d => d.name);
+    if (docs.length) result.push({ processKey:'cp_'+i, label:p.name, docs });
+  });
+  return result;
+}
+
+function renderAreaDocReview(area) {
+  const cont = document.getElementById('doc-review-'+area); if (!cont) return;
+  const processes = getAreaActiveDocs(area);
+  if (!processes.length) {
+    cont.innerHTML = '<div style="font-size:.8rem;color:var(--gray);text-align:center;padding:.75rem 0;">Sin procesos asignados a esta área.</div>';
+    return;
+  }
+  const review   = st.areas[area].docReview   || {};
+  const comments = st.areas[area].docComments || {};
+  const btnBase = 'font-size:.65rem;font-weight:700;padding:.15rem .5rem;border-radius:.25rem;border:1px solid;cursor:pointer;transition:all .15s;';
+  const okSel   = 'background:#DCFCE7;color:#166534;border-color:#86EFAC;';
+  const obsSel  = 'background:#FFFBEB;color:#D97706;border-color:#FCD34D;';
+  const noSel   = 'background:#FEE2E2;color:#991B1B;border-color:#FCA5A5;';
+  const off     = 'background:transparent;color:var(--gray);border-color:var(--gray-border);';
+  const reqTag  = `<span style="font-size:.6rem;font-weight:700;background:#DCFCE7;color:#166534;border:1px solid #86EFAC;border-radius:.2rem;padding:.05rem .3rem;flex-shrink:0;">Req</span>`;
+  const opcTag  = `<span style="font-size:.6rem;font-weight:700;background:#FFFBEB;color:#D97706;border:1px solid #FCD34D;border-radius:.2rem;padding:.05rem .3rem;flex-shrink:0;">Opc</span>`;
+
+  cont.innerHTML = processes.map(proc => {
+    const procReview = review[proc.processKey] || {};
+    const comment    = comments[proc.processKey] || '';
+    const reqDocs    = proc.docs.filter(d => d.req === 'req');
+    const opcDocs    = proc.docs.filter(d => d.req === 'opc');
+    const allDocs    = [...reqDocs, ...opcDocs];
+    const rows = allDocs.map(d => {
+      const s = procReview[d.idx] || null;
+      return `<div style="display:flex;align-items:center;gap:.4rem;padding:.2rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
+        ${d.req === 'req' ? reqTag : opcTag}
+        <span style="flex:1;font-size:.75rem;color:var(--text);">${d.name}</span>
+        <div style="display:flex;gap:.2rem;">
+          <button onclick="setDocReview('${area}','${proc.processKey}',${d.idx},'ok')"  style="${btnBase}${s==='ok' ?okSel :off}" title="Confirmo">✓</button>
+          <button onclick="setDocReview('${area}','${proc.processKey}',${d.idx},'obs')" style="${btnBase}${s==='obs'?obsSel:off}" title="Con observación">⚠</button>
+          <button onclick="setDocReview('${area}','${proc.processKey}',${d.idx},'no')"  style="${btnBase}${s==='no' ?noSel :off}" title="No aplica">✕</button>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div style="background:white;border:1px solid var(--gray-border);border-radius:.625rem;padding:.625rem .75rem;margin-bottom:.5rem;">
+      <div style="font-size:.7rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;opacity:.7;">${proc.label}</div>
+      ${rows}
+      <textarea placeholder="Comentarios sobre los documentos de este proceso…"
+        style="width:100%;margin-top:.5rem;padding:.4rem .625rem;font-size:.75rem;border:1px solid var(--gray-border);border-radius:.375rem;resize:vertical;min-height:48px;font-family:var(--font);color:var(--text);background:var(--gray-light);box-sizing:border-box;"
+        oninput="saveDocComment('${area}','${proc.processKey}',this.value)">${comment}</textarea>
+    </div>`;
+  }).join('');
+}
+
+function setDocReview(area, processKey, docIdx, newState) {
+  if (!st.areas[area].docReview) st.areas[area].docReview = {};
+  if (!st.areas[area].docReview[processKey]) st.areas[area].docReview[processKey] = {};
+  const current = st.areas[area].docReview[processKey][docIdx];
+  if (current === newState) delete st.areas[area].docReview[processKey][docIdx];
+  else st.areas[area].docReview[processKey][docIdx] = newState;
+  renderAreaDocReview(area);
+  save();
+}
+
+function saveDocComment(area, processKey, val) {
+  if (!st.areas[area].docComments) st.areas[area].docComments = {};
+  st.areas[area].docComments[processKey] = val;
+  save();
+}
+
 function renderAllAlerts() {
   renderAbastAlerts();
   renderAbastRecap();
@@ -2098,6 +2195,7 @@ function applyStateToUI() {
   });
 
   renderAllAlerts();
+  AREAS.forEach(a => renderAreaDocReview(a));
   renderAllStdDocSummaries();
   renderCustomProcesses();
   renderProcessAreaMatrix();
