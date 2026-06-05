@@ -518,6 +518,16 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
     <div class="divider"></div>
     <div class="req-areas-section">
+      <div class="req-areas-title">Procesos adicionales</div>
+      <p style="font-size:.75rem;color:var(--gray);margin:-.25rem 0 .75rem;line-height:1.5">Agrega procesos propios que no están en la lista — pueden ser por industria, tipo de contrato, o criterio interno.</p>
+      <div id="custom-processes-list"></div>
+      <button onclick="addCustomProcess()" style="width:100%;background:transparent;border:2px dashed var(--gray-border);border-radius:.875rem;padding:.875rem;font-size:.875rem;font-weight:700;color:var(--blue);cursor:pointer;transition:all .2s;margin-top:.25rem;">
+        + Agregar proceso personalizado
+      </button>
+      <div id="add-process-toast" style="display:none;margin-top:.75rem;padding:.625rem 1rem;background:var(--success-bg);border:1px solid var(--success);border-radius:.5rem;font-size:.8rem;color:var(--success);font-weight:600;">✅ Proceso agregado</div>
+    </div>
+    <div class="divider"></div>
+    <div class="req-areas-section">
       <div class="req-areas-title">¿Qué áreas participan en cada proceso?</div>
       <p style="font-size:.75rem;color:var(--gray);margin:-.25rem 0 .75rem;line-height:1.5">Activa o desactiva el área que revisa cada proceso. Un área solo aparecerá en la sesión si tiene al menos un proceso asignado.</p>
       <div id="process-area-matrix"></div>
@@ -525,23 +535,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 4: PROCESOS PERSONALIZADOS ── -->
+<!-- ── 4: RESUMEN DE ROLES + EXPECTATIVAS ── -->
 <div class="slide slide-std" data-n="4">
-  <div class="s-head"><div class="s-tag">Procesos propios</div>
-    <h2>¿Tienes procesos adicionales?</h2>
-    <p>Agrega aquí los procesos de evaluación que no están en la lista anterior — pueden ser por industria, tipo de contrato, o criterio interno.</p>
-  </div>
-  <div class="s-body scrollable">
-    <div id="custom-processes-list"></div>
-    <button onclick="addCustomProcess()" style="width:100%;background:transparent;border:2px dashed var(--gray-border);border-radius:.875rem;padding:.875rem;font-size:.875rem;font-weight:700;color:var(--blue);cursor:pointer;transition:all .2s;margin-top:.25rem;">
-      + Agregar proceso personalizado
-    </button>
-    <div id="add-process-toast" style="display:none;margin-top:.75rem;padding:.625rem 1rem;background:var(--success-bg);border:1px solid var(--success);border-radius:.5rem;font-size:.8rem;color:var(--success);font-weight:600;">✅ Proceso agregado</div>
-  </div>
-</div>
-
-<!-- ── 5: RESUMEN DE ROLES + EXPECTATIVAS ── -->
-<div class="slide slide-std" data-n="5">
   <div class="s-head"><div class="s-tag">Flujo de trabajo</div>
     <h2>¿Cómo funciona esto?</h2>
     <p>3 fases para construir una política alineada en todo el equipo.</p>
@@ -607,8 +602,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 6: ÁREA ABASTECIMIENTO ── -->
-<div class="slide slide-std" data-n="6">
+<!-- ── 5: ÁREA ABASTECIMIENTO ── -->
+<div class="slide slide-std" data-n="5">
   <div class="s-head"><div class="s-tag">Revisión por área — 1 de 4</div>
     <h2>Abastecimiento</h2>
     <p id="desc-abastecimiento">Coordina el proceso y configura las alertas.</p>
@@ -647,8 +642,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 7: ÁREA CUMPLIMIENTO ── -->
-<div class="slide slide-std" data-n="7">
+<!-- ── 6: ÁREA CUMPLIMIENTO ── -->
+<div class="slide slide-std" data-n="6">
   <div class="s-head"><div class="s-tag">Revisión por área — 2 de 4</div>
     <h2>Cumplimiento</h2>
     <p id="desc-cumplimiento">Clasifica el riesgo y da recomendación final en cada evaluación.</p>
@@ -687,8 +682,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 8: ÁREA FINANZAS ── -->
-<div class="slide slide-std" data-n="8">
+<!-- ── 7: ÁREA FINANZAS ── -->
+<div class="slide slide-std" data-n="7">
   <div class="s-head"><div class="s-tag">Revisión por área — 3 de 4</div>
     <h2>Finanzas</h2>
     <p id="desc-finanzas">Analiza la solidez financiera del proveedor.</p>
@@ -727,8 +722,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 9: ÁREA LEGAL ── -->
-<div class="slide slide-std" data-n="9">
+<!-- ── 8: ÁREA LEGAL ── -->
+<div class="slide slide-std" data-n="8">
   <div class="s-head"><div class="s-tag">Revisión por área — 4 de 4</div>
     <h2>Legal</h2>
     <p id="desc-legal">Valida la constitución legal del proveedor.</p>
@@ -767,8 +762,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 10: SESIÓN SINCRONIZADA ── -->
-<div class="slide slide-std" data-n="10">
+<!-- ── 9: SESIÓN SINCRONIZADA ── -->
+<div class="slide slide-std" data-n="9">
   <div class="s-head"><div class="s-tag">Sesión sincronizada</div>
     <h2>Alineación final del equipo</h2>
     <p>Últimos cambios, decisiones finales y cierre de la política.</p>
@@ -790,8 +785,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 11: REPORTE FINAL ── -->
-<div class="slide slide-std" data-n="11">
+<!-- ── 10: REPORTE FINAL ── -->
+<div class="slide slide-std" data-n="10">
   <div class="s-head"><div class="s-tag">Reporte archivado</div>
     <h2>Resumen completo de la sesión</h2>
     <p>Vista consolidada de todo lo acordado. Este reporte fue enviado al equipo Plutto.</p>
@@ -832,12 +827,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 11;
+const TOTAL = 10;
 let cur = 1;
 
 const AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];
 const AREA_LABELS = { solicitante:'Comprador del proyecto', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal' };
-const AREA_SLIDE = { owner:3, abastecimiento:6, cumplimiento:7, finanzas:8, legal:9 };
+const AREA_SLIDE = { owner:3, abastecimiento:5, cumplimiento:6, finanzas:7, legal:8 };
 const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => [v, k]));
 
 // Metadata de las 23 alertas: etiqueta, grupo, área revisora dueña y severidad recomendada por Plutto.
@@ -958,7 +953,7 @@ function go(n, dir) {
   to.style.opacity = '0'; to.classList.add('active');
   requestAnimationFrame(() => requestAnimationFrame(() => { to.style.transform = ''; to.style.opacity = ''; }));
   cur = n;
-  if (n >= TOTAL - 1) buildReport(); // Slide 11 (sync) y 12 (reporte)
+  if (n >= TOTAL - 1) buildReport(); // Slide 9 (sync) y 10 (reporte)
   updateNav(); save();
 }
 function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
