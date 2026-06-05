@@ -1442,8 +1442,8 @@ function renderCustomProcesses() {
           <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin-bottom:.5rem;">Documentos</div>
           <div id="cp-doc-rows-${i}">${renderCPDocRows(i)}</div>
         </div>
-        <div style="display:flex;justify-content:flex-end;">
-          <button onclick="saveCustomProcess(${i})" style="background:var(--navy);color:white;border:none;padding:.45rem 1.375rem;border-radius:.5rem;font-size:.8rem;font-weight:700;cursor:pointer;transition:background .2s;">Guardar proceso →</button>
+        <div style="position:sticky;bottom:0;background:var(--white);padding:.625rem 0 .25rem;display:flex;justify-content:flex-end;border-top:1px solid var(--gray-border);margin-top:.25rem;">
+          <button onclick="saveCustomProcess(${i})" style="background:var(--navy);color:white;border:none;padding:.5rem 1.5rem;border-radius:.5rem;font-size:.8rem;font-weight:700;cursor:pointer;transition:background .2s;box-shadow:0 2px 8px rgba(20,20,79,.2);">Guardar proceso →</button>
         </div>
       </div>`;
     }
