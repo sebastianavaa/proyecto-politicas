@@ -438,6 +438,17 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   /* Decision section */
   .decision-section { padding: .875rem .875rem; }
 
+  /* Slide 2 — override overflow:hidden inline para que scrollee en mobile */
+  .slide[data-n="2"] .s-body {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    flex-direction: column;
+  }
+  .slide[data-n="2"] .cards {
+    grid-template-rows: auto;
+    grid-auto-rows: auto;
+  }
+
   /* Session link */
   .session-link-row { flex-direction: column; }
   .session-link-url { width: 100%; }
