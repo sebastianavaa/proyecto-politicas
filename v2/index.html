@@ -526,7 +526,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 </div>
 
 <!-- ── 3: OWNER DEL PROYECTO ── -->
-<div class="slide slide-std" data-n="3">
+<div class="slide slide-std" data-n="4">
   <div class="s-head"><div class="s-tag">Configuración inicial</div>
     <h2>Owner del proyecto</h2>
     <p>Activa los procesos que aplican a tu empresa y selecciona qué áreas revisarán a los proveedores.</p>
@@ -628,8 +628,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 4: RESUMEN DE ROLES + EXPECTATIVAS ── -->
-<div class="slide slide-std" data-n="4">
+<!-- ── 3: RESUMEN DE ROLES + EXPECTATIVAS ── -->
+<div class="slide slide-std" data-n="3">
   <div class="s-head"><div class="s-tag">Flujo de trabajo</div>
     <h2>¿Cómo funciona esto?</h2>
     <p>3 fases para construir una política alineada en todo el equipo.</p>
@@ -695,8 +695,22 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 5: ÁREA ABASTECIMIENTO ── -->
+<!-- ── 5: ALERTAS UNIFICADAS ── -->
 <div class="slide slide-std" data-n="5">
+  <div class="s-head"><div class="s-tag">Configuración de alertas</div>
+    <h2>Alertas de evaluación</h2>
+    <p>Define la severidad y monitoreo de cada alerta. Todas las áreas activas aparecen aquí — puedes configurarlas todas o dejar que cada área lo haga en su sección.</p>
+  </div>
+  <div class="s-body scrollable">
+    <div id="unified-alerts-container"></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:1.25rem;">
+      <button class="btn-area-save-main" onclick="save();next()">Guardar y continuar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 6: ÁREA ABASTECIMIENTO ── -->
+<div class="slide slide-std" data-n="6">
   <div class="s-head"><div class="s-tag">Revisión por área — 1 de 4</div>
     <h2>Abastecimiento</h2>
     <p id="desc-abastecimiento">Coordina el proceso y configura las alertas.</p>
@@ -711,9 +725,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="recap-title">Documentos que se solicitarán al proveedor</div>
       <div class="recap-chips" id="abast-docs"></div>
     </div>
-    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:.25rem">⚙️ Configuración de alertas — severidad y monitoreo</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Define qué alertas activar y con qué severidad. Leve: se registra. Media: requiere revisión. Grave: el área responsable actúa como revisor del proceso.</p>
-    <div id="abast-alerts"></div>
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
     <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
@@ -739,8 +750,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 6: ÁREA CUMPLIMIENTO ── -->
-<div class="slide slide-std" data-n="6">
+<!-- ── 7: ÁREA CUMPLIMIENTO ── -->
+<div class="slide slide-std" data-n="7">
   <div class="s-head"><div class="s-tag">Revisión por área — 2 de 4</div>
     <h2>Cumplimiento</h2>
     <p id="desc-cumplimiento">Clasifica el riesgo y da recomendación final en cada evaluación.</p>
@@ -755,9 +766,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
       <div class="cross-area-cards" id="cross-summary-cumplimiento-cards"></div>
     </div>
-    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
-    <div id="alerts-cumplimiento"></div>
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
     <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
@@ -783,8 +791,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 7: ÁREA FINANZAS ── -->
-<div class="slide slide-std" data-n="7">
+<!-- ── 8: ÁREA FINANZAS ── -->
+<div class="slide slide-std" data-n="8">
   <div class="s-head"><div class="s-tag">Revisión por área — 3 de 4</div>
     <h2>Finanzas</h2>
     <p id="desc-finanzas">Analiza la solidez financiera del proveedor.</p>
@@ -799,9 +807,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
       <div class="cross-area-cards" id="cross-summary-finanzas-cards"></div>
     </div>
-    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
-    <div id="alerts-finanzas"></div>
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
     <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
@@ -827,8 +832,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 8: ÁREA LEGAL ── -->
-<div class="slide slide-std" data-n="8">
+<!-- ── 9: ÁREA LEGAL ── -->
+<div class="slide slide-std" data-n="9">
   <div class="s-head"><div class="s-tag">Revisión por área — 4 de 4</div>
     <h2>Legal</h2>
     <p id="desc-legal">Valida la constitución legal del proveedor.</p>
@@ -843,9 +848,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
       <div class="cross-area-cards" id="cross-summary-legal-cards"></div>
     </div>
-    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
-    <div id="alerts-legal"></div>
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
     <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
@@ -871,8 +873,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 9: SESIÓN SINCRONIZADA ── -->
-<div class="slide slide-std" data-n="9">
+<!-- ── 10: SESIÓN SINCRONIZADA ── -->
+<div class="slide slide-std" data-n="10">
   <div class="s-head"><div class="s-tag">Sesión sincronizada</div>
     <h2>Alineación final del equipo</h2>
     <p>Últimos cambios, decisiones finales y cierre de la política.</p>
@@ -894,8 +896,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 10: REPORTE FINAL ── -->
-<div class="slide slide-std" data-n="10">
+<!-- ── 11: REPORTE FINAL ── -->
+<div class="slide slide-std" data-n="11">
   <div class="s-head"><div class="s-tag">Reporte archivado</div>
     <h2>Resumen completo de la sesión</h2>
     <p>Vista consolidada de todo lo acordado. Este reporte fue enviado al equipo Plutto.</p>
@@ -930,18 +932,18 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <div id="nav">
   <button class="nav-btn" id="prevBtn" onclick="prev()" disabled>←</button>
-  <span id="counter">1 / 10</span>
+  <span id="counter">1 / 11</span>
   <button class="nav-btn" id="nextBtn" onclick="next()">→</button>
 </div>
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 10;
+const TOTAL = 11;
 let cur = 1;
 
 const AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];
 const AREA_LABELS = { solicitante:'Comprador del proyecto', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal' };
-const AREA_SLIDE = { owner:3, abastecimiento:5, cumplimiento:6, finanzas:7, legal:8 };
+const AREA_SLIDE = { owner:4, abastecimiento:6, cumplimiento:7, finanzas:8, legal:9 };
 const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => [v, k]));
 
 // Metadata de las 23 alertas: etiqueta, grupo, área revisora dueña y severidad recomendada por Plutto.
@@ -999,7 +1001,7 @@ const DOCS = [
 
 function isAreaAssigned(processKey, area) {
   const pa = (st.processAreas || {})[processKey];
-  return pa ? !!pa[area] : true; // default true si no configurado
+  return pa ? !!pa[area] : false;
 }
 
 function isAreaRequired(area) {
@@ -1031,13 +1033,7 @@ const st = {
   email:'', client:'', sessionId:'',
   evalTypes:{ express:true, completa:true, reforzada:true, internacional:true, subcontratacion:true },
   requiredAreas:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
-  processAreas:{
-    express:        { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
-    completa:       { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
-    reforzada:      { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
-    internacional:  { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
-    subcontratacion:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true }
-  },
+  processAreas:{},
   areas:{
     abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{},customDocs:{}},
     cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{},customDocs:{}},
@@ -1063,7 +1059,7 @@ function go(n, dir) {
   to.style.opacity = '0'; to.classList.add('active');
   requestAnimationFrame(() => requestAnimationFrame(() => { to.style.transform = ''; to.style.opacity = ''; }));
   cur = n;
-  if (n >= TOTAL - 1) buildReport(); // Slide 9 (sync) y 10 (reporte)
+  if (n >= TOTAL - 1) buildReport(); // Slide 10 (sync) y 11 (reporte)
   updateNav(); save();
 }
 function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
@@ -1183,13 +1179,14 @@ async function startSession() {
 function toggleProcessArea(processKey, area) {
   if (!st.processAreas) st.processAreas = {};
   if (!st.processAreas[processKey]) {
-    st.processAreas[processKey] = Object.fromEntries(AREAS.map(a => [a, true]));
+    st.processAreas[processKey] = Object.fromEntries(AREAS.map(a => [a, false]));
   }
   st.processAreas[processKey][area] = !st.processAreas[processKey][area];
   if (!isAreaRequired(area) && cur === AREA_SLIDE[area]) next();
   renderProcessAreaMatrix();
   updateNav();
   renderAbastRecap();
+  renderUnifiedAlerts();
   AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
   AREAS.forEach(a => renderAreaDocReview(a));
   save();
@@ -1211,7 +1208,7 @@ function renderProcessAreaMatrix() {
   let rows = '';
   activeStd.forEach(k => {
     const cells = AREAS.map(a => {
-      const on = pa[k] ? !!pa[k][a] : true;
+      const on = pa[k] ? !!pa[k][a] : false;
       return `<td style="text-align:center;padding:.35rem .4rem;"><button onclick="toggleProcessArea('${k}','${a}')" title="${AREA_LABELS[a]}" style="width:2.25rem;height:1.25rem;border-radius:.625rem;border:2px solid ${on?'var(--success)':'var(--gray-border)'};cursor:pointer;transition:all .2s;background:${on?'var(--success)':'var(--white)'};"></button></td>`;
     }).join('');
     rows += `<tr style="border-top:1px solid var(--gray-border);"><td style="padding:.5rem .75rem;font-size:.8rem;font-weight:600;color:var(--navy);">${TYPE_LABEL[k]}</td>${cells}</tr>`;
@@ -1219,7 +1216,7 @@ function renderProcessAreaMatrix() {
   activeCPs.forEach(p => {
     const key = 'cp_' + st.customProcesses.indexOf(p);
     const cells = AREAS.map(a => {
-      const on = pa[key] ? !!pa[key][a] : true;
+      const on = pa[key] ? !!pa[key][a] : false;
       return `<td style="text-align:center;padding:.35rem .4rem;"><button onclick="toggleProcessArea('${key}','${a}')" title="${AREA_LABELS[a]}" style="width:2.25rem;height:1.25rem;border-radius:.625rem;border:2px solid ${on?'var(--blue)':'var(--gray-border)'};cursor:pointer;transition:all .2s;background:${on?'var(--blue)':'var(--white)'};"></button></td>`;
     }).join('');
     rows += `<tr style="border-top:1px solid var(--gray-border);"><td style="padding:.5rem .75rem;font-size:.8rem;font-weight:600;color:var(--blue);">${p.name} <span style="font-size:.65rem;color:var(--gray);font-weight:400;">(custom)</span></td>${cells}</tr>`;
@@ -1432,14 +1429,28 @@ function switchAlertTab(containerId, group) {
   cont.querySelectorAll('.alert-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.group === group));
 }
 
-function renderAbastAlerts() {
-  const cont = document.getElementById('abast-alerts'); if (!cont) return;
-  cont.innerHTML = buildAlertTabsHTML('abast-alerts', 'abastecimiento', 'Comentario sobre esta alerta (opcional)…');
-}
-
-function renderReviewAlerts(area) {
-  const cont = document.getElementById('alerts-'+area); if (!cont) return;
-  cont.innerHTML = buildAlertTabsHTML('alerts-'+area, area, 'Comentario del área…');
+function renderUnifiedAlerts() {
+  const cont = document.getElementById('unified-alerts-container');
+  if (!cont) return;
+  const AREA_ICON = { abastecimiento:'🛒', cumplimiento:'🔎', finanzas:'💰', legal:'⚖️' };
+  const activeAreas = AREAS.filter(a => isAreaRequired(a));
+  if (!activeAreas.length) {
+    cont.innerHTML = '<div style="font-size:.8rem;color:var(--gray);text-align:center;padding:1.5rem 0;">Sin áreas asignadas — activa procesos y asigna áreas en el paso anterior.</div>';
+    return;
+  }
+  cont.innerHTML = activeAreas.map((a, idx) => `
+    ${idx > 0 ? '<div class="divider"></div>' : ''}
+    <div>
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;display:flex;align-items:center;gap:.375rem;">
+        <span>${AREA_ICON[a]}</span><span>${AREA_LABELS[a]}</span>
+      </div>
+      <div id="unified-alerts-${a}"></div>
+    </div>
+  `).join('');
+  activeAreas.forEach(a => {
+    const el = document.getElementById('unified-alerts-' + a);
+    if (el) el.innerHTML = buildAlertTabsHTML('unified-alerts-' + a, a, 'Comentario sobre esta alerta (opcional)…');
+  });
 }
 
 function renderAbastRecap() {
@@ -1926,14 +1937,12 @@ function removeAreaCustomDoc(area, processKey, idx) {
 }
 
 function renderAllAlerts() {
-  renderAbastAlerts();
+  renderUnifiedAlerts();
   renderAbastRecap();
   ['cumplimiento','finanzas','legal'].forEach(a => {
     renderScopeChips('scope-procs-' + a);
-    renderReviewAlerts(a);
     renderCrossAreaSummary(a);
   });
-  // Actualizar resumen comprimido en slides 12/13 si están visibles
   renderCompactAreaAlerts('syncCompactAlerts');
   renderCompactAreaAlerts('reportCompactAlerts');
   renderAllAreasSummary('syncAllAreaCards');
