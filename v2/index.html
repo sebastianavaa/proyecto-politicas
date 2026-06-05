@@ -1104,6 +1104,7 @@ function toggleProcessArea(processKey, area) {
   updateNav();
   renderAbastRecap();
   AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
+  AREAS.forEach(a => renderAreaDocReview(a));
   save();
 }
 
