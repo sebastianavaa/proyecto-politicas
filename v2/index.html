@@ -456,9 +456,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
             <div class="eval-subtitle">Compra menor a USD 20.000</div>
             <h4>Proveedor Spot</h4>
             <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .4rem;line-height:1.5;">Evaluación simplificada para friccionar lo menos posible el proceso de compras menores, manteniendo un nivel básico de due diligence.</p>
-            <div class="eval-docs-list" id="docs-express" style="display:block;">
-              <strong>Requeridos:</strong> Declaración jurada del proveedor · Declaración vínculo PEP · E-RUT<br>
-              <strong>Opcionales:</strong> Certificado cuenta bancaria
+            <div class="eval-docs-list" id="std-doc-summary-express" style="display:block;"></div>
+            <button class="eval-docs-toggle" onclick="event.stopPropagation();toggleStdDocs('express',this)" style="margin-top:.375rem;">▾ Editar documentos</button>
+            <div id="std-docs-express" style="display:none;margin-top:.5rem;padding:.625rem .75rem;background:var(--gray-light);border-radius:.5rem;max-height:260px;overflow-y:auto;">
+              <div id="std-doc-rows-express"></div>
             </div>
           </div>
         </div>
@@ -469,9 +470,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
             <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000</div>
             <h4>Proveedor General</h4>
             <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .4rem;line-height:1.5;">Evaluación más robusta con revisión profunda en términos legales y financieros para mitigar riesgos en contratos medianos.</p>
-            <div class="eval-docs-list" id="docs-completa" style="display:block;">
-              <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Conflicto de Interés · E-RUT · Certificado Vigencia Sociedad · DNI Representante Legal · Carpeta tributaria SII · Certificado Vigencia Poderes · Certificado cuenta bancaria · DICOM<br>
-              <strong>Opcionales:</strong> Constitución de la Sociedad · Deuda Fiscal TGR
+            <div class="eval-docs-list" id="std-doc-summary-completa" style="display:block;"></div>
+            <button class="eval-docs-toggle" onclick="event.stopPropagation();toggleStdDocs('completa',this)" style="margin-top:.375rem;">▾ Editar documentos</button>
+            <div id="std-docs-completa" style="display:none;margin-top:.5rem;padding:.625rem .75rem;background:var(--gray-light);border-radius:.5rem;max-height:260px;overflow-y:auto;">
+              <div id="std-doc-rows-completa"></div>
             </div>
           </div>
         </div>
@@ -482,9 +484,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
             <div class="eval-subtitle">Compra mayor a USD 100.000</div>
             <h4>Proveedor Crítico</h4>
             <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .4rem;line-height:1.5;">El nivel más exhaustivo de evaluación, con revisión detallada en cada área para una mitigación de riesgos integral.</p>
-            <div class="eval-docs-list" id="docs-reforzada" style="display:block;">
-              <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Conflicto de Interés · Constitución de la Sociedad · E-RUT · Certificado Vigencia Sociedad · DNI Representante Legal · Carpeta tributaria SII · Certificado Vigencia Poderes · Cuenta bancaria · Deuda Fiscal TGR · DICOM<br>
-              <strong>Opcionales:</strong> Estado Financiero
+            <div class="eval-docs-list" id="std-doc-summary-reforzada" style="display:block;"></div>
+            <button class="eval-docs-toggle" onclick="event.stopPropagation();toggleStdDocs('reforzada',this)" style="margin-top:.375rem;">▾ Editar documentos</button>
+            <div id="std-docs-reforzada" style="display:none;margin-top:.5rem;padding:.625rem .75rem;background:var(--gray-light);border-radius:.5rem;max-height:260px;overflow-y:auto;">
+              <div id="std-doc-rows-reforzada"></div>
             </div>
           </div>
         </div>
@@ -495,8 +498,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
             <div class="eval-subtitle">Proveedor con domicilio fuera de Chile</div>
             <h4>Proveedor Internacional</h4>
             <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .4rem;line-height:1.5;">Evaluación adaptada a proveedores extranjeros: documentación equivalente y verificación de sanciones globales (OFAC/ONU/UE).</p>
-            <div class="eval-docs-list" id="docs-internacional" style="display:block;">
-              <strong>Requeridos:</strong> Declaración jurada del proveedor · Declaración vínculo PEP · Estado Financiero
+            <div class="eval-docs-list" id="std-doc-summary-internacional" style="display:block;"></div>
+            <button class="eval-docs-toggle" onclick="event.stopPropagation();toggleStdDocs('internacional',this)" style="margin-top:.375rem;">▾ Editar documentos</button>
+            <div id="std-docs-internacional" style="display:none;margin-top:.5rem;padding:.625rem .75rem;background:var(--gray-light);border-radius:.5rem;max-height:260px;overflow-y:auto;">
+              <div id="std-doc-rows-internacional"></div>
             </div>
           </div>
         </div>
@@ -507,9 +512,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
             <div class="eval-subtitle">Proveedor con trabajadores subcontratados (Ley 20.123)</div>
             <h4>Subcontratación</h4>
             <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .4rem;line-height:1.5;">Evalúa la responsabilidad solidaria de la empresa mandante respecto de las obligaciones laborales y previsionales del contratista.</p>
-            <div class="eval-docs-list" id="docs-subcontratacion" style="display:block;">
-              <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · E-RUT · Carpeta tributaria SII · Cumplimiento Laboral (F30) · Deuda Previsional (F30-1) · Nómina de trabajadores<br>
-              <strong>Opcionales:</strong> Certificado cuenta bancaria
+            <div class="eval-docs-list" id="std-doc-summary-subcontratacion" style="display:block;"></div>
+            <button class="eval-docs-toggle" onclick="event.stopPropagation();toggleStdDocs('subcontratacion',this)" style="margin-top:.375rem;">▾ Editar documentos</button>
+            <div id="std-docs-subcontratacion" style="display:none;margin-top:.5rem;padding:.625rem .75rem;background:var(--gray-light);border-radius:.5rem;max-height:260px;overflow-y:auto;">
+              <div id="std-doc-rows-subcontratacion"></div>
             </div>
           </div>
         </div>
@@ -936,6 +942,7 @@ const st = {
     legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts()}
   },
   customProcesses: [],
+  processDocConfig: {},
   sentAt:'',
   syncNotes:'',
 };
@@ -1443,6 +1450,88 @@ const DOC_SEGMENTS = [
   { label:'Financieros',           indices:[9,10,11,12] },
   { label:'Laboral',               indices:[13,14,15] }
 ];
+
+const STD_PROCESS_KEYS = ['express','completa','reforzada','internacional','subcontratacion'];
+
+function getDefaultDocConfig(processKey) {
+  const cfg = {};
+  DOCS.forEach((doc, j) => {
+    if (doc.req?.includes(processKey)) cfg[j] = 'req';
+    else if (doc.opc?.includes(processKey)) cfg[j] = 'opc';
+  });
+  return cfg;
+}
+
+function getProcessDocConfig(processKey) {
+  if (!st.processDocConfig) st.processDocConfig = {};
+  if (!st.processDocConfig[processKey]) {
+    st.processDocConfig[processKey] = getDefaultDocConfig(processKey);
+  }
+  return st.processDocConfig[processKey];
+}
+
+function renderStdDocSummaryHTML(processKey) {
+  const cfg = getProcessDocConfig(processKey);
+  const reqDocs = DOCS.filter((_, j) => cfg[j] === 'req');
+  const opcDocs = DOCS.filter((_, j) => cfg[j] === 'opc');
+  return (reqDocs.length ? `<strong>Requeridos:</strong> ${reqDocs.map(d => d.name).join(' · ')}<br>` : '')
+    + (opcDocs.length ? `<strong>Opcionales:</strong> ${opcDocs.map(d => d.name).join(' · ')}` : '')
+    + (!reqDocs.length && !opcDocs.length ? '<em style="color:var(--gray)">Sin documentos configurados</em>' : '');
+}
+
+function renderAllStdDocSummaries() {
+  STD_PROCESS_KEYS.forEach(pk => {
+    const el = document.getElementById('std-doc-summary-' + pk);
+    if (el) el.innerHTML = renderStdDocSummaryHTML(pk);
+  });
+}
+
+function renderStdDocRows(processKey) {
+  const cfg = getProcessDocConfig(processKey);
+  const btnBase = 'font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:.25rem;border:1px solid;cursor:pointer;transition:all .15s;';
+  const reqSel = 'background:#DCFCE7;color:#166534;border-color:#86EFAC;';
+  const opcSel = 'background:#FFFBEB;color:#D97706;border-color:#FCD34D;';
+  const off    = 'background:transparent;color:var(--gray);border-color:var(--gray-border);';
+  return DOC_SEGMENTS.map(seg => `
+    <div style="margin-bottom:.625rem;">
+      <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);opacity:.5;margin-bottom:.3rem;">${seg.label}</div>
+      ${seg.indices.map(j => {
+        const s = cfg[j] || null;
+        return `<div style="display:flex;align-items:center;gap:.5rem;padding:.25rem 0;border-bottom:1px solid rgba(0,0,0,.06);">
+          <span style="flex:1;font-size:.76rem;color:var(--text);">${DOCS[j].name}</span>
+          <div style="display:flex;gap:.2rem;">
+            <button onclick="setStdDoc('${processKey}',${j},${s === 'req' ? null : "'req'"})" style="${btnBase}${s === 'req' ? reqSel : off}">Req</button>
+            <button onclick="setStdDoc('${processKey}',${j},${s === 'opc' ? null : "'opc'"})" style="${btnBase}${s === 'opc' ? opcSel : off}">Opc</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+
+function setStdDoc(processKey, j, state) {
+  if (!st.processDocConfig) st.processDocConfig = {};
+  if (!st.processDocConfig[processKey]) {
+    st.processDocConfig[processKey] = getDefaultDocConfig(processKey);
+  }
+  if (state === null) delete st.processDocConfig[processKey][j];
+  else st.processDocConfig[processKey][j] = state;
+  const rows = document.getElementById('std-doc-rows-' + processKey);
+  if (rows) rows.innerHTML = renderStdDocRows(processKey);
+  const summary = document.getElementById('std-doc-summary-' + processKey);
+  if (summary) summary.innerHTML = renderStdDocSummaryHTML(processKey);
+  save();
+}
+
+function toggleStdDocs(processKey, btn) {
+  const panel = document.getElementById('std-docs-' + processKey); if (!panel) return;
+  const open = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? '▾ Editar documentos' : '▴ Ocultar documentos';
+  if (!open) {
+    const rows = document.getElementById('std-doc-rows-' + processKey);
+    if (rows) rows.innerHTML = renderStdDocRows(processKey);
+  }
+}
 
 function renderCPDocRows(i) {
   const p = st.customProcesses[i];
@@ -1959,6 +2048,7 @@ function mergeState(d) {
   if (d.sentAt) st.sentAt = d.sentAt;
   if (d.syncNotes) st.syncNotes = d.syncNotes;
   if (Array.isArray(d.customProcesses)) st.customProcesses = d.customProcesses;
+  if (d.processDocConfig) { if (!st.processDocConfig) st.processDocConfig = {}; Object.assign(st.processDocConfig, d.processDocConfig); }
   if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
   if (d.requiredAreas) Object.assign(st.requiredAreas, d.requiredAreas);
   if (d.areas) AREAS.forEach(a => {
@@ -2003,6 +2093,7 @@ function applyStateToUI() {
   });
 
   renderAllAlerts();
+  renderAllStdDocSummaries();
   renderCustomProcesses();
   renderProcessAreaMatrix();
   AREAS.forEach(a => applyAreaSaveUI(a));
