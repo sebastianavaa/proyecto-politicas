@@ -843,7 +843,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <div id="nav">
   <button class="nav-btn" id="prevBtn" onclick="prev()" disabled>←</button>
-  <span id="counter">1 / 11</span>
+  <span id="counter">1 / 10</span>
   <button class="nav-btn" id="nextBtn" onclick="next()">→</button>
 </div>
 
@@ -1128,8 +1128,8 @@ function renderProcessAreaMatrix() {
     }).join('');
     rows += `<tr style="border-top:1px solid var(--gray-border);"><td style="padding:.5rem .75rem;font-size:.8rem;font-weight:600;color:var(--navy);">${TYPE_LABEL[k]}</td>${cells}</tr>`;
   });
-  activeCPs.forEach((p, i) => {
-    const key = 'cp_' + i;
+  activeCPs.forEach(p => {
+    const key = 'cp_' + st.customProcesses.indexOf(p);
     const cells = AREAS.map(a => {
       const on = pa[key] ? !!pa[key][a] : true;
       return `<td style="text-align:center;padding:.35rem .4rem;"><button onclick="toggleProcessArea('${key}','${a}')" title="${AREA_LABELS[a]}" style="width:2.25rem;height:1.25rem;border-radius:.625rem;border:2px solid ${on?'var(--blue)':'var(--gray-border)'};cursor:pointer;transition:all .2s;background:${on?'var(--blue)':'var(--white)'};"></button></td>`;
@@ -1799,10 +1799,9 @@ function renderAreaDocReview(area) {
 function switchDocTab(area, processKey) {
   _activeDocTab[area] = processKey;
   const cont = document.getElementById('doc-review-'+area); if (!cont) return;
-  cont.querySelectorAll('.alert-tab').forEach((btn, i) => {
-    const processes = getAreaActiveDocs(area);
-    btn.classList.toggle('active', processes[i]?.processKey === processKey);
-  });
+  cont.querySelectorAll('.alert-tab').forEach(btn =>
+    btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${processKey}'`))
+  );
   cont.querySelectorAll('.alert-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.group === processKey));
 }
 
@@ -2038,11 +2037,15 @@ async function enviar() {
     evalTypes: st.evalTypes,
     requiredAreas: st.requiredAreas,
     processAreas: st.processAreas,
+    customProcesses: st.customProcesses,
+    processDocConfig: st.processDocConfig,
     areas: Object.fromEntries(AREAS.map(a => [a, {
-      decision: st.areas[a].decision,
       notes: st.areas[a].notes,
       extraDocs: st.areas[a].extraDocs,
       responsible: st.areas[a].responsible,
+      docReview: st.areas[a].docReview,
+      docComments: st.areas[a].docComments,
+      customDocs: st.areas[a].customDocs,
       ...(a==='cumplimiento' ? { exceptions: st.areas[a].exceptions } : {}),
       ...(a==='finanzas' ? { signals: st.areas[a].signals } : {}),
     }])),
@@ -2070,19 +2073,15 @@ async function enviar() {
   if (success) {
     const sentAt = new Date().toISOString();
     st.sentAt = sentAt;
-    save(); // persiste el envío en el estado compartido (lo ven todas las áreas)
+    save();
     showSentBanner(sentAt);
-    btnBoth.forEach(b => {
-      if (b) { b.textContent='✅ Enviado'; b.classList.remove('saving'); b.classList.add('ok'); }
-    });
+    if (btn) { btn.textContent='✅ Enviado'; btn.classList.remove('saving'); btn.classList.add('ok'); }
     const toast = document.getElementById('send-toast');
     if (toast) { toast.style.display='block'; setTimeout(()=>toast.style.display='none',4000); }
-    setTimeout(()=>{ btnBoth.forEach(b => { if(b){ b.textContent='📤 Enviar reporte'; b.classList.remove('ok'); }});},3000);
+    setTimeout(()=>{ if(btn){ btn.textContent='📤 Enviar reporte'; btn.classList.remove('ok'); }},3000);
   } else {
-    btnBoth.forEach(b => {
-      if (b) { b.textContent='❌ Error al enviar'; b.classList.remove('saving'); b.classList.add('error'); }
-    });
-    setTimeout(()=>{ btnBoth.forEach(b => { if(b){ b.textContent='📤 Enviar reporte'; b.classList.remove('error'); }});},4000);
+    if (btn) { btn.textContent='❌ Error al enviar'; btn.classList.remove('saving'); btn.classList.add('error'); }
+    setTimeout(()=>{ if(btn){ btn.textContent='📤 Enviar reporte'; btn.classList.remove('error'); }},4000);
   }
 }
 
@@ -2125,7 +2124,10 @@ function startPolling() {
       // 1. Sincronizar qué áreas participan por proceso (definido por Owner)
       if (data.state.processAreas) {
         if (!st.processAreas) st.processAreas = {};
-        Object.assign(st.processAreas, data.state.processAreas);
+        Object.entries(data.state.processAreas).forEach(([k, v]) => {
+          if (!st.processAreas[k]) st.processAreas[k] = {};
+          Object.assign(st.processAreas[k], v);
+        });
         renderProcessAreaMatrix();
         changed = true;
       } else if (data.state.requiredAreas) {
@@ -2214,6 +2216,13 @@ function mergeState(d) {
   if (d.syncNotes) st.syncNotes = d.syncNotes;
   if (Array.isArray(d.customProcesses)) st.customProcesses = d.customProcesses;
   if (d.processDocConfig) { if (!st.processDocConfig) st.processDocConfig = {}; Object.assign(st.processDocConfig, d.processDocConfig); }
+  if (d.processAreas) {
+    if (!st.processAreas) st.processAreas = {};
+    Object.entries(d.processAreas).forEach(([k, v]) => {
+      if (!st.processAreas[k]) st.processAreas[k] = {};
+      Object.assign(st.processAreas[k], v);
+    });
+  }
   if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
   if (d.requiredAreas) Object.assign(st.requiredAreas, d.requiredAreas);
   if (d.areas) AREAS.forEach(a => {
@@ -2262,8 +2271,13 @@ function applyStateToUI() {
   renderAllStdDocSummaries();
   renderCustomProcesses();
   renderProcessAreaMatrix();
+  renderAbastRecap();
+  AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
+  AREAS.filter(a => a !== 'abastecimiento').forEach(a => renderCrossAreaSummary(a));
   AREAS.forEach(a => applyAreaSaveUI(a));
   updateAreaTags();
+  const syncNotesEl = document.getElementById('syncNotes');
+  if (syncNotesEl) syncNotesEl.value = st.syncNotes || '';
   if (st.sentAt) showSentBanner(st.sentAt);
 }
 
