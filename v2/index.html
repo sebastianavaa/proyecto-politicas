@@ -726,12 +726,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <input type="email" id="resp-email-abastecimiento" placeholder="email@empresa.com" oninput="saveResp('abastecimiento','email',this.value)">
       </div>
       <div class="decision-title">Observaciones del área</div>
-      <textarea class="notes-ta" id="notes-abastecimiento" placeholder="Comentarios, propuestas de cambio, documentos adicionales que quieras solicitar..." oninput="saveNotes('abastecimiento',this.value)" style="min-height:88px;"></textarea>
-      <div class="extra-row">
-        <input type="text" id="extra-abastecimiento" placeholder="Solicitar documento adicional..." onkeydown="if(event.key==='Enter')addExtra('abastecimiento')">
-        <button class="btn-add" onclick="addExtra('abastecimiento')">+ Agregar</button>
-      </div>
-      <div class="extra-tags" id="tags-abastecimiento"></div>
+      <textarea class="notes-ta" id="notes-abastecimiento" placeholder="Comentarios, propuestas de cambio..." oninput="saveNotes('abastecimiento',this.value)" style="min-height:52px;"></textarea>
+      <div class="resp-label" style="margin-top:.875rem;">Revisores de alertas graves</div>
+      <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Define quién revisa cada categoría de alerta grave en esta área.</p>
+      <div id="alert-reviewers-abastecimiento"></div>
+      <button onclick="addAlertReviewer('abastecimiento')" style="display:flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.375rem .75rem;font-size:.775rem;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:.75rem;">+ Agregar revisor</button>
       <button class="btn-area-save-main" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')">Guardar sección de Abastecimiento</button>
       <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
       <span class="area-save-status" id="save-status-abastecimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
@@ -770,12 +769,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <input type="email" id="resp-email-cumplimiento" placeholder="email@empresa.com" oninput="saveResp('cumplimiento','email',this.value)">
       </div>
       <div class="decision-title">Observaciones del área</div>
-      <textarea class="notes-ta" id="notes-cumplimiento" placeholder="Comentarios, propuestas de cambio, documentos adicionales que quieras solicitar..." oninput="saveNotes('cumplimiento',this.value)" style="min-height:88px;"></textarea>
-      <div class="extra-row">
-        <input type="text" id="extra-cumplimiento" placeholder="Solicitar documento adicional..." onkeydown="if(event.key==='Enter')addExtra('cumplimiento')">
-        <button class="btn-add" onclick="addExtra('cumplimiento')">+ Agregar</button>
-      </div>
-      <div class="extra-tags" id="tags-cumplimiento"></div>
+      <textarea class="notes-ta" id="notes-cumplimiento" placeholder="Comentarios, propuestas de cambio..." oninput="saveNotes('cumplimiento',this.value)" style="min-height:52px;"></textarea>
+      <div class="resp-label" style="margin-top:.875rem;">Revisores de alertas graves</div>
+      <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Define quién revisa cada categoría de alerta grave en esta área.</p>
+      <div id="alert-reviewers-cumplimiento"></div>
+      <button onclick="addAlertReviewer('cumplimiento')" style="display:flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.375rem .75rem;font-size:.775rem;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:.75rem;">+ Agregar revisor</button>
       <button class="btn-area-save-main" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')">Guardar sección de Cumplimiento</button>
       <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
       <span class="area-save-status" id="save-status-cumplimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
@@ -814,12 +812,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <input type="email" id="resp-email-finanzas" placeholder="email@empresa.com" oninput="saveResp('finanzas','email',this.value)">
       </div>
       <div class="decision-title">Observaciones del área</div>
-      <textarea class="notes-ta" id="notes-finanzas" placeholder="Comentarios, propuestas de cambio, documentos adicionales que quieras solicitar..." oninput="saveNotes('finanzas',this.value)" style="min-height:88px;"></textarea>
-      <div class="extra-row">
-        <input type="text" id="extra-finanzas" placeholder="Solicitar documento adicional..." onkeydown="if(event.key==='Enter')addExtra('finanzas')">
-        <button class="btn-add" onclick="addExtra('finanzas')">+ Agregar</button>
-      </div>
-      <div class="extra-tags" id="tags-finanzas"></div>
+      <textarea class="notes-ta" id="notes-finanzas" placeholder="Comentarios, propuestas de cambio..." oninput="saveNotes('finanzas',this.value)" style="min-height:52px;"></textarea>
+      <div class="resp-label" style="margin-top:.875rem;">Revisores de alertas graves</div>
+      <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Define quién revisa cada categoría de alerta grave en esta área.</p>
+      <div id="alert-reviewers-finanzas"></div>
+      <button onclick="addAlertReviewer('finanzas')" style="display:flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.375rem .75rem;font-size:.775rem;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:.75rem;">+ Agregar revisor</button>
       <button class="btn-area-save-main" id="save-btn-finanzas" onclick="guardarArea('finanzas')">Guardar sección de Finanzas</button>
       <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
       <span class="area-save-status" id="save-status-finanzas" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
@@ -858,12 +855,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <input type="email" id="resp-email-legal" placeholder="email@empresa.com" oninput="saveResp('legal','email',this.value)">
       </div>
       <div class="decision-title">Observaciones del área</div>
-      <textarea class="notes-ta" id="notes-legal" placeholder="Comentarios, propuestas de cambio, documentos adicionales que quieras solicitar..." oninput="saveNotes('legal',this.value)" style="min-height:88px;"></textarea>
-      <div class="extra-row">
-        <input type="text" id="extra-legal" placeholder="Solicitar documento adicional..." onkeydown="if(event.key==='Enter')addExtra('legal')">
-        <button class="btn-add" onclick="addExtra('legal')">+ Agregar</button>
-      </div>
-      <div class="extra-tags" id="tags-legal"></div>
+      <textarea class="notes-ta" id="notes-legal" placeholder="Comentarios, propuestas de cambio..." oninput="saveNotes('legal',this.value)" style="min-height:52px;"></textarea>
+      <div class="resp-label" style="margin-top:.875rem;">Revisores de alertas graves</div>
+      <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Define quién revisa cada categoría de alerta grave en esta área.</p>
+      <div id="alert-reviewers-legal"></div>
+      <button onclick="addAlertReviewer('legal')" style="display:flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.375rem .75rem;font-size:.775rem;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:.75rem;">+ Agregar revisor</button>
       <button class="btn-area-save-main" id="save-btn-legal" onclick="guardarArea('legal')">Guardar sección de Legal</button>
       <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
       <span class="area-save-status" id="save-status-legal" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
@@ -1039,10 +1035,10 @@ const st = {
     subcontratacion:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true }
   },
   areas:{
-    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},docReview:{},docComments:{},customDocs:{}},
-    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},docReview:{},docComments:{},customDocs:{}},
-    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},docReview:{},docComments:{},customDocs:{}},
-    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},docReview:{},docComments:{},customDocs:{}}
+    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{}},
+    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{}},
+    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{}},
+    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{}}
   },
   customProcesses: [],
   processDocConfig: {},
@@ -1390,6 +1386,39 @@ function normalizeAlerts(arr) {
 function setAlertActive(area, i)           { st.areas[area].alerts[i].activa = !st.areas[area].alerts[i].activa; renderAllAlerts(); save(); }
 function setAlertSeverity(area, i, sev)    { st.areas[area].alerts[i].severidad = sev; renderAllAlerts(); save(); }
 function setAlertGroupComment(area, g, val){ if (!st.areas[area].alertGroupComments) st.areas[area].alertGroupComments = {}; st.areas[area].alertGroupComments[g] = val; save(); }
+
+const GROUP_ICON = { 'Tributario':'🏛️', 'Financiero':'💰', 'Legal y Societario':'⚖️', 'Laboral':'👷', 'Cumplimiento':'🔎' };
+
+function renderAlertReviewers(area) {
+  const cont = document.getElementById('alert-reviewers-' + area);
+  if (!cont) return;
+  const reviewers = st.areas[area].alertReviewers || [];
+  const groups = [...new Set(ALERTS.map(a => a.group))];
+  const inp = 'padding:.4rem .625rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.8rem;font-family:var(--font);width:100%;box-sizing:border-box;';
+  cont.innerHTML = reviewers.map((r, i) => `
+    <div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:.375rem;align-items:center;margin-bottom:.375rem;">
+      <input type="text" value="${r.name||''}" placeholder="Nombre completo" style="${inp}" oninput="saveAlertReviewer('${area}',${i},'name',this.value)">
+      <input type="email" value="${r.email||''}" placeholder="email@empresa.com" style="${inp}" oninput="saveAlertReviewer('${area}',${i},'email',this.value)">
+      <select onchange="saveAlertReviewer('${area}',${i},'group',this.value)" style="padding:.4rem .5rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.8rem;font-family:var(--font);background:white;cursor:pointer;">
+        ${groups.map(g => `<option value="${g}" ${r.group===g?'selected':''}>${GROUP_ICON[g]||''} ${g}</option>`).join('')}
+      </select>
+      <button onclick="removeAlertReviewer('${area}',${i})" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:1.1rem;padding:.25rem .375rem;line-height:1;">×</button>
+    </div>
+  `).join('');
+}
+function addAlertReviewer(area) {
+  if (!st.areas[area].alertReviewers) st.areas[area].alertReviewers = [];
+  const groups = [...new Set(ALERTS.map(a => a.group))];
+  st.areas[area].alertReviewers.push({ name:'', email:'', group: groups[0] });
+  renderAlertReviewers(area); save();
+}
+function removeAlertReviewer(area, i) {
+  st.areas[area].alertReviewers.splice(i, 1);
+  renderAlertReviewers(area); save();
+}
+function saveAlertReviewer(area, i, field, val) {
+  st.areas[area].alertReviewers[i][field] = val; save();
+}
 
 const _activeAlertTab = {};
 
@@ -2367,6 +2396,7 @@ function applyStateToUI() {
   AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
   AREAS.filter(a => a !== 'abastecimiento').forEach(a => renderCrossAreaSummary(a));
   AREAS.forEach(a => applyAreaSaveUI(a));
+  AREAS.forEach(a => renderAlertReviewers(a));
   updateAreaTags();
   const syncNotesEl = document.getElementById('syncNotes');
   if (syncNotesEl) syncNotesEl.value = st.syncNotes || '';
