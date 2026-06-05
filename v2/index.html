@@ -438,75 +438,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 3: PROCESOS + DOCUMENTOS (unificado) ── -->
+<!-- ── 3: OWNER DEL PROYECTO ── -->
 <div class="slide slide-std" data-n="3">
-  <div class="s-head"><div class="s-tag">Los 5 procesos</div>
-    <h2>¿Qué evalúa Plutto según el tipo de proveedor?</h2>
-    <p>Cada proveedor entra por un proceso distinto según su riesgo y tipo de contrato. Esto define qué documentos se solicitan y la profundidad del análisis.</p>
-  </div>
-  <div class="s-body scrollable">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:.75rem;">
-      <div class="eval-card active" style="cursor:default;padding:.875rem 1rem;">
-        <div class="eval-info">
-          <div class="eval-subtitle">Compra menor a USD 20.000</div>
-          <h4>Proveedor Spot</h4>
-          <p>Evaluación simplificada para friccionar lo menos posible el proceso de compras menores, manteniendo un nivel básico de due diligence.</p>
-          <div class="eval-docs-list" style="display:block;margin-top:.5rem;">
-            <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · E-RUT<br>
-            <strong>Opcionales:</strong> Certificado cuenta bancaria
-          </div>
-        </div>
-      </div>
-      <div class="eval-card active" style="cursor:default;padding:.875rem 1rem;">
-        <div class="eval-info">
-          <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000</div>
-          <h4>Proveedor General</h4>
-          <p>Evaluación más robusta con revisión profunda en términos legales y financieros para mitigar riesgos en contratos medianos.</p>
-          <div class="eval-docs-list" style="display:block;margin-top:.5rem;">
-            <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Conflicto de Interés · E-RUT · Vigencia Sociedad · DNI Rep. Legal · Carpeta tributaria SII · Vigencia Poderes · Cuenta bancaria · DICOM<br>
-            <strong>Opcionales:</strong> Constitución Sociedad · Deuda Fiscal TGR
-          </div>
-        </div>
-      </div>
-      <div class="eval-card active" style="cursor:default;padding:.875rem 1rem;">
-        <div class="eval-info">
-          <div class="eval-subtitle">Compra mayor a USD 100.000</div>
-          <h4>Proveedor Crítico</h4>
-          <p>El nivel más exhaustivo de evaluación, con revisión detallada en cada área para una mitigación de riesgos integral.</p>
-          <div class="eval-docs-list" style="display:block;margin-top:.5rem;">
-            <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Conflicto de Interés · Constitución Sociedad · E-RUT · Vigencia Sociedad · DNI Rep. Legal · Carpeta tributaria SII · Vigencia Poderes · Cuenta bancaria · Deuda Fiscal TGR · DICOM<br>
-            <strong>Opcionales:</strong> Estado Financiero
-          </div>
-        </div>
-      </div>
-      <div class="eval-card active" style="cursor:default;padding:.875rem 1rem;">
-        <div class="eval-info">
-          <div class="eval-subtitle">Proveedor con domicilio fuera de Chile</div>
-          <h4>Proveedor Internacional</h4>
-          <p>Evaluación adaptada a proveedores extranjeros: documentación equivalente y verificación de sanciones globales (OFAC/ONU/UE).</p>
-          <div class="eval-docs-list" style="display:block;margin-top:.5rem;">
-            <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Estado Financiero
-          </div>
-        </div>
-      </div>
-      <div class="eval-card active" style="cursor:default;padding:.875rem 1rem;">
-        <div class="eval-info">
-          <div class="eval-subtitle">Proveedor con trabajadores subcontratados (Ley 20.123)</div>
-          <h4>Subcontratación</h4>
-          <p>Evalúa la responsabilidad solidaria de la empresa mandante respecto de las obligaciones laborales y previsionales del contratista.</p>
-          <div class="eval-docs-list" style="display:block;margin-top:.5rem;">
-            <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · E-RUT · Carpeta tributaria SII · Cumplimiento Laboral (F30) · Deuda Previsional (F30-1) · Nómina de trabajadores<br>
-            <strong>Opcionales:</strong> Certificado cuenta bancaria
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="warn-box" style="margin-top:.875rem">💡 <strong>En la siguiente etapa</strong> el Owner seleccionará qué procesos activar para su empresa y qué áreas participarán en cada evaluación.</div>
-  </div>
-</div>
-
-<!-- ── 4: OWNER DEL PROYECTO ── -->
-<div class="slide slide-std" data-n="4">
   <div class="s-head"><div class="s-tag">Configuración inicial</div>
     <h2>Owner del proyecto</h2>
     <p>Activa los procesos que aplican a tu empresa y selecciona qué áreas revisarán a los proveedores.</p>
@@ -522,6 +455,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Compra menor a USD 20.000</div>
             <h4>Proveedor Spot</h4>
+            <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .4rem;line-height:1.5;">Evaluación simplificada para friccionar lo menos posible el proceso de compras menores, manteniendo un nivel básico de due diligence.</p>
             <div class="eval-docs-list" id="docs-express" style="display:block;">
               <strong>Requeridos:</strong> Declaración jurada del proveedor · Declaración vínculo PEP · E-RUT<br>
               <strong>Opcionales:</strong> Certificado cuenta bancaria
@@ -534,6 +468,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000</div>
             <h4>Proveedor General</h4>
+            <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .4rem;line-height:1.5;">Evaluación más robusta con revisión profunda en términos legales y financieros para mitigar riesgos en contratos medianos.</p>
             <div class="eval-docs-list" id="docs-completa" style="display:block;">
               <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Conflicto de Interés · E-RUT · Certificado Vigencia Sociedad · DNI Representante Legal · Carpeta tributaria SII · Certificado Vigencia Poderes · Certificado cuenta bancaria · DICOM<br>
               <strong>Opcionales:</strong> Constitución de la Sociedad · Deuda Fiscal TGR
@@ -546,6 +481,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Compra mayor a USD 100.000</div>
             <h4>Proveedor Crítico</h4>
+            <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .4rem;line-height:1.5;">El nivel más exhaustivo de evaluación, con revisión detallada en cada área para una mitigación de riesgos integral.</p>
             <div class="eval-docs-list" id="docs-reforzada" style="display:block;">
               <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Conflicto de Interés · Constitución de la Sociedad · E-RUT · Certificado Vigencia Sociedad · DNI Representante Legal · Carpeta tributaria SII · Certificado Vigencia Poderes · Cuenta bancaria · Deuda Fiscal TGR · DICOM<br>
               <strong>Opcionales:</strong> Estado Financiero
@@ -558,6 +494,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Proveedor con domicilio fuera de Chile</div>
             <h4>Proveedor Internacional</h4>
+            <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .4rem;line-height:1.5;">Evaluación adaptada a proveedores extranjeros: documentación equivalente y verificación de sanciones globales (OFAC/ONU/UE).</p>
             <div class="eval-docs-list" id="docs-internacional" style="display:block;">
               <strong>Requeridos:</strong> Declaración jurada del proveedor · Declaración vínculo PEP · Estado Financiero
             </div>
@@ -569,6 +506,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Proveedor con trabajadores subcontratados (Ley 20.123)</div>
             <h4>Subcontratación</h4>
+            <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .4rem;line-height:1.5;">Evalúa la responsabilidad solidaria de la empresa mandante respecto de las obligaciones laborales y previsionales del contratista.</p>
             <div class="eval-docs-list" id="docs-subcontratacion" style="display:block;">
               <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · E-RUT · Carpeta tributaria SII · Cumplimiento Laboral (F30) · Deuda Previsional (F30-1) · Nómina de trabajadores<br>
               <strong>Opcionales:</strong> Certificado cuenta bancaria
@@ -601,8 +539,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 5: PROCESOS PERSONALIZADOS ── -->
-<div class="slide slide-std" data-n="5">
+<!-- ── 4: PROCESOS PERSONALIZADOS ── -->
+<div class="slide slide-std" data-n="4">
   <div class="s-head"><div class="s-tag">Procesos propios</div>
     <h2>¿Tienes procesos adicionales?</h2>
     <p>Agrega aquí los procesos de evaluación que no están en la lista anterior — pueden ser por industria, tipo de contrato, o criterio interno.</p>
@@ -616,8 +554,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 6: RESUMEN DE ROLES + EXPECTATIVAS ── -->
-<div class="slide slide-std" data-n="6">
+<!-- ── 5: RESUMEN DE ROLES + EXPECTATIVAS ── -->
+<div class="slide slide-std" data-n="5">
   <div class="s-head"><div class="s-tag">Flujo de trabajo</div>
     <h2>¿Cómo funciona esto?</h2>
     <p>3 fases para construir una política alineada en todo el equipo.</p>
@@ -683,8 +621,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 7: ÁREA ABASTECIMIENTO ── -->
-<div class="slide slide-std" data-n="7">
+<!-- ── 6: ÁREA ABASTECIMIENTO ── -->
+<div class="slide slide-std" data-n="6">
   <div class="s-head"><div class="s-tag">Revisión por área — 1 de 4</div>
     <h2>Abastecimiento</h2>
     <p id="desc-abastecimiento">Coordina el proceso y configura las alertas.</p>
@@ -723,14 +661,18 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 8: ÁREA CUMPLIMIENTO ── -->
-<div class="slide slide-std" data-n="8">
+<!-- ── 7: ÁREA CUMPLIMIENTO ── -->
+<div class="slide slide-std" data-n="7">
   <div class="s-head"><div class="s-tag">Revisión por área — 2 de 4</div>
     <h2>Cumplimiento</h2>
     <p id="desc-cumplimiento">Clasifica el riesgo y da recomendación final en cada evaluación.</p>
     <div class="area-status" id="badge-cumplimiento">Pendiente</div>
   </div>
   <div class="s-body scrollable">
+    <div class="recap-box">
+      <div class="recap-title">Procesos en scope</div>
+      <div class="recap-chips" id="scope-procs-cumplimiento"></div>
+    </div>
     <div class="cross-area-summary" id="cross-summary-cumplimiento">
       <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
       <div class="cross-area-cards" id="cross-summary-cumplimiento-cards"></div>
@@ -759,14 +701,18 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 9: ÁREA FINANZAS ── -->
-<div class="slide slide-std" data-n="9">
+<!-- ── 8: ÁREA FINANZAS ── -->
+<div class="slide slide-std" data-n="8">
   <div class="s-head"><div class="s-tag">Revisión por área — 3 de 4</div>
     <h2>Finanzas</h2>
     <p id="desc-finanzas">Analiza la solidez financiera del proveedor.</p>
     <div class="area-status" id="badge-finanzas">Pendiente</div>
   </div>
   <div class="s-body scrollable">
+    <div class="recap-box">
+      <div class="recap-title">Procesos en scope</div>
+      <div class="recap-chips" id="scope-procs-finanzas"></div>
+    </div>
     <div class="cross-area-summary" id="cross-summary-finanzas">
       <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
       <div class="cross-area-cards" id="cross-summary-finanzas-cards"></div>
@@ -795,14 +741,18 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 10: ÁREA LEGAL ── -->
-<div class="slide slide-std" data-n="10">
+<!-- ── 9: ÁREA LEGAL ── -->
+<div class="slide slide-std" data-n="9">
   <div class="s-head"><div class="s-tag">Revisión por área — 4 de 4</div>
     <h2>Legal</h2>
     <p id="desc-legal">Valida la constitución legal del proveedor.</p>
     <div class="area-status" id="badge-legal">Pendiente</div>
   </div>
   <div class="s-body scrollable">
+    <div class="recap-box">
+      <div class="recap-title">Procesos en scope</div>
+      <div class="recap-chips" id="scope-procs-legal"></div>
+    </div>
     <div class="cross-area-summary" id="cross-summary-legal">
       <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
       <div class="cross-area-cards" id="cross-summary-legal-cards"></div>
@@ -831,8 +781,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 11: SESIÓN SINCRONIZADA ── -->
-<div class="slide slide-std" data-n="11">
+<!-- ── 10: SESIÓN SINCRONIZADA ── -->
+<div class="slide slide-std" data-n="10">
   <div class="s-head"><div class="s-tag">Sesión sincronizada</div>
     <h2>Alineación final del equipo</h2>
     <p>Últimos cambios, decisiones finales y cierre de la política.</p>
@@ -858,8 +808,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 12: REPORTE FINAL ── -->
-<div class="slide slide-std" data-n="12">
+<!-- ── 11: REPORTE FINAL ── -->
+<div class="slide slide-std" data-n="11">
   <div class="s-head"><div class="s-tag">Reporte archivado</div>
     <h2>Resumen completo de la sesión</h2>
     <p>Vista consolidada de todo lo acordado. Este reporte fue enviado al equipo Plutto.</p>
@@ -900,12 +850,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 12;
+const TOTAL = 11;
 let cur = 1;
 
 const AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];
 const AREA_LABELS = { solicitante:'Comprador del proyecto', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal' };
-const AREA_SLIDE = { owner:4, abastecimiento:7, cumplimiento:8, finanzas:9, legal:10 };
+const AREA_SLIDE = { owner:3, abastecimiento:6, cumplimiento:7, finanzas:8, legal:9 };
 const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => [v, k]));
 
 // Metadata de las 23 alertas: etiqueta, grupo, área revisora dueña y severidad recomendada por Plutto.
@@ -1343,10 +1293,13 @@ function renderReviewAlerts(area) {
 function renderAbastRecap() {
   const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
   const active = Object.entries(st.evalTypes).filter(([,v]) => v).map(([k]) => k);
+  const activeCPs = (st.customProcesses || []).filter(p => p.saved && p.active !== false);
   const et = document.getElementById('abast-evaltypes');
-  if (et) et.innerHTML = active.length
-    ? active.map(k => `<span class="recap-chip">${TYPE_LABEL[k]}</span>`).join('')
-    : '<span class="recap-chip muted">Ningún proceso activo</span>';
+  if (et) {
+    const stdChips = active.map(k => `<span class="recap-chip">${TYPE_LABEL[k]}</span>`).join('');
+    const cpChips = activeCPs.map(p => `<span class="recap-chip" style="border-color:var(--blue);color:var(--blue)">${p.name}</span>`).join('');
+    et.innerHTML = (stdChips + cpChips) || '<span class="recap-chip muted">Ningún proceso activo</span>';
+  }
   const dc = document.getElementById('abast-docs');
   if (dc) {
     const req = [], opc = [];
@@ -1355,10 +1308,28 @@ function renderAbastRecap() {
       const isOpc = !isReq && (d.opc || []).some(t => active.includes(t));
       if (isReq) req.push(d.name); else if (isOpc) opc.push(d.name);
     });
+    activeCPs.forEach(p => {
+      Object.entries(p.docConfig || {}).forEach(([j, state]) => {
+        const docName = DOCS[+j]?.name;
+        if (!docName) return;
+        if (state === 'req' && !req.includes(docName)) req.push(docName);
+        else if (state === 'opc' && !req.includes(docName) && !opc.includes(docName)) opc.push(docName);
+      });
+    });
     dc.innerHTML = (req.map(n => `<span class="recap-chip">${n}</span>`).join('')
       + opc.map(n => `<span class="recap-chip muted">${n} · opcional</span>`).join(''))
       || '<span class="recap-chip muted">Sin documentos (no hay procesos activos)</span>';
   }
+}
+
+function renderScopeChips(containerId) {
+  const cont = document.getElementById(containerId); if (!cont) return;
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  const active = Object.entries(st.evalTypes).filter(([,v]) => v).map(([k]) => k);
+  const activeCPs = (st.customProcesses || []).filter(p => p.saved && p.active !== false);
+  const stdChips = active.map(k => `<span class="recap-chip">${TYPE_LABEL[k]}</span>`).join('');
+  const cpChips = activeCPs.map(p => `<span class="recap-chip" style="border-color:var(--blue);color:var(--blue)">${p.name}</span>`).join('');
+  cont.innerHTML = (stdChips + cpChips) || '<span class="recap-chip muted">Ningún proceso activo</span>';
 }
 
 function renderCrossAreaSummary(area) {
@@ -1509,6 +1480,8 @@ function renderCustomProcesses() {
 function toggleCustomProcess(i) {
   st.customProcesses[i].active = st.customProcesses[i].active === false ? true : false;
   renderCustomProcesses(); save();
+  renderAbastRecap();
+  ['cumplimiento','finanzas','legal'].forEach(a => renderScopeChips('scope-procs-' + a));
 }
 
 function addCustomProcess() {
@@ -1528,6 +1501,8 @@ function saveCustomProcess(i) {
   }
   p.saved = true;
   renderCustomProcesses(); save();
+  renderAbastRecap();
+  ['cumplimiento','finanzas','legal'].forEach(a => renderScopeChips('scope-procs-' + a));
 }
 function editCustomProcess(i) {
   st.customProcesses[i].saved = false;
@@ -1570,6 +1545,7 @@ function renderAllAlerts() {
   renderAbastAlerts();
   renderAbastRecap();
   ['cumplimiento','finanzas','legal'].forEach(a => {
+    renderScopeChips('scope-procs-' + a);
     renderReviewAlerts(a);
     renderCrossAreaSummary(a);
   });
@@ -1906,6 +1882,7 @@ function startPolling() {
       if (changed) {
         updateNav();
         renderAbastRecap();
+        ['cumplimiento','finanzas','legal'].forEach(a => renderScopeChips('scope-procs-' + a));
       }
 
       // 6. Re-renderizar resúmenes cruzados
