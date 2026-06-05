@@ -1438,11 +1438,11 @@ function renderCustomProcesses() {
           </div>
           <button class="cp-remove" onclick="removeCustomProcess(${i})" title="Eliminar">✕</button>
         </div>
-        <div style="background:var(--gray-light);border-radius:.625rem;padding:.75rem;margin-bottom:.75rem;">
+        <div style="background:var(--gray-light);border-radius:.625rem;padding:.75rem;margin-bottom:.75rem;max-height:260px;overflow-y:auto;">
           <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin-bottom:.5rem;">Documentos</div>
           <div id="cp-doc-rows-${i}">${renderCPDocRows(i)}</div>
         </div>
-        <div style="position:sticky;bottom:0;background:var(--white);padding:.625rem 0 .25rem;display:flex;justify-content:flex-end;border-top:1px solid var(--gray-border);margin-top:.25rem;">
+        <div style="display:flex;justify-content:flex-end;">
           <button onclick="saveCustomProcess(${i})" style="background:var(--navy);color:white;border:none;padding:.5rem 1.5rem;border-radius:.5rem;font-size:.8rem;font-weight:700;cursor:pointer;transition:background .2s;box-shadow:0 2px 8px rgba(20,20,79,.2);">Guardar proceso →</button>
         </div>
       </div>`;
