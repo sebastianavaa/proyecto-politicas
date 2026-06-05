@@ -1039,10 +1039,10 @@ const st = {
     subcontratacion:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true }
   },
   areas:{
-    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{},customDocs:{}},
-    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{},customDocs:{}},
-    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{},customDocs:{}},
-    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),docReview:{},docComments:{},customDocs:{}}
+    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},docReview:{},docComments:{},customDocs:{}},
+    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},docReview:{},docComments:{},customDocs:{}},
+    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},docReview:{},docComments:{},customDocs:{}},
+    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},docReview:{},docComments:{},customDocs:{}}
   },
   customProcesses: [],
   processDocConfig: {},
@@ -1387,14 +1387,15 @@ function normalizeAlerts(arr) {
   });
 }
 
-function setAlertActive(area, i)        { st.areas[area].alerts[i].activa = !st.areas[area].alerts[i].activa; renderAllAlerts(); save(); }
-function setAlertSeverity(area, i, sev) { st.areas[area].alerts[i].severidad = sev; renderAllAlerts(); save(); }
-function setAlertComment(area, i, val)  { st.areas[area].alerts[i].comentario = val; save(); }
+function setAlertActive(area, i)           { st.areas[area].alerts[i].activa = !st.areas[area].alerts[i].activa; renderAllAlerts(); save(); }
+function setAlertSeverity(area, i, sev)    { st.areas[area].alerts[i].severidad = sev; renderAllAlerts(); save(); }
+function setAlertGroupComment(area, g, val){ if (!st.areas[area].alertGroupComments) st.areas[area].alertGroupComments = {}; st.areas[area].alertGroupComments[g] = val; save(); }
 
 const _activeAlertTab = {};
 
 function buildAlertTabsHTML(containerId, area, placeholder) {
   const aAlerts = st.areas[area].alerts;
+  const groupComments = st.areas[area].alertGroupComments || {};
   const groups = [...new Set(ALERTS.map(a => a.group))];
   const savedGroup = _activeAlertTab[containerId] || groups[0];
   const tabsHtml = `<div class="alert-tabs">${groups.map(g => {
@@ -1415,10 +1416,13 @@ function buildAlertTabsHTML(containerId, area, placeholder) {
           <span class="a-label">${meta.label}</span>
           <span class="sev-sel">${sevBtns}</span>
         </div>
-        <textarea class="alert-cmt" rows="1" placeholder="${placeholder}" oninput="setAlertComment('${area}',${i},this.value)">${a.comentario||''}</textarea>
       </div>`;
     }).join('');
-    return `<div class="alert-tab-panel${g===savedGroup?' active':''}" data-group="${g}">${rows}</div>`;
+    const gComment = groupComments[g] || '';
+    return `<div class="alert-tab-panel${g===savedGroup?' active':''}" data-group="${g}">
+      ${rows}
+      <textarea class="alert-cmt" rows="2" placeholder="${placeholder}" style="margin-top:.5rem;" oninput="setAlertGroupComment('${area}','${g}',this.value)">${gComment}</textarea>
+    </div>`;
   }).join('');
   return tabsHtml + panelsHtml;
 }
