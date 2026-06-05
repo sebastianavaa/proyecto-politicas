@@ -1,0 +1,298 @@
+{
+  "name": "DD Proveedores v2 — Plutto",
+  "nodes": [
+    {
+      "id": "node-webhook",
+      "name": "Webhook DD v2",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        220,
+        360
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "proyecto-politicas-v2",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-parse",
+      "name": "Parsear Body",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        360
+      ],
+      "parameters": {
+        "jsCode": "// Recibe el payload v2 segmentado (reenviado por /api/submit de Vercel).\n// El body llega como objeto (Vercel manda Content-Type: application/json).\nlet p = $input.first().json.body;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) {} }\np = p || {};\n\nconst meta = p.meta || {};\nconst m1 = p.modulo_1_configuracion || {};\nconst m2 = p.modulo_2_alertas || {};\nconst m3 = p.modulo_3_revision_documental || {};\nconst m4 = p.modulo_4_responsables || {};\nconst m5 = p.modulo_5_observaciones || {};\n\nconst AREA_LABEL = { abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal' };\n\n// ── Resumen textual compacto para los prompts de IA ──\nconst lines = [];\nlines.push('EMPRESA: ' + (meta.empresa || '—') + '  |  CONTACTO: ' + (meta.email || '—'));\nlines.push('ÁREAS PARTICIPANTES: ' + ((meta.areasParticipantes || []).join(', ') || 'ninguna'));\n\n// Tipos de evaluación\nconst tipos = Object.values(m1.tiposEvaluacion || {}).filter(t => t.activo).map(t => t.nombre);\nlines.push('\\nTIPOS DE EVALUACIÓN ACTIVOS: ' + (tipos.join(', ') || 'ninguno'));\n(m1.procesosPersonalizados || []).filter(p => p.activo).forEach(pp => {\n  lines.push('  + Proceso custom: ' + pp.nombre + ' (' + (pp.documentos || []).length + ' docs configurados)');\n});\n\n// Matriz proceso × área\nlines.push('\\nMATRIZ PROCESO × ÁREA (quién revisa qué):');\n(m1.matrizProcesoArea || []).forEach(row => {\n  const revisan = Object.entries(row.areas || {}).filter(([,v]) => v).map(([a]) => AREA_LABEL[a] || a);\n  lines.push('  • ' + row.proceso + ' → ' + (revisan.join(', ') || 'NADIE ASIGNADO'));\n});\n\n// Alertas por área\nlines.push('\\nALERTAS CONFIGURADAS POR ÁREA:');\nlet totalActivas = 0, totalGraves = 0;\nObject.entries(m2.porArea || {}).forEach(([area, data]) => {\n  const activas = (data.alertas || []).filter(x => x.activa);\n  const graves = activas.filter(x => x.severidad === 'grave');\n  totalActivas += activas.length; totalGraves += graves.length;\n  const porSev = { leve:0, media:0, grave:0 };\n  activas.forEach(x => { porSev[x.severidad] = (porSev[x.severidad] || 0) + 1; });\n  lines.push('  • ' + (AREA_LABEL[area] || area) + ': ' + activas.length + ' activas '\n    + '(' + porSev.grave + ' graves, ' + porSev.media + ' medias, ' + porSev.leve + ' leves)');\n  const comentarios = Object.entries(data.comentariosPorGrupo || {}).filter(([,v]) => v && v.trim());\n  comentarios.forEach(([g, c]) => lines.push('      ↳ [' + g + '] ' + c));\n});\n\n// Responsables y revisores\nlines.push('\\nRESPONSABLES Y REVISORES:');\nObject.entries(m4.porArea || {}).forEach(([area, data]) => {\n  const enc = data.encargado || {};\n  lines.push('  • ' + (AREA_LABEL[area] || area) + ' — Encargado: ' + (enc.nombre || 'SIN DEFINIR') + (enc.email ? ' <' + enc.email + '>' : ''));\n  (data.revisoresAlertasGraves || []).forEach(r => {\n    lines.push('      ↳ Revisor: ' + (r.nombre || '—') + ' <' + (r.email || '—') + '> grupos: ' + ((r.grupos || []).join(', ') || 'ninguno'));\n  });\n});\n\n// Revisión documental (resumen)\nlines.push('\\nREVISIÓN DOCUMENTAL:');\nObject.entries(m3.porArea || {}).forEach(([area, data]) => {\n  (data.porProceso || []).forEach(proc => {\n    const obs = (proc.documentos || []).filter(d => d.estado === 'con_observacion').length;\n    const noAplica = (proc.documentos || []).filter(d => d.estado === 'no_aplica').length;\n    const extra = (proc.documentosAdicionales || []).length;\n    if (obs || noAplica || extra || (proc.comentario || '').trim()) {\n      lines.push('  • ' + (AREA_LABEL[area] || area) + ' / ' + proc.proceso\n        + ': ' + obs + ' con observación, ' + noAplica + ' no aplica, ' + extra + ' adicionales'\n        + ((proc.comentario || '').trim() ? ' — \"' + proc.comentario + '\"' : ''));\n    }\n  });\n});\n\n// Observaciones\nconst obs = Object.entries(m5.observacionesPorArea || {}).filter(([,v]) => v && v.trim());\nif (obs.length) {\n  lines.push('\\nOBSERVACIONES POR ÁREA:');\n  obs.forEach(([area, txt]) => lines.push('  • ' + (AREA_LABEL[area] || area) + ': ' + txt));\n}\nif ((m5.notasSincronizacion || '').trim()) {\n  lines.push('\\nNOTAS DE ALINEACIÓN FINAL: ' + m5.notasSincronizacion);\n}\n\nconst resumen = lines.join('\\n');\n\n// ── Detección de gaps estructurales (sin IA) ──\nconst gaps = [];\n(m1.matrizProcesoArea || []).forEach(row => {\n  const revisan = Object.values(row.areas || {}).filter(v => v).length;\n  if (revisan === 0) gaps.push('Proceso \"' + row.proceso + '\" no tiene ninguna área asignada.');\n});\nObject.entries(m4.porArea || {}).forEach(([area, data]) => {\n  const enc = data.encargado || {};\n  if (!enc.nombre || !enc.email) gaps.push('Área ' + (AREA_LABEL[area] || area) + ' sin encargado completo.');\n});\n\nreturn [{ json: {\n  // Identificación\n  sessionId: meta.sessionId || '',\n  empresa: meta.empresa || '',\n  email: meta.email || '',\n  timestamp: meta.timestamp || new Date().toISOString(),\n  areasParticipantes: (meta.areasParticipantes || []).join(', '),\n\n  // Métricas agregadas\n  tipos_evaluacion: tipos.join(', '),\n  total_procesos: (m1.matrizProcesoArea || []).length,\n  total_alertas_activas: totalActivas,\n  total_alertas_graves: totalGraves,\n  gaps_estructurales: gaps.join(' | ') || 'ninguno',\n\n  // Resumen para los prompts\n  resumen_config: resumen,\n\n  // Payload completo (para trazabilidad / reprocesamiento)\n  payload_completo: JSON.stringify(p),\n} }];"
+      }
+    },
+    {
+      "id": "node-ia1",
+      "name": "IA-1 Coherencia",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        660,
+        360
+      ],
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Eres un analista senior de cumplimiento experto en debida diligencia de proveedores bajo normativa chilena (Ley 20.393 responsabilidad penal de la persona jurídica, Ley 19.913 LAFT/UAF, Ley 20.123 subcontratación, Ley 21.595 delitos económicos). Evalúas la COHERENCIA y CALIBRACIÓN de políticas de DD. Eres conciso, directo y orientado a riesgo."
+            },
+            {
+              "role": "user",
+              "content": "=Analiza la COHERENCIA de esta configuración de política de Debida Diligencia de proveedores.\n\n{{ $json.resumen_config }}\n\nGaps estructurales detectados automáticamente: {{ $json.gaps_estructurales }}\n\nResponde SOLO con este formato exacto, en español:\n\n🎯 MADUREZ DE LA POLÍTICA: [Alta / Media / Baja]\n⚠️ BRECHAS DETECTADAS:\n• [brecha 1]\n• [brecha 2]\n• [brecha 3 si aplica]\n⚖️ CALIBRACIÓN:\n• [¿alguna área sobre-exigente o sub-exigente? ¿severidades coherentes con la norma?]\n🔧 AJUSTES RECOMENDADOS:\n• [ajuste concreto 1]\n• [ajuste concreto 2]\n\nMáximo 180 palabras."
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 1200,
+          "temperature": 0.3
+        }
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "CONECTAR_CREDENCIAL",
+          "name": "OpenAI"
+        }
+      }
+    },
+    {
+      "id": "node-ia2",
+      "name": "IA-2 Documento Política",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        880,
+        360
+      ],
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Eres un redactor legal experto en políticas corporativas de compliance y debida diligencia de proveedores en Chile. Redactas documentos formales, claros y accionables, listos para ser aprobados por un comité. Usas lenguaje normativo pero legible."
+            },
+            {
+              "role": "user",
+              "content": "=Con base en la siguiente configuración acordada por el equipo y el análisis de coherencia, redacta el DOCUMENTO FORMAL de la Política de Debida Diligencia de Proveedores de la empresa.\n\n=== CONFIGURACIÓN ACORDADA ===\n{{ $json.resumen_config }}\n\n=== ANÁLISIS DE COHERENCIA ===\n{{ $('IA-1 Coherencia').item.json.choices[0].message.content }}\n\nRedacta el documento con estas secciones numeradas, en español:\n\nPOLÍTICA DE DEBIDA DILIGENCIA DE PROVEEDORES — {{ $json.empresa }}\n\n1. OBJETIVO Y ALCANCE\n2. TIPOS DE EVALUACIÓN (describe cada tipo activo y cuándo aplica)\n3. MATRIZ DE ÁREAS REVISORAS POR PROCESO\n4. CATÁLOGO DE ALERTAS Y SEVERIDADES (agrupa por categoría; explica qué implica cada severidad)\n5. RESPONSABLES Y REVISORES DE ALERTAS GRAVES\n6. DOCUMENTOS EXIGIDOS Y CRITERIOS DE REVISIÓN\n7. GOBERNANZA Y ACTUALIZACIÓN\n\nIncorpora los ajustes recomendados en el análisis de coherencia donde corresponda. Sé concreto y evita relleno. Máximo 700 palabras."
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 1200,
+          "temperature": 0.3
+        }
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "CONECTAR_CREDENCIAL",
+          "name": "OpenAI"
+        }
+      }
+    },
+    {
+      "id": "node-merge",
+      "name": "Combinar con Análisis",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        360
+      ],
+      "parameters": {
+        "jsCode": "const original = $('Parsear Body').first().json;\nconst coherencia = $('IA-1 Coherencia').first().json.choices?.[0]?.message?.content\n  || $('IA-1 Coherencia').first().json.message?.content || '—';\nconst politica = $input.first().json.choices?.[0]?.message?.content\n  || $input.first().json.message?.content || '—';\nreturn [{ json: { ...original, ai_coherencia: coherencia, ai_politica: politica } }];"
+      }
+    },
+    {
+      "id": "node-sheets",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1320,
+        360
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REEMPLAZAR_CON_ID_DEL_SHEET",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $json.timestamp }}",
+            "empresa": "={{ $json.empresa }}",
+            "email": "={{ $json.email }}",
+            "areas_participantes": "={{ $json.areasParticipantes }}",
+            "tipos_evaluacion": "={{ $json.tipos_evaluacion }}",
+            "total_procesos": "={{ $json.total_procesos }}",
+            "total_alertas_activas": "={{ $json.total_alertas_activas }}",
+            "total_alertas_graves": "={{ $json.total_alertas_graves }}",
+            "gaps_estructurales": "={{ $json.gaps_estructurales }}",
+            "ai_coherencia": "={{ $json.ai_coherencia }}",
+            "ai_politica": "={{ $json.ai_politica }}",
+            "payload_completo": "={{ $json.payload_completo }}"
+          }
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CONECTAR_CREDENCIAL",
+          "name": "Google Sheets"
+        }
+      }
+    },
+    {
+      "id": "node-email",
+      "name": "Email Notificación",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        240
+      ],
+      "parameters": {
+        "fromEmail": "no-reply@getplutto.com",
+        "toEmail": "sebastian@getplutto.com, sara@getplutto.com",
+        "subject": "=📋 Política DD configurada — {{ $json.empresa }}",
+        "emailType": "html",
+        "message": "=<h2 style='color:#0B1F3A;'>Política de Debida Diligencia configurada</h2><table style='font-size:14px;border-collapse:collapse;width:100%;'><tr><td style='padding:6px 12px;font-weight:bold;'>Empresa</td><td style='padding:6px 12px;'>{{ $json.empresa }}</td></tr><tr style='background:#F8FAFC;'><td style='padding:6px 12px;font-weight:bold;'>Contacto</td><td style='padding:6px 12px;'>{{ $json.email }}</td></tr><tr><td style='padding:6px 12px;font-weight:bold;'>Áreas</td><td style='padding:6px 12px;'>{{ $json.areasParticipantes }}</td></tr><tr style='background:#F8FAFC;'><td style='padding:6px 12px;font-weight:bold;'>Tipos de evaluación</td><td style='padding:6px 12px;'>{{ $json.tipos_evaluacion }}</td></tr><tr><td style='padding:6px 12px;font-weight:bold;'>Alertas activas / graves</td><td style='padding:6px 12px;'>{{ $json.total_alertas_activas }} / {{ $json.total_alertas_graves }}</td></tr><tr style='background:#F8FAFC;'><td style='padding:6px 12px;font-weight:bold;'>Gaps estructurales</td><td style='padding:6px 12px;'>{{ $json.gaps_estructurales }}</td></tr></table><h3 style='color:#0B1F3A;margin-top:20px;'>🔎 Análisis de coherencia (IA)</h3><div style='background:#F8FAFC;border-left:4px solid #1A4FA8;padding:12px 16px;font-size:13px;color:#1E293B;line-height:1.7;white-space:pre-wrap;'>{{ $json.ai_coherencia }}</div><h3 style='color:#0B1F3A;margin-top:20px;'>📄 Documento de política generado (IA)</h3><div style='background:#FFFFFF;border:1px solid #E2E8F0;padding:16px 20px;font-size:13px;color:#1E293B;line-height:1.8;white-space:pre-wrap;'>{{ $json.ai_politica }}</div>",
+        "options": {}
+      },
+      "credentials": {
+        "smtp": {
+          "id": "CONECTAR_CREDENCIAL",
+          "name": "SMTP"
+        }
+      }
+    },
+    {
+      "id": "node-slack",
+      "name": "Slack Notificación",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        480
+      ],
+      "parameters": {
+        "operation": "post",
+        "channel": "REEMPLAZAR_CON_CANAL",
+        "text": "=:clipboard: *Política DD configurada — {{ $json.empresa }}*\n\n*Contacto:* {{ $json.email }}\n*Áreas:* {{ $json.areasParticipantes }}\n*Tipos:* {{ $json.tipos_evaluacion }}\n*Alertas activas/graves:* {{ $json.total_alertas_activas }} / {{ $json.total_alertas_graves }}\n*Gaps:* {{ $json.gaps_estructurales }}\n\n:mag: *Análisis de coherencia:*\n{{ $json.ai_coherencia }}\n\n:page_facing_up: _Documento de política completo enviado por email._",
+        "otherOptions": {}
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "CONECTAR_CREDENCIAL",
+          "name": "Slack"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook DD v2": {
+      "main": [
+        [
+          {
+            "node": "Parsear Body",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parsear Body": {
+      "main": [
+        [
+          {
+            "node": "IA-1 Coherencia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA-1 Coherencia": {
+      "main": [
+        [
+          {
+            "node": "IA-2 Documento Política",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA-2 Documento Política": {
+      "main": [
+        [
+          {
+            "node": "Combinar con Análisis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combinar con Análisis": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Email Notificación",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Slack Notificación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "meta": {
+    "sessionId": "acme-spa",
+    "empresa": "ACME SpA",
+    "email": "compras@acme.cl",
+    "timestamp": "2026-06-05T20:30:00.000Z",
+    "sentAt": "",
+    "areasParticipantes": ["Abastecimiento", "Cumplimiento", "Finanzas", "Legal"],
+    "totalAlertas": 23
+  },
+
+  "modulo_1_configuracion": {
+    "slide": "Owner del proyecto",
+    "tiposEvaluacion": {
+      "express":        { "activo": true,  "nombre": "Proveedor Spot" },
+      "completa":       { "activo": true,  "nombre": "Proveedor General" },
+      "reforzada":      { "activo": true,  "nombre": "Proveedor Crítico" },
+      "internacional":  { "activo": false, "nombre": "Proveedor Internacional" },
+      "subcontratacion":{ "activo": true,  "nombre": "Subcontratación" }
+    },
+    "procesosPersonalizados": [
+      {
+        "nombre": "Proveedor TI Cloud",
+        "activo": true,
+        "documentos": [
+          { "documento": "Declaración jurada del proveedor", "estado": "req" },
+          { "documento": "Certificado cuenta bancaria", "estado": "opc" }
+        ]
+      }
+    ],
+    "matrizProcesoArea": [
+      { "proceso": "Proveedor Spot",    "tipo": "estandar", "areas": { "abastecimiento": true,  "cumplimiento": false, "finanzas": true,  "legal": false } },
+      { "proceso": "Proveedor General", "tipo": "estandar", "areas": { "abastecimiento": true,  "cumplimiento": true,  "finanzas": true,  "legal": true  } },
+      { "proceso": "Proveedor Crítico", "tipo": "estandar", "areas": { "abastecimiento": true,  "cumplimiento": true,  "finanzas": true,  "legal": true  } },
+      { "proceso": "Subcontratación",   "tipo": "estandar", "areas": { "abastecimiento": true,  "cumplimiento": true,  "finanzas": false, "legal": true  } },
+      { "proceso": "Proveedor TI Cloud","tipo": "custom",   "areas": { "abastecimiento": true,  "cumplimiento": true,  "finanzas": false, "legal": false } }
+    ]
+  },
+
+  "modulo_2_alertas": {
+    "slide": "Configuración de alertas por área",
+    "catalogoReferencia": [
+      { "alerta": "No ha iniciado actividades", "grupo": "Tributario", "areaDuena": "finanzas", "severidadRecomendada": "grave" },
+      { "alerta": "Tiene demandas penales", "grupo": "Legal y Societario", "areaDuena": "legal", "severidadRecomendada": "grave" },
+      { "alerta": "Hallazgos listas OFAC, Interpol u otras", "grupo": "Cumplimiento", "areaDuena": "cumplimiento", "severidadRecomendada": "grave" }
+    ],
+    "porArea": {
+      "finanzas": {
+        "alertas": [
+          { "alerta": "No ha iniciado actividades", "grupo": "Tributario", "activa": true, "severidad": "grave" },
+          { "alerta": "Puntaje riesgoso en Equifax", "grupo": "Financiero", "activa": true, "severidad": "grave" }
+        ],
+        "comentariosPorGrupo": {
+          "Tributario": "Validar SII antes de onboarding",
+          "Financiero": "",
+          "Legal y Societario": "",
+          "Laboral": "",
+          "Cumplimiento": ""
+        }
+      },
+      "legal": {
+        "alertas": [
+          { "alerta": "Tiene demandas penales", "grupo": "Legal y Societario", "activa": true, "severidad": "grave" }
+        ],
+        "comentariosPorGrupo": {
+          "Tributario": "",
+          "Financiero": "",
+          "Legal y Societario": "Bloqueante si hay demanda penal vigente",
+          "Laboral": "",
+          "Cumplimiento": ""
+        }
+      }
+    }
+  },
+
+  "modulo_3_revision_documental": {
+    "slide": "Revisión de documentos por proceso",
+    "porArea": {
+      "abastecimiento": {
+        "porProceso": [
+          {
+            "proceso": "Proveedor General",
+            "documentos": [
+              { "documento": "Declaración jurada del proveedor", "estado": "confirmado" },
+              { "documento": "E-RUT", "estado": "confirmado" },
+              { "documento": "Certificado cuenta bancaria", "estado": "con_observacion" }
+            ],
+            "documentosAdicionales": ["Política de privacidad del proveedor"],
+            "comentario": "Falta validar formato de la cuenta bancaria"
+          }
+        ]
+      }
+    }
+  },
+
+  "modulo_4_responsables": {
+    "slide": "Encargado del área y revisores de alertas graves",
+    "porArea": {
+      "abastecimiento": {
+        "encargado": { "nombre": "Juan Pérez", "email": "juan.perez@acme.cl" },
+        "revisoresAlertasGraves": [
+          { "nombre": "María Soto", "email": "maria.soto@acme.cl", "grupos": ["Tributario", "Financiero"] }
+        ],
+        "guardado": true
+      },
+      "finanzas": {
+        "encargado": { "nombre": "Pedro Díaz", "email": "pedro.diaz@acme.cl" },
+        "revisoresAlertasGraves": [],
+        "guardado": false
+      }
+    }
+  },
+
+  "modulo_5_observaciones": {
+    "slide": "Observaciones del área y notas de alineación",
+    "observacionesPorArea": {
+      "abastecimiento": "Propongo exigir cuenta bancaria también en Spot",
+      "finanzas": "",
+      "cumplimiento": "",
+      "legal": ""
+    },
+    "notasSincronizacion": "Acordado: cuenta bancaria pasa a requerida en todos los procesos."
+  }
+}

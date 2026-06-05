@@ -2157,35 +2157,100 @@ function buildReport() {
   }
 }
 
+// ── EXPORT PAYLOAD (segmentado por módulos/slides — consumido por n8n) ──
+function buildExportPayload() {
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  const ESTADO_DOC = { ok:'confirmado', obs:'con_observacion', no:'no_aplica' };
+  const activeAreas = AREAS.filter(a => isAreaRequired(a));
+  const groups = [...new Set(ALERTS.map(a => a.group))];
+
+  // Procesos activos (estándar + custom) con su clave interna
+  const procesos = [];
+  Object.entries(st.evalTypes).forEach(([k,v]) => { if (v) procesos.push({ key:k, tipo:'estandar', nombre:TYPE_LABEL[k] }); });
+  (st.customProcesses || []).forEach((p,i) => { if (p.saved && p.active !== false) procesos.push({ key:'cp_'+i, tipo:'custom', nombre:p.name }); });
+
+  return {
+    meta: {
+      sessionId: st.sessionId,
+      empresa: st.client || '',
+      email: st.email || '',
+      timestamp: new Date().toISOString(),
+      sentAt: st.sentAt || '',
+      areasParticipantes: activeAreas.map(a => AREA_LABELS[a]),
+      totalAlertas: ALERTS.length,
+    },
+
+    // ── MÓDULO 1 — Configuración (Slide: Owner del proyecto) ──
+    modulo_1_configuracion: {
+      slide: 'Owner del proyecto',
+      tiposEvaluacion: Object.fromEntries(Object.entries(st.evalTypes).map(([k,v]) => [k, { activo:!!v, nombre:TYPE_LABEL[k] }])),
+      procesosPersonalizados: (st.customProcesses || []).filter(p => p.saved).map(p => ({
+        nombre: p.name,
+        activo: p.active !== false,
+        documentos: DOCS.map((d,j) => ({ documento:d.name, estado: p.docConfig?.[j] || 'no' })).filter(x => x.estado !== 'no'),
+      })),
+      matrizProcesoArea: procesos.map(proc => ({
+        proceso: proc.nombre,
+        tipo: proc.tipo,
+        areas: Object.fromEntries(AREAS.map(a => [a, isAreaAssigned(proc.key, a)])),
+      })),
+    },
+
+    // ── MÓDULO 2 — Alertas (Slides: cada área) ──
+    modulo_2_alertas: {
+      slide: 'Configuración de alertas por área',
+      catalogoReferencia: ALERTS.map(m => ({ alerta:m.label, grupo:m.group, areaDuena:m.area, severidadRecomendada:m.sev })),
+      porArea: Object.fromEntries(activeAreas.map(a => {
+        const al = st.areas[a].alerts || [];
+        return [a, {
+          alertas: ALERTS.map((m,i) => ({ alerta:m.label, grupo:m.group, activa: al[i]?.activa ?? false, severidad: al[i]?.severidad ?? m.sev })),
+          comentariosPorGrupo: Object.fromEntries(groups.map(g => [g, st.areas[a].alertGroupComments?.[g] || ''])),
+        }];
+      })),
+    },
+
+    // ── MÓDULO 3 — Revisión documental (Slides: cada área) ──
+    modulo_3_revision_documental: {
+      slide: 'Revisión de documentos por proceso',
+      porArea: Object.fromEntries(activeAreas.map(a => {
+        const review = st.areas[a].docReview || {};
+        const comments = st.areas[a].docComments || {};
+        const customDocs = st.areas[a].customDocs || {};
+        return [a, {
+          porProceso: procesos.filter(proc => isAreaAssigned(proc.key, a)).map(proc => ({
+            proceso: proc.nombre,
+            documentos: Object.entries(review[proc.key] || {}).map(([idx,estado]) => ({ documento: DOCS[+idx]?.name || ('#'+idx), estado: ESTADO_DOC[estado] || estado })),
+            documentosAdicionales: customDocs[proc.key] || [],
+            comentario: comments[proc.key] || '',
+          })),
+        }];
+      })),
+    },
+
+    // ── MÓDULO 4 — Responsables y revisores (Slides: cada área) ──
+    modulo_4_responsables: {
+      slide: 'Encargado del área y revisores de alertas graves',
+      porArea: Object.fromEntries(activeAreas.map(a => [a, {
+        encargado: { nombre: st.areas[a].responsible?.name || '', email: st.areas[a].responsible?.email || '' },
+        revisoresAlertasGraves: (st.areas[a].alertReviewers || []).map(r => ({ nombre:r.name||'', email:r.email||'', grupos:r.groups||[] })),
+        guardado: !!st.areas[a].locked,
+      }])),
+    },
+
+    // ── MÓDULO 5 — Observaciones y alineación final (Slides: cada área + Sesión sincronizada) ──
+    modulo_5_observaciones: {
+      slide: 'Observaciones del área y notas de alineación',
+      observacionesPorArea: Object.fromEntries(activeAreas.map(a => [a, st.areas[a].notes || ''])),
+      notasSincronizacion: st.syncNotes || '',
+    },
+  };
+}
+
 // ── SEND ──
 async function enviar() {
-  // Detectar qué botón fue clickeado (slide 11 sync o 12 reporte)
   const btn = document.getElementById('sendBtn');
   if (btn) { btn.textContent='⏳ Enviando…'; btn.classList.add('saving'); }
-  const payload = {
-    sessionId: st.sessionId,
-    email: st.email, client: st.client, timestamp: new Date().toISOString(),
-    evalTypes: st.evalTypes,
-    requiredAreas: st.requiredAreas,
-    processAreas: st.processAreas,
-    customProcesses: st.customProcesses,
-    processDocConfig: st.processDocConfig,
-    areas: Object.fromEntries(AREAS.map(a => [a, {
-      notes: st.areas[a].notes,
-      extraDocs: st.areas[a].extraDocs,
-      responsible: st.areas[a].responsible,
-      docReview: st.areas[a].docReview,
-      docComments: st.areas[a].docComments,
-      customDocs: st.areas[a].customDocs,
-      ...(a==='cumplimiento' ? { exceptions: st.areas[a].exceptions } : {}),
-      ...(a==='finanzas' ? { signals: st.areas[a].signals } : {}),
-    }])),
-    syncNotes: st.syncNotes,
-    alertsPorArea: Object.fromEntries(AREAS.map(a => [a, ALERTS.map((m,i) => ({
-      alerta: m.label, grupo: m.group,
-      activa: st.areas[a].alerts[i].activa, severidad: st.areas[a].alerts[i].severidad, comentario: st.areas[a].alerts[i].comentario
-    }))])),
-  };
+  const payload = buildExportPayload();
   let success = false;
   try {
     const res = await fetch('/api/submit', {
