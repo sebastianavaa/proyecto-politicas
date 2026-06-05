@@ -453,6 +453,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   .session-link-row { flex-direction: column; }
   .session-link-url { width: 100%; }
   .btn-copy { width: 100%; text-align: center; padding: .5rem; }
+  .chip-lbl { display: none; }
 }
 </style>
 </head>
@@ -1399,15 +1400,13 @@ function renderAlertReviewers(area) {
     const active = Array.isArray(r.groups) ? r.groups : [];
     const chips = groups.map(g => {
       const on = active.includes(g);
-      return `<button onclick="toggleAlertReviewerGroup('${area}',${i},'${g}')" style="display:inline-flex;align-items:center;gap:.2rem;padding:.2rem .55rem;border-radius:2rem;border:1.5px solid ${on?'var(--blue)':'var(--gray-border)'};background:${on?'var(--blue-light)':'transparent'};color:${on?'var(--blue)':'var(--gray)'};font-size:.72rem;font-weight:${on?'700':'500'};cursor:pointer;white-space:nowrap;">${GROUP_ICON[g]||''} ${g}</button>`;
+      return `<button onclick="toggleAlertReviewerGroup('${area}',${i},'${g}')" style="display:inline-flex;align-items:center;gap:.2rem;padding:.2rem .5rem;border-radius:2rem;border:1.5px solid ${on?'var(--blue)':'var(--gray-border)'};background:${on?'var(--blue-light)':'transparent'};color:${on?'var(--blue)':'var(--gray)'};font-size:.72rem;font-weight:${on?'700':'500'};cursor:pointer;white-space:nowrap;flex-shrink:0;">${GROUP_ICON[g]||''}<span class="chip-lbl"> ${g}</span></button>`;
     }).join('');
-    return `<div style="background:var(--gray-light);border:1px solid var(--gray-border);border-radius:.625rem;padding:.625rem .75rem;margin-bottom:.375rem;">
-      <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:.375rem;align-items:center;margin-bottom:.5rem;">
-        <input type="text" value="${r.name||''}" placeholder="Nombre completo" style="${inp}" oninput="saveAlertReviewer('${area}',${i},'name',this.value)">
-        <input type="email" value="${r.email||''}" placeholder="email@empresa.com" style="${inp}" oninput="saveAlertReviewer('${area}',${i},'email',this.value)">
-        <button onclick="removeAlertReviewer('${area}',${i})" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:1.1rem;padding:.25rem .375rem;line-height:1;">×</button>
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:.3rem;">${chips}</div>
+    return `<div style="display:flex;gap:.375rem;align-items:center;margin-bottom:.375rem;flex-wrap:nowrap;">
+      <input type="text" value="${r.name||''}" placeholder="Nombre completo" style="${inp}flex:1;min-width:0;" oninput="saveAlertReviewer('${area}',${i},'name',this.value)">
+      <input type="email" value="${r.email||''}" placeholder="email@empresa.com" style="${inp}flex:1;min-width:0;" oninput="saveAlertReviewer('${area}',${i},'email',this.value)">
+      <div style="display:flex;gap:.25rem;flex-shrink:0;">${chips}</div>
+      <button onclick="removeAlertReviewer('${area}',${i})" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:1.1rem;padding:.25rem .375rem;line-height:1;flex-shrink:0;">×</button>
     </div>`;
   }).join('');
 }
