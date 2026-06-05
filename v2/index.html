@@ -367,6 +367,82 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .cross-area-sev-pill.leve{background:#F0FDF4;color:#16A34A;}
 .cross-area-sev-pill.media{background:#FFFBEB;color:#D97706;}
 .cross-area-sev-pill.grave{background:#FEF2F2;color:#DC2626;}
+
+/* ── MOBILE ── */
+@media (max-width: 640px) {
+  html, body { height: 100dvh; }
+  #app { height: 100dvh; }
+
+  /* Slide scrolling — usa dvh para respetar chrome del browser en iOS */
+  .scrollable {
+    max-height: calc(100dvh - 148px);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Header y body — reducir padding lateral */
+  .s-head { padding: 1rem 1rem .875rem; }
+  .s-body { padding: 1rem 1rem; }
+  .s-head h2 { font-size: 1.2rem; }
+  .s-head p { font-size: .8rem; }
+
+  /* Cover */
+  .slide-cover h1 { font-size: 1.5rem; padding: 0 1rem; }
+  .slide-cover .subtitle { font-size: .8rem; }
+  .input-row { flex-direction: column; }
+  .btn-primary { width: 100%; text-align: center; }
+  .input-wrap { padding: 0 1rem; }
+
+  /* Nav — más touch-friendly y con margen para home indicator */
+  #nav {
+    left: .75rem; right: .75rem; bottom: calc(.75rem + env(safe-area-inset-bottom));
+    transform: none; gap: .75rem; padding: .5rem 1rem; border-radius: 2rem;
+  }
+  .nav-btn { width: 2.5rem; height: 2.5rem; font-size: 1.25rem; }
+
+  /* Responsible inputs — una columna */
+  .resp-row { grid-template-columns: 1fr; }
+
+  /* Alert tabs — scroll horizontal en vez de wrap */
+  .alert-tabs {
+    flex-wrap: nowrap; overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: .375rem; scrollbar-width: none;
+  }
+  .alert-tabs::-webkit-scrollbar { display: none; }
+  .alert-tab { flex-shrink: 0; }
+
+  /* Sev selector en alertas — horizontal scroll */
+  .alert-cfg-top { flex-wrap: wrap; gap: .5rem; }
+  .sev-sel { margin-top: .25rem; flex-shrink: 0; }
+  .sev-opt { padding: .2rem .35rem; font-size: .6rem; }
+
+  /* Cross-area cards — ancho completo */
+  .cross-area-card { width: 100%; }
+  .cross-area-cards { flex-direction: column; }
+
+  /* Report areas — una columna */
+  .report-areas { grid-template-columns: 1fr; }
+
+  /* Cards grid — 1 columna */
+  .cards { grid-template-columns: 1fr; }
+
+  /* Tables — scroll horizontal */
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Eval cards — padding más compacto */
+  .eval-card { padding: .625rem .75rem; }
+
+  /* Req areas section */
+  .req-areas-section { padding: .75rem .875rem; }
+
+  /* Decision section */
+  .decision-section { padding: .875rem .875rem; }
+
+  /* Session link */
+  .session-link-row { flex-direction: column; }
+  .session-link-url { width: 100%; }
+  .btn-copy { width: 100%; text-align: center; padding: .5rem; }
+}
 </style>
 </head>
 <body>
