@@ -1332,12 +1332,7 @@ function renderCrossAreaSummary(area) {
   const container = document.getElementById('cross-summary-' + area + '-cards');
   if (!container) return;
 
-  const AREA_ALERT_DOMAIN = {
-    finanzas:     a => a.group === 'Tributario' || a.group === 'Financiero',
-    legal:        a => a.group === 'Legal y Societario',
-    cumplimiento: a => a.group === 'Laboral' || a.group === 'Cumplimiento',
-    abastecimiento: a => false
-  };
+  const AREA_ALERT_DOMAIN = {}; // sin filtro — cada área configura todas las alertas
 
   const cards = AREAS.filter(a => a !== area && st.requiredAreas[a]).map(a => {
     const d = st.areas[a];
@@ -1538,26 +1533,24 @@ function renderAllAlerts() {
     renderReviewAlerts(a);
     renderCrossAreaSummary(a);
   });
+  // Actualizar resumen comprimido en slides 12/13 si están visibles
+  renderCompactAreaAlerts('syncCompactAlerts');
+  renderCompactAreaAlerts('reportCompactAlerts');
 }
 
 function renderCompactAreaAlerts(containerId) {
   const cont = document.getElementById(containerId); if (!cont) return;
   const SEV_COLOR = { leve:'#16A34A', media:'#D97706', grave:'#DC2626' };
   const SEV_BG    = { leve:'#F0FDF4', media:'#FFFBEB', grave:'#FEF2F2' };
-  const DOMAIN = {
-    finanzas:     g => g==='Tributario'||g==='Financiero',
-    legal:        g => g==='Legal y Societario',
-    cumplimiento: g => g==='Laboral'||g==='Cumplimiento'
-  };
+  const groups = [...new Set(ALERTS.map(a=>a.group))];
   let html = '';
   AREAS.forEach(area => {
     if (!st.requiredAreas[area]) return;
     const d = st.areas[area];
     const estado = d.locked ? (d.decision||'aprobado') : 'pendiente';
     const estadoLabel = { aprobado:'Aprobado', rechazado:'Rechazado', observacion:'Con observaciones', pendiente:'Pendiente' }[estado] || 'Pendiente';
-    const groups = [...new Set(ALERTS.map(a=>a.group))].filter(g => DOMAIN[area]?.(g));
     const aAlerts = st.areas[area].alerts;
-    const domainActive = ALERTS.map((m,i)=>({m,i})).filter(({m,i})=>DOMAIN[area]?.(m.group)&&aAlerts[i].activa);
+    const domainActive = ALERTS.map((m,i)=>({m,i})).filter(({_,i})=>aAlerts[i].activa);
     const groupsHtml = groups.map(g => {
       const groupAlerts = ALERTS.map((m,i)=>({m,i})).filter(({m})=>m.group===g);
       if (!groupAlerts.length) return '';
