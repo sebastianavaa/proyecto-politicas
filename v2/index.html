@@ -403,48 +403,101 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 <div class="slide slide-std" data-n="2">
   <div class="s-head"><div class="s-tag">El problema y la ley</div><h2>¿Por qué necesitas una política de compras?</h2>
   <p>Trabajar con proveedores sin un proceso formal expone a tu empresa a riesgos legales, financieros, reputacionales y operativos. Y la normativa chilena ya lo exige: cada riesgo tiene una ley detrás.</p></div>
-  <div class="s-body scrollable">
-    <div class="cards">
-      <div class="card"><div class="card-icon">⚖️</div><span class="law">Ley 20.393</span><h3>Responsabilidad penal</h3><p>Obliga a evaluar a los proveedores <strong>antes de contratarlos</strong>. Si no lo haces y el proveedor comete un delito, la empresa responde penalmente: multas, inhabilitaciones y clausura.</p></div>
-      <div class="card"><div class="card-icon">🕵️</div><span class="law">Ley 19.913</span><h3>Lavado de activos</h3><p>Exige identificar <strong>beneficiarios finales</strong> y verificar que no estén sancionados. Ignorarlo expone a la empresa a involucramiento en lavado de activos o financiamiento del terrorismo.</p></div>
-      <div class="card"><div class="card-icon">🔄</div><span class="law">Ley 21.595</span><h3>Monitoreo continuo</h3><p>No basta con evaluar una vez: obliga a <strong>monitorear permanentemente</strong> a los proveedores activos. Si surge un problema y no se detectó, la empresa también responde.</p></div>
+  <div class="s-body scrollable" style="display:flex;flex-direction:column;gap:1rem;">
+    <div class="cards" style="flex:1;align-items:stretch;">
+      <div class="card" style="display:flex;flex-direction:column;padding:1.75rem;">
+        <div class="card-icon" style="font-size:2.25rem;margin-bottom:.875rem;">⚖️</div>
+        <span class="law">Ley 20.393</span>
+        <h3 style="font-size:1rem;margin:.5rem 0 .5rem;">Responsabilidad penal</h3>
+        <p style="flex:1;font-size:.85rem;line-height:1.7;">Obliga a evaluar a los proveedores <strong>antes de contratarlos</strong>. Si no lo haces y el proveedor comete un delito, la empresa responde penalmente: multas, inhabilitaciones y clausura.</p>
+        <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--gray-border);font-size:.75rem;color:var(--gray);line-height:1.6;">Aplica a: delitos económicos, cohecho, lavado de activos, receptación y otros tipificados en la ley.</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;padding:1.75rem;">
+        <div class="card-icon" style="font-size:2.25rem;margin-bottom:.875rem;">🕵️</div>
+        <span class="law">Ley 19.913</span>
+        <h3 style="font-size:1rem;margin:.5rem 0 .5rem;">Lavado de activos</h3>
+        <p style="flex:1;font-size:.85rem;line-height:1.7;">Exige identificar <strong>beneficiarios finales</strong> y verificar que no estén sancionados. Ignorarlo expone a la empresa a involucramiento en lavado de activos o financiamiento del terrorismo.</p>
+        <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--gray-border);font-size:.75rem;color:var(--gray);line-height:1.6;">Requiere revisar listas OFAC, ONU y otras antes de contratar y periódicamente durante la relación.</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;padding:1.75rem;">
+        <div class="card-icon" style="font-size:2.25rem;margin-bottom:.875rem;">🔄</div>
+        <span class="law">Ley 21.595</span>
+        <h3 style="font-size:1rem;margin:.5rem 0 .5rem;">Monitoreo continuo</h3>
+        <p style="flex:1;font-size:.85rem;line-height:1.7;">No basta con evaluar una vez: obliga a <strong>monitorear permanentemente</strong> a los proveedores activos. Si surge un problema y no se detectó, la empresa también responde.</p>
+        <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--gray-border);font-size:.75rem;color:var(--gray);line-height:1.6;">El monitoreo debe ser periódico y quedar documentado. Plutto automatiza esta tarea.</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;padding:1.75rem;">
+        <div class="card-icon" style="font-size:2.25rem;margin-bottom:.875rem;">⚙️</div>
+        <span class="law">Ley 20.123</span>
+        <h3 style="font-size:1rem;margin:.5rem 0 .5rem;">Subcontratación</h3>
+        <p style="flex:1;font-size:.85rem;line-height:1.7;">En régimen de subcontratación, la empresa mandante es <strong>solidariamente responsable</strong> de las obligaciones laborales y previsionales del contratista frente a sus trabajadores.</p>
+        <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--gray-border);font-size:.75rem;color:var(--gray);line-height:1.6;">Aplica cuando el proveedor utiliza trabajadores propios en instalaciones o faenas de la empresa contratante.</div>
+      </div>
     </div>
-    <div class="warn-box" style="margin-top:1rem">💡 <strong>Además del riesgo legal:</strong> un proveedor en quiebra puede paralizar tu operación, y sus problemas reputacionales se vuelven los tuyos — la prensa y tus clientes no distinguen entre tu empresa y tus proveedores.</div>
+    <div class="warn-box">💡 <strong>Además del riesgo legal:</strong> un proveedor en quiebra puede paralizar tu operación, y sus problemas reputacionales se vuelven los tuyos — la prensa y tus clientes no distinguen entre tu empresa y tus proveedores.</div>
   </div>
 </div>
 
-<!-- ── 3: TIPOS DE EVALUACIÓN ── -->
+<!-- ── 3: PROCESOS + DOCUMENTOS (unificado) ── -->
 <div class="slide slide-std" data-n="3">
-  <div class="s-head"><div class="s-tag">Los 5 procesos</div><h2>¿Qué evalúa Plutto según el tipo de proveedor?</h2>
-  <p>Cada proveedor entra por un proceso distinto según su riesgo y volumen de compra. Así defines qué tan profundo va el análisis.</p></div>
+  <div class="s-head"><div class="s-tag">Los 5 procesos</div>
+    <h2>¿Qué evalúa Plutto según el tipo de proveedor?</h2>
+    <p>Cada proveedor entra por un proceso distinto según su riesgo y tipo de contrato. Esto define qué documentos se solicitan y la profundidad del análisis.</p>
+  </div>
   <div class="s-body scrollable">
-    <div class="eval-cards">
-      <div class="eval-card active" style="cursor:default;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:.75rem;">
+      <div class="eval-card active" style="cursor:default;padding:.875rem 1rem;">
         <div class="eval-info">
           <div class="eval-subtitle">Compra menor a USD 20.000</div>
           <h4>Proveedor Spot</h4>
           <p>Evaluación simplificada para friccionar lo menos posible el proceso de compras menores, manteniendo un nivel básico de due diligence.</p>
+          <div class="eval-docs-list" style="display:block;margin-top:.5rem;">
+            <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · E-RUT<br>
+            <strong>Opcionales:</strong> Certificado cuenta bancaria
+          </div>
         </div>
       </div>
-      <div class="eval-card active" style="cursor:default;">
+      <div class="eval-card active" style="cursor:default;padding:.875rem 1rem;">
         <div class="eval-info">
           <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000</div>
           <h4>Proveedor General</h4>
-          <p>Evaluación más robusta acorde al volumen del contrato, con revisión más profunda en términos legales y financieros para mitigar riesgos.</p>
+          <p>Evaluación más robusta con revisión profunda en términos legales y financieros para mitigar riesgos en contratos medianos.</p>
+          <div class="eval-docs-list" style="display:block;margin-top:.5rem;">
+            <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Conflicto de Interés · E-RUT · Vigencia Sociedad · DNI Rep. Legal · Carpeta tributaria SII · Vigencia Poderes · Cuenta bancaria · DICOM<br>
+            <strong>Opcionales:</strong> Constitución Sociedad · Deuda Fiscal TGR
+          </div>
         </div>
       </div>
-      <div class="eval-card active" style="cursor:default;">
+      <div class="eval-card active" style="cursor:default;padding:.875rem 1rem;">
         <div class="eval-info">
           <div class="eval-subtitle">Compra mayor a USD 100.000</div>
           <h4>Proveedor Crítico</h4>
           <p>El nivel más exhaustivo de evaluación, con revisión detallada en cada área para una mitigación de riesgos integral.</p>
+          <div class="eval-docs-list" style="display:block;margin-top:.5rem;">
+            <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Conflicto de Interés · Constitución Sociedad · E-RUT · Vigencia Sociedad · DNI Rep. Legal · Carpeta tributaria SII · Vigencia Poderes · Cuenta bancaria · Deuda Fiscal TGR · DICOM<br>
+            <strong>Opcionales:</strong> Estado Financiero
+          </div>
         </div>
       </div>
-      <div class="eval-card active" style="cursor:default;">
+      <div class="eval-card active" style="cursor:default;padding:.875rem 1rem;">
         <div class="eval-info">
           <div class="eval-subtitle">Proveedor con domicilio fuera de Chile</div>
           <h4>Proveedor Internacional</h4>
           <p>Evaluación adaptada a proveedores extranjeros: documentación equivalente y verificación de sanciones globales (OFAC/ONU/UE).</p>
+          <div class="eval-docs-list" style="display:block;margin-top:.5rem;">
+            <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · Estado Financiero
+          </div>
+        </div>
+      </div>
+      <div class="eval-card active" style="cursor:default;padding:.875rem 1rem;">
+        <div class="eval-info">
+          <div class="eval-subtitle">Proveedor con trabajadores subcontratados (Ley 20.123)</div>
+          <h4>Subcontratación</h4>
+          <p>Evalúa la responsabilidad solidaria de la empresa mandante respecto de las obligaciones laborales y previsionales del contratista.</p>
+          <div class="eval-docs-list" style="display:block;margin-top:.5rem;">
+            <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · E-RUT · Carpeta tributaria SII · Cumplimiento Laboral (F30) · Deuda Previsional (F30-1) · Nómina de trabajadores<br>
+            <strong>Opcionales:</strong> Certificado cuenta bancaria
+          </div>
         </div>
       </div>
     </div>
@@ -452,47 +505,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 4: DOCUMENTOS POR TIPO ── -->
+<!-- ── 4: OWNER DEL PROYECTO ── -->
 <div class="slide slide-std" data-n="4">
-  <div class="s-head"><div class="s-tag">Documentos requeridos</div><h2>¿Qué le pedimos al proveedor?</h2>
-  <p>Cada tipo de evaluación tiene su propio conjunto de documentos. Esto es lo que el proveedor deberá entregar.</p></div>
-  <div class="s-body scrollable">
-    <div style="overflow-x:auto;">
-      <table class="dt" style="min-width:660px;">
-        <thead><tr>
-          <th style="min-width:210px;">Documento</th>
-          <th style="text-align:center;">Spot</th>
-          <th style="text-align:center;">General</th>
-          <th style="text-align:center;">Crítico</th>
-          <th style="text-align:center;">Internacional</th>
-        </tr></thead>
-        <tbody>
-          <tr><td>Declaración jurada del proveedor</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
-          <tr><td>Declaración vínculo PEP</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
-          <tr><td>Declaración Conflicto de Interés</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Constitución de la Sociedad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--warn-tx);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>E-RUT</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Certificado de Vigencia de Sociedad</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>DNI del Representante Legal</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Carpeta tributaria SII</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Certificado de Vigencia de Poderes</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Certificado cuenta bancaria</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--warn-tx);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>Estado Financiero</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--warn-tx);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td></tr>
-          <tr><td>Deuda Fiscal TGR</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:var(--warn-bg);color:var(--warn-tx);padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:700">Opc</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-          <tr><td>DICOM</td><td style="text-align:center;color:#CBD5E1">—</td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center"><span style="background:#DCFCE7;color:#166534;padding:.15rem .45rem;border-radius:.25rem;font-size:.7rem;font-weight:800">✓</span></td><td style="text-align:center;color:#CBD5E1">—</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div style="display:flex;gap:1rem;margin-top:.875rem;flex-wrap:wrap;align-items:center;">
-      <span style="font-size:.75rem;color:var(--gray);display:flex;align-items:center;gap:.375rem;"><span style="background:#DCFCE7;color:#166534;padding:.1rem .4rem;border-radius:.25rem;font-size:.7rem;font-weight:800;">✓</span> Requerido</span>
-      <span style="font-size:.75rem;color:var(--gray);display:flex;align-items:center;gap:.375rem;"><span style="background:var(--warn-bg);color:var(--accent-dark);padding:.1rem .4rem;border-radius:.25rem;font-size:.7rem;font-weight:700;">Opc</span> Opcional</span>
-      <span style="font-size:.75rem;color:var(--gray);display:flex;align-items:center;gap:.375rem;"><span style="color:#CBD5E1;font-size:1rem;">—</span> No aplica</span>
-    </div>
-  </div>
-</div>
-
-<!-- ── 5: OWNER DEL PROYECTO ── -->
-<div class="slide slide-std" data-n="5">
   <div class="s-head"><div class="s-tag">Configuración inicial</div>
     <h2>Owner del proyecto</h2>
     <p>Activa los procesos que aplican a tu empresa y selecciona qué áreas revisarán a los proveedores.</p>
@@ -550,6 +564,18 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           </div>
         </div>
 
+        <div class="eval-card active" id="ec-subcontratacion" onclick="toggleEval('subcontratacion')" style="padding:.75rem .875rem;align-items:flex-start;">
+          <div class="eval-toggle on" id="et-subcontratacion" style="margin-top:.2rem;flex-shrink:0;"></div>
+          <div class="eval-info" style="flex:1;min-width:0;">
+            <div class="eval-subtitle">Proveedor con trabajadores subcontratados (Ley 20.123)</div>
+            <h4>Subcontratación</h4>
+            <div class="eval-docs-list" id="docs-subcontratacion" style="display:block;">
+              <strong>Requeridos:</strong> Declaración jurada · Vínculo PEP · E-RUT · Carpeta tributaria SII · Cumplimiento Laboral (F30) · Deuda Previsional (F30-1) · Nómina de trabajadores<br>
+              <strong>Opcionales:</strong> Certificado cuenta bancaria
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     <div class="divider"></div>
@@ -575,8 +601,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 6: PROCESOS PERSONALIZADOS ── -->
-<div class="slide slide-std" data-n="6">
+<!-- ── 5: PROCESOS PERSONALIZADOS ── -->
+<div class="slide slide-std" data-n="5">
   <div class="s-head"><div class="s-tag">Procesos propios</div>
     <h2>¿Tienes procesos adicionales?</h2>
     <p>Agrega aquí los procesos de evaluación que no están en la lista anterior — pueden ser por industria, tipo de contrato, o criterio interno.</p>
@@ -590,8 +616,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 7: RESUMEN DE ROLES + EXPECTATIVAS ── -->
-<div class="slide slide-std" data-n="7">
+<!-- ── 6: RESUMEN DE ROLES + EXPECTATIVAS ── -->
+<div class="slide slide-std" data-n="6">
   <div class="s-head"><div class="s-tag">Flujo de trabajo</div>
     <h2>¿Cómo funciona esto?</h2>
     <p>3 fases para construir una política alineada en todo el equipo.</p>
@@ -657,8 +683,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 8: ÁREA ABASTECIMIENTO ── -->
-<div class="slide slide-std" data-n="8">
+<!-- ── 7: ÁREA ABASTECIMIENTO ── -->
+<div class="slide slide-std" data-n="7">
   <div class="s-head"><div class="s-tag">Revisión por área — 1 de 4</div>
     <h2>Abastecimiento</h2>
     <p id="desc-abastecimiento">Coordina el proceso y configura las alertas.</p>
@@ -697,8 +723,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 9: ÁREA CUMPLIMIENTO ── -->
-<div class="slide slide-std" data-n="9">
+<!-- ── 8: ÁREA CUMPLIMIENTO ── -->
+<div class="slide slide-std" data-n="8">
   <div class="s-head"><div class="s-tag">Revisión por área — 2 de 4</div>
     <h2>Cumplimiento</h2>
     <p id="desc-cumplimiento">Clasifica el riesgo y da recomendación final en cada evaluación.</p>
@@ -733,8 +759,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 10: ÁREA FINANZAS ── -->
-<div class="slide slide-std" data-n="10">
+<!-- ── 9: ÁREA FINANZAS ── -->
+<div class="slide slide-std" data-n="9">
   <div class="s-head"><div class="s-tag">Revisión por área — 3 de 4</div>
     <h2>Finanzas</h2>
     <p id="desc-finanzas">Analiza la solidez financiera del proveedor.</p>
@@ -769,8 +795,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 11: ÁREA LEGAL ── -->
-<div class="slide slide-std" data-n="11">
+<!-- ── 10: ÁREA LEGAL ── -->
+<div class="slide slide-std" data-n="10">
   <div class="s-head"><div class="s-tag">Revisión por área — 4 de 4</div>
     <h2>Legal</h2>
     <p id="desc-legal">Valida la constitución legal del proveedor.</p>
@@ -805,15 +831,17 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 12: SESIÓN SINCRONIZADA ── -->
-<div class="slide slide-std" data-n="12">
+<!-- ── 11: SESIÓN SINCRONIZADA ── -->
+<div class="slide slide-std" data-n="11">
   <div class="s-head"><div class="s-tag">Sesión sincronizada</div>
     <h2>Alineación final del equipo</h2>
     <p>Últimos cambios, decisiones finales y cierre de la política.</p>
   </div>
   <div class="s-body scrollable">
-    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;">Resumen de decisiones</div>
-    <div class="report-areas" id="syncReportAreas"></div>
+    <div class="cross-area-summary" style="margin-bottom:.75rem;">
+      <div class="cross-area-summary-title">Estado por área</div>
+      <div class="cross-area-cards" id="syncAllAreaCards"></div>
+    </div>
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Alertas activas por área</div>
     <div id="syncCompactAlerts"></div>
@@ -830,15 +858,17 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 13: REPORTE FINAL ── -->
-<div class="slide slide-std" data-n="13">
+<!-- ── 12: REPORTE FINAL ── -->
+<div class="slide slide-std" data-n="12">
   <div class="s-head"><div class="s-tag">Reporte archivado</div>
     <h2>Resumen completo de la sesión</h2>
     <p>Vista consolidada de todo lo acordado. Este reporte fue enviado al equipo Plutto.</p>
   </div>
   <div class="s-body scrollable">
-    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;">Estado por área</div>
-    <div class="report-areas" id="reportAreas"></div>
+    <div class="cross-area-summary" style="margin-bottom:.75rem;">
+      <div class="cross-area-summary-title">Estado por área</div>
+      <div class="cross-area-cards" id="reportAllAreaCards"></div>
+    </div>
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Configuración acordada</div>
     <div id="reportConfig" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem;font-size:.8rem;color:var(--gray);line-height:1.9;margin-bottom:1rem;"></div>
@@ -870,12 +900,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 13;
+const TOTAL = 12;
 let cur = 1;
 
 const AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];
 const AREA_LABELS = { solicitante:'Comprador del proyecto', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal' };
-const AREA_SLIDE = { owner:5, abastecimiento:8, cumplimiento:9, finanzas:10, legal:11 };
+const AREA_SLIDE = { owner:4, abastecimiento:7, cumplimiento:8, finanzas:9, legal:10 };
 const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => [v, k]));
 
 // Metadata de las 23 alertas: etiqueta, grupo, área revisora dueña y severidad recomendada por Plutto.
@@ -913,19 +943,22 @@ function defaultAlerts() { return ALERTS.map(a => ({ activa:true, severidad:a.se
 
 // Matriz de documentos por tipo de evaluación (para el recap de Abastecimiento).
 const DOCS = [
-  { name:'Declaración jurada del proveedor', req:['express','completa','reforzada','internacional'] },
-  { name:'Declaración vínculo PEP',          req:['express','completa','reforzada','internacional'] },
+  { name:'Declaración jurada del proveedor', req:['express','completa','reforzada','internacional','subcontratacion'] },
+  { name:'Declaración vínculo PEP',          req:['express','completa','reforzada','internacional','subcontratacion'] },
   { name:'Declaración Conflicto de Interés', req:['completa','reforzada'] },
   { name:'Constitución de la Sociedad',      req:['reforzada'], opc:['completa'] },
-  { name:'E-RUT',                            req:['express','completa','reforzada'] },
+  { name:'E-RUT',                            req:['express','completa','reforzada','subcontratacion'] },
   { name:'Certificado de Vigencia de Sociedad', req:['completa','reforzada'] },
   { name:'DNI del Representante Legal',       req:['completa','reforzada'] },
-  { name:'Carpeta tributaria SII',           req:['completa','reforzada'] },
+  { name:'Carpeta tributaria SII',           req:['completa','reforzada','subcontratacion'] },
   { name:'Certificado de Vigencia de Poderes', req:['completa','reforzada'] },
-  { name:'Certificado cuenta bancaria',      req:['completa','reforzada'], opc:['express'] },
+  { name:'Certificado cuenta bancaria',      req:['completa','reforzada'], opc:['express','subcontratacion'] },
   { name:'Estado Financiero',                req:['internacional'], opc:['reforzada'] },
   { name:'Deuda Fiscal TGR',                 req:['reforzada'], opc:['completa'] },
   { name:'DICOM',                            req:['completa','reforzada'] },
+  { name:'Cumplimiento Laboral (F30)',        req:['subcontratacion'] },
+  { name:'Deuda Previsional (F30-1)',         req:['subcontratacion'] },
+  { name:'Nómina de trabajadores',           req:['subcontratacion'] },
 ];
 
 function isSlideVisible(n) {
@@ -946,7 +979,7 @@ function nextVisible(from, dir) {
 
 const st = {
   email:'', client:'', sessionId:'',
-  evalTypes:{ express:true, completa:true, reforzada:true, internacional:true },
+  evalTypes:{ express:true, completa:true, reforzada:true, internacional:true, subcontratacion:true },
   requiredAreas:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
   areas:{
     abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts()},
@@ -972,7 +1005,7 @@ function go(n, dir) {
   to.style.opacity = '0'; to.classList.add('active');
   requestAnimationFrame(() => requestAnimationFrame(() => { to.style.transform = ''; to.style.opacity = ''; }));
   cur = n;
-  if (n >= TOTAL - 1) buildReport(); // Slide 12 (sync) y 13 (reporte)
+  if (n >= TOTAL - 1) buildReport(); // Slide 11 (sync) y 12 (reporte)
   updateNav(); save();
 }
 function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
@@ -1308,7 +1341,7 @@ function renderReviewAlerts(area) {
 }
 
 function renderAbastRecap() {
-  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional' };
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
   const active = Object.entries(st.evalTypes).filter(([,v]) => v).map(([k]) => k);
   const et = document.getElementById('abast-evaltypes');
   if (et) et.innerHTML = active.length
@@ -1393,7 +1426,8 @@ const DOC_SEGMENTS = [
   { label:'Declarativos',          indices:[0,1,2] },
   { label:'Societarios / Legales', indices:[3,5,6,8] },
   { label:'Tributarios',           indices:[4,7] },
-  { label:'Financieros',           indices:[9,10,11,12] }
+  { label:'Financieros',           indices:[9,10,11,12] },
+  { label:'Laboral',               indices:[13,14,15] }
 ];
 
 function renderCPDocRows(i) {
@@ -1542,6 +1576,53 @@ function renderAllAlerts() {
   // Actualizar resumen comprimido en slides 12/13 si están visibles
   renderCompactAreaAlerts('syncCompactAlerts');
   renderCompactAreaAlerts('reportCompactAlerts');
+  renderAllAreasSummary('syncAllAreaCards');
+  renderAllAreasSummary('reportAllAreaCards');
+}
+
+function renderAllAreasSummary(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const cards = AREAS.filter(a => st.requiredAreas[a]).map(a => {
+    const d = st.areas[a];
+    const estado = d.locked ? (d.decision || 'aprobado') : 'pendiente';
+    const estadoLabel = d.locked ? ({ aprobado:'Aprobado', rechazado:'Rechazado', observacion:'Con observaciones' }[d.decision] || 'Completado') : 'Pendiente';
+    const aAlerts = st.areas[a].alerts;
+    const groups = [...new Set(ALERTS.map(m => m.group))];
+    const groupRows = groups.map(g => {
+      const gAlerts = ALERTS.map((meta, i) => ({ meta, i })).filter(({ meta }) => meta.group === g);
+      const gActive = gAlerts.filter(({ i }) => aAlerts[i].activa).length;
+      const gTotal = gAlerts.length;
+      const pct = gTotal ? Math.round(gActive / gTotal * 100) : 0;
+      const icon = ALERTS.find(x => x.group === g)?.icon || '';
+      return `<div class="cross-area-group-row">
+        <span class="cross-area-group-label">${icon} ${g}</span>
+        <div class="cross-area-group-bar"><div class="cross-area-group-fill" style="width:${pct}%"></div></div>
+        <span class="cross-area-group-count">${gActive}/${gTotal}</span>
+      </div>`;
+    }).join('');
+    const activeAlerts = ALERTS.map((m, i) => ({ m, i })).filter(({ i }) => aAlerts[i].activa);
+    const sevCount = { leve: 0, media: 0, grave: 0 };
+    activeAlerts.forEach(({ i }) => sevCount[aAlerts[i].severidad]++);
+    const activeTotal = activeAlerts.length;
+    const sevPills = activeTotal ? ['grave', 'media', 'leve'].filter(s => sevCount[s] > 0).map(s => {
+      const pct = Math.round(sevCount[s] / activeTotal * 100);
+      return `<span class="cross-area-sev-pill ${s}">${pct}% ${s}</span>`;
+    }).join('') : '';
+    const notesPreview = d.notes ? '"' + d.notes.substring(0, 70) + (d.notes.length > 70 ? '…' : '"') : '';
+    const responsible = d.responsible?.name ? `<div style="font-size:.68rem;color:var(--gray);margin-top:.25rem;">👤 ${d.responsible.name}</div>` : '';
+    return `<div class="cross-area-card">
+      <div class="cross-area-card-header">
+        <span class="cross-area-card-name">${AREA_LABELS[a]}</span>
+        <div class="cross-area-badge ${estado}">${estadoLabel}</div>
+      </div>
+      ${groupRows ? `<div class="cross-area-alert-groups">${groupRows}</div>` : ''}
+      ${sevPills ? `<div class="cross-area-sev-bar">${sevPills}</div>` : ''}
+      ${notesPreview ? `<div class="cross-area-notes">${notesPreview}</div>` : ''}
+      ${responsible}
+    </div>`;
+  }).join('');
+  container.innerHTML = cards || '<div style="font-size:.75rem;color:var(--gray);padding:.5rem">Sin áreas activas</div>';
 }
 
 function renderCompactAreaAlerts(containerId) {
@@ -1629,43 +1710,18 @@ function renderSyncAreaComments() {
 
 // ── REPORT ──
 function buildReport() {
-  // Slide 11: Sesión sincronizada
-  const syncAreas = document.getElementById('syncReportAreas');
-  if (syncAreas) {
-    syncAreas.innerHTML = AREAS.filter(a => st.requiredAreas[a]).map(a => {
-      const d = st.areas[a];
-      const s = d.locked ? 'aprobado' : 'pendiente';
-      const sl = { aprobado:'Completado', pendiente:'Pendiente' };
-      const resp = d.responsible?.name ? `<div style="font-size:.7rem;color:var(--gray);margin-top:.2rem;">👤 ${d.responsible.name}</div>` : '';
-      return `<div class="report-area"><h4>${AREA_LABELS[a]}</h4>
-        <div class="rs ${s}">${sl[s]}</div>
-        ${resp}</div>`;
-    }).join('');
-  }
+  // Slide 12: Sesión sincronizada
   const syncNotesEl = document.getElementById('syncNotes');
   if (syncNotesEl) syncNotesEl.value = st.syncNotes || '';
   renderSyncAreaComments();
+  renderAllAreasSummary('syncAllAreaCards');
   renderCompactAreaAlerts('syncCompactAlerts');
 
   // Slide 13: Reporte final (archivado)
-  const areas = document.getElementById('reportAreas');
-  if (areas) {
-    areas.innerHTML = AREAS.filter(a => st.requiredAreas[a]).map(a => {
-      const d = st.areas[a];
-      const s = d.locked ? 'aprobado' : 'pendiente';
-      const extras = d.extraDocs?.length ? `<div style="font-size:.7rem;color:var(--blue);margin-top:.2rem;">+${d.extraDocs.length} doc(s) adicional(es)</div>` : '';
-      const resp = d.responsible?.name ? `<div style="font-size:.7rem;color:var(--gray);margin-top:.2rem;">👤 ${d.responsible.name}</div>` : '';
-      return `<div class="report-area"><h4>${AREA_LABELS[a]}</h4>
-        <div class="rs ${s}">${d.locked ? 'Completado' : 'Pendiente'}</div>
-        ${resp}
-        ${d.notes?`<div class="rn">"${d.notes.substring(0,70)}${d.notes.length>70?'…':''}"</div>`:''}
-        ${extras}</div>`;
-    }).join('');
-  }
   const cfg = document.getElementById('reportConfig');
   if (cfg) {
     const types = Object.entries(st.evalTypes).filter(([,v])=>v).map(([k])=>({
-      express:'Proveedor Spot',completa:'Proveedor General',reforzada:'Proveedor Crítico',internacional:'Proveedor Internacional'
+      express:'Proveedor Spot',completa:'Proveedor General',reforzada:'Proveedor Crítico',internacional:'Proveedor Internacional',subcontratacion:'Subcontratación'
     }[k])).join(', ');
     cfg.innerHTML = `<strong style="color:var(--navy)">Empresa:</strong> ${st.client||'—'}<br>
       <strong style="color:var(--navy)">Email:</strong> ${st.email||'—'}<br>
@@ -1673,6 +1729,7 @@ function buildReport() {
       <strong style="color:var(--navy)">Áreas configuradas:</strong> ${AREAS.filter(a=>st.requiredAreas[a]&&st.areas[a].locked).length} de ${AREAS.filter(a=>st.requiredAreas[a]).length}`;
   }
 
+  renderAllAreasSummary('reportAllAreaCards');
   renderCompactAreaAlerts('reportCompactAlerts');
 
   // Validar encargados de áreas requeridas
@@ -1699,7 +1756,7 @@ function buildReport() {
 
 // ── SEND ──
 async function enviar() {
-  // Detectar qué botón fue clickeado (slide 11 o 12)
+  // Detectar qué botón fue clickeado (slide 11 sync o 12 reporte)
   const btn = document.getElementById('sendBtn') || document.getElementById('syncSendBtn');
   const btnBoth = [document.getElementById('sendBtn'), document.getElementById('syncSendBtn')];
   btnBoth.forEach(b => {
