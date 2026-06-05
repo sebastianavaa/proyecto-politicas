@@ -1448,10 +1448,11 @@ function renderCustomProcesses() {
       </div>`;
     }
     // Modo guardado: card compacta como procesos estándar
+    const isActive = p.active !== false;
     const reqDocs = DOCS.filter((_,j) => p.docConfig?.[j]==='req');
     const opcDocs = DOCS.filter((_,j) => p.docConfig?.[j]==='opc');
-    return `<div class="eval-card active" style="align-items:flex-start;padding:.75rem .875rem;margin-bottom:.5rem;" id="cp-card-${i}">
-      <div class="eval-toggle on" style="margin-top:.2rem;flex-shrink:0;"></div>
+    return `<div class="eval-card ${isActive?'active':'inactive'}" style="align-items:flex-start;padding:.75rem .875rem;margin-bottom:.5rem;" id="cp-card-${i}">
+      <div class="eval-toggle ${isActive?'on':''}" style="margin-top:.2rem;flex-shrink:0;cursor:pointer;" onclick="toggleCustomProcess(${i})"></div>
       <div style="flex:1;min-width:0;">
         <h4 style="font-size:.875rem;font-weight:700;color:var(--navy);margin-bottom:.1rem;">${p.name}</h4>
         ${p.description?`<div style="font-size:.72rem;color:var(--accent-dark);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem;">${p.description}</div>`:''}
@@ -1469,6 +1470,11 @@ function renderCustomProcesses() {
       <button class="cp-remove" onclick="removeCustomProcess(${i})" title="Eliminar">✕</button>
     </div>`;
   }).join('');
+}
+
+function toggleCustomProcess(i) {
+  st.customProcesses[i].active = st.customProcesses[i].active === false ? true : false;
+  renderCustomProcesses(); save();
 }
 
 function addCustomProcess() {
