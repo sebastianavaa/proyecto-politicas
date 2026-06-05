@@ -1718,6 +1718,8 @@ function getAreaActiveDocs(area) {
   return result;
 }
 
+const _activeDocTab = {};
+
 function renderAreaDocReview(area) {
   const cont = document.getElementById('doc-review-'+area); if (!cont) return;
   const processes = getAreaActiveDocs(area);
@@ -1735,13 +1737,24 @@ function renderAreaDocReview(area) {
   const reqTag  = `<span style="font-size:.6rem;font-weight:700;background:#DCFCE7;color:#166534;border:1px solid #86EFAC;border-radius:.2rem;padding:.05rem .3rem;flex-shrink:0;">Req</span>`;
   const opcTag  = `<span style="font-size:.6rem;font-weight:700;background:#FFFBEB;color:#D97706;border:1px solid #FCD34D;border-radius:.2rem;padding:.05rem .3rem;flex-shrink:0;">Opc</span>`;
 
-  cont.innerHTML = processes.map(proc => {
+  const savedKey = _activeDocTab[area] && processes.find(p => p.processKey === _activeDocTab[area])
+    ? _activeDocTab[area] : processes[0].processKey;
+
+  const tabsHtml = `<div class="alert-tabs">${processes.map(proc => {
     const procReview = review[proc.processKey] || {};
-    const comment    = comments[proc.processKey] || '';
-    const reqDocs    = proc.docs.filter(d => d.req === 'req');
-    const opcDocs    = proc.docs.filter(d => d.req === 'opc');
-    const allDocs    = [...reqDocs, ...opcDocs];
-    const noDocsMsg = allDocs.length === 0
+    const allDocs = [...proc.docs.filter(d => d.req==='req'), ...proc.docs.filter(d => d.req==='opc')];
+    const reviewed = allDocs.filter(d => procReview[d.idx]).length;
+    const customCount = (st.areas[area].customDocs?.[proc.processKey]||[]).length;
+    const badge = allDocs.length ? `${reviewed}/${allDocs.length}` : (customCount ? customCount : '—');
+    return `<button class="alert-tab${proc.processKey===savedKey?' active':''}" onclick="switchDocTab('${area}','${proc.processKey}')">${proc.label}<span class="alert-tab-badge">${badge}</span></button>`;
+  }).join('')}</div>`;
+
+  const panelsHtml = processes.map(proc => {
+    const pk          = proc.processKey;
+    const procReview  = review[pk] || {};
+    const comment     = comments[pk] || '';
+    const allDocs     = [...proc.docs.filter(d => d.req==='req'), ...proc.docs.filter(d => d.req==='opc')];
+    const noDocsMsg   = allDocs.length === 0
       ? `<div style="font-size:.75rem;color:var(--gray);padding:.25rem 0;font-style:italic;">Sin documentos configurados — agrégalos en la slide de configuración.</div>`
       : '';
     const rows = allDocs.map(d => {
@@ -1750,22 +1763,19 @@ function renderAreaDocReview(area) {
         ${d.req === 'req' ? reqTag : opcTag}
         <span style="flex:1;font-size:.75rem;color:var(--text);">${d.name}</span>
         <div style="display:flex;gap:.2rem;">
-          <button onclick="setDocReview('${area}','${proc.processKey}',${d.idx},'ok')"  style="${btnBase}${s==='ok' ?okSel :off}" title="Confirmo">✓</button>
-          <button onclick="setDocReview('${area}','${proc.processKey}',${d.idx},'obs')" style="${btnBase}${s==='obs'?obsSel:off}" title="Con observación">⚠</button>
-          <button onclick="setDocReview('${area}','${proc.processKey}',${d.idx},'no')"  style="${btnBase}${s==='no' ?noSel :off}" title="No aplica">✕</button>
+          <button onclick="setDocReview('${area}','${pk}',${d.idx},'ok')"  style="${btnBase}${s==='ok' ?okSel :off}" title="Confirmo">✓</button>
+          <button onclick="setDocReview('${area}','${pk}',${d.idx},'obs')" style="${btnBase}${s==='obs'?obsSel:off}" title="Con observación">⚠</button>
+          <button onclick="setDocReview('${area}','${pk}',${d.idx},'no')"  style="${btnBase}${s==='no' ?noSel :off}" title="No aplica">✕</button>
         </div>
       </div>`;
     }).join('');
-    const customDocsList = (st.areas[area].customDocs?.[proc.processKey] || []);
-    const customDocTags = customDocsList.map((d, ci) =>
-      `<span style="display:inline-flex;align-items:center;gap:.25rem;background:var(--blue-light,#EFF6FF);color:var(--blue);border:1px solid #BFDBFE;border-radius:1rem;padding:.15rem .5rem;font-size:.72rem;font-weight:600;">
-        ${d}
-        <button onclick="removeAreaCustomDoc('${area}','${proc.processKey}',${ci})" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:.75rem;padding:0;line-height:1;">✕</button>
+    const customDocsList = (st.areas[area].customDocs?.[pk] || []);
+    const customDocTags  = customDocsList.map((d, ci) =>
+      `<span style="display:inline-flex;align-items:center;gap:.25rem;background:#EFF6FF;color:var(--blue);border:1px solid #BFDBFE;border-radius:1rem;padding:.15rem .5rem;font-size:.72rem;font-weight:600;">
+        ${d}<button onclick="removeAreaCustomDoc('${area}','${pk}',${ci})" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:.75rem;padding:0;line-height:1;">✕</button>
       </span>`
     ).join('');
-    const pk = proc.processKey;
-    return `<div style="background:white;border:1px solid var(--gray-border);border-radius:.625rem;padding:.625rem .75rem;margin-bottom:.5rem;">
-      <div style="font-size:.7rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;opacity:.7;">${proc.label}</div>
+    return `<div class="alert-tab-panel${pk===savedKey?' active':''}" data-group="${pk}">
       ${noDocsMsg}${rows}
       <div style="margin-top:.5rem;">
         <div style="display:flex;gap:.375rem;margin-bottom:.375rem;">
@@ -1782,6 +1792,18 @@ function renderAreaDocReview(area) {
         oninput="saveDocComment('${area}','${pk}',this.value)">${comment}</textarea>
     </div>`;
   }).join('');
+
+  cont.innerHTML = tabsHtml + panelsHtml;
+}
+
+function switchDocTab(area, processKey) {
+  _activeDocTab[area] = processKey;
+  const cont = document.getElementById('doc-review-'+area); if (!cont) return;
+  cont.querySelectorAll('.alert-tab').forEach((btn, i) => {
+    const processes = getAreaActiveDocs(area);
+    btn.classList.toggle('active', processes[i]?.processKey === processKey);
+  });
+  cont.querySelectorAll('.alert-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.group === processKey));
 }
 
 function setDocReview(area, processKey, docIdx, newState) {
