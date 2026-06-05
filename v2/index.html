@@ -784,12 +784,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="divider"></div>
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Notas finales de alineación</div>
     <textarea class="notes-ta" id="syncNotes" placeholder="Observaciones finales, puntos de acuerdo, próximos pasos…" oninput="st.syncNotes=this.value;save()" style="min-height:100px;"></textarea>
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-top:1rem;">
-      <div>
-        <div style="font-size:.875rem;font-weight:700;color:var(--navy);">¿Política cerrada?</div>
-        <div style="font-size:.8rem;color:var(--gray);">Se enviará el reporte y la política quedará registrada.</div>
-      </div>
-      <button class="btn-send" id="syncSendBtn" onclick="enviar()">📤 Enviar reporte</button>
+    <div style="display:flex;justify-content:flex-end;margin-top:1rem;">
+      <button class="btn-area-save-main" onclick="save();next()">Guardar y continuar →</button>
     </div>
   </div>
 </div>
@@ -1785,11 +1781,8 @@ function buildReport() {
 // ── SEND ──
 async function enviar() {
   // Detectar qué botón fue clickeado (slide 11 sync o 12 reporte)
-  const btn = document.getElementById('sendBtn') || document.getElementById('syncSendBtn');
-  const btnBoth = [document.getElementById('sendBtn'), document.getElementById('syncSendBtn')];
-  btnBoth.forEach(b => {
-    if (b) { b.textContent='⏳ Enviando…'; b.classList.add('saving'); }
-  });
+  const btn = document.getElementById('sendBtn');
+  if (btn) { btn.textContent='⏳ Enviando…'; btn.classList.add('saving'); }
   const payload = {
     sessionId: st.sessionId,
     email: st.email, client: st.client, timestamp: new Date().toISOString(),
