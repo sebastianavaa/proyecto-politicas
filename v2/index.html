@@ -518,23 +518,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
     <div class="divider"></div>
     <div class="req-areas-section">
-      <div class="req-areas-title">Áreas que participan en la política</div>
-      <div class="area-req-row">
-        <div class="area-req-info"><div class="area-req-name">Abastecimiento</div><div class="area-req-desc">Coordina el proceso y opera Plutto</div></div>
-        <div class="area-req-toggle on" id="art-abastecimiento" onclick="toggleRequiredArea('abastecimiento')"></div>
-      </div>
-      <div class="area-req-row">
-        <div class="area-req-info"><div class="area-req-name">Cumplimiento</div><div class="area-req-desc">Clasifica el riesgo y da recomendación final</div></div>
-        <div class="area-req-toggle on" id="art-cumplimiento" onclick="toggleRequiredArea('cumplimiento')"></div>
-      </div>
-      <div class="area-req-row">
-        <div class="area-req-info"><div class="area-req-name">Finanzas</div><div class="area-req-desc">Analiza la solidez financiera del proveedor</div></div>
-        <div class="area-req-toggle on" id="art-finanzas" onclick="toggleRequiredArea('finanzas')"></div>
-      </div>
-      <div class="area-req-row">
-        <div class="area-req-info"><div class="area-req-name">Legal</div><div class="area-req-desc">Valida la constitución legal del proveedor</div></div>
-        <div class="area-req-toggle on" id="art-legal" onclick="toggleRequiredArea('legal')"></div>
-      </div>
+      <div class="req-areas-title">¿Qué áreas participan en cada proceso?</div>
+      <p style="font-size:.75rem;color:var(--gray);margin:-.25rem 0 .75rem;line-height:1.5">Activa o desactiva el área que revisa cada proceso. Un área solo aparecerá en la sesión si tiene al menos un proceso asignado.</p>
+      <div id="process-area-matrix"></div>
     </div>
   </div>
 </div>
@@ -911,11 +897,25 @@ const DOCS = [
   { name:'Nómina de trabajadores',           req:['subcontratacion'] },
 ];
 
+function isAreaAssigned(processKey, area) {
+  const pa = (st.processAreas || {})[processKey];
+  return pa ? !!pa[area] : true; // default true si no configurado
+}
+
+function isAreaRequired(area) {
+  // Un área participa si al menos un proceso activo la tiene asignada
+  const hasStd = Object.entries(st.evalTypes).some(([k, v]) => v && isAreaAssigned(k, area));
+  if (hasStd) return true;
+  // Procesos custom: asignación por clave 'cp_i', default true
+  return (st.customProcesses || []).filter(p => p.saved && p.active !== false).some((_, i) => isAreaAssigned('cp_' + i, area));
+}
+
 function isSlideVisible(n) {
   const entry = Object.entries(AREA_SLIDE).find(([,s]) => s === n);
-  if (!entry) return true; // Slides no-área (cover, legal, tipos, docs, roles, sync, reporte) siempre visibles
+  if (!entry) return true;
   const [area] = entry;
-  return st.requiredAreas[area] !== false;
+  if (area === 'owner') return true;
+  return isAreaRequired(area);
 }
 
 function nextVisible(from, dir) {
@@ -931,6 +931,13 @@ const st = {
   email:'', client:'', sessionId:'',
   evalTypes:{ express:true, completa:true, reforzada:true, internacional:true, subcontratacion:true },
   requiredAreas:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
+  processAreas:{
+    express:        { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
+    completa:       { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
+    reforzada:      { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
+    internacional:  { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
+    subcontratacion:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true }
+  },
   areas:{
     abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts()},
     cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts()},
@@ -980,13 +987,13 @@ function updateNav() {
 function renderRolesSummary() {
   const el = document.getElementById('roles-fase2-areas');
   if (!el) return;
-  const active = AREAS.filter(a => st.requiredAreas[a]).map(a => AREA_LABELS[a]);
+  const active = AREAS.filter(a => isAreaRequired(a)).map(a => AREA_LABELS[a]);
   el.textContent = active.length ? active.join(' · ') : 'Sin áreas seleccionadas';
 }
 
 function renderAreaDescription(area) {
   // Mostrar dinámicamente qué roles participan (excepto el actual)
-  const otherAreas = AREAS.filter(a => a !== area && st.requiredAreas[a]).map(a => AREA_LABELS[a]);
+  const otherAreas = AREAS.filter(a => a !== area && isAreaRequired(a)).map(a => AREA_LABELS[a]);
   const descEl = document.getElementById('desc-' + area);
   if (!descEl) return;
   if (otherAreas.length > 0) {
@@ -999,7 +1006,7 @@ function renderAreaDescription(area) {
 // "Revisión por área — X de N": N y X se calculan según las áreas activas,
 // para que al desactivar áreas no quede un "5 de 5" desactualizado.
 function updateAreaTags() {
-  const visAreas = AREAS.filter(a => st.requiredAreas[a]);
+  const visAreas = AREAS.filter(a => isAreaRequired(a));
   const total = visAreas.length;
   visAreas.forEach((a, i) => {
     const tag = document.querySelector(`.slide[data-n="${AREA_SLIDE[a]}"] .s-tag`);
@@ -1072,12 +1079,52 @@ async function startSession() {
 }
 
 // ── REQUIRED AREAS ──
-function toggleRequiredArea(area) {
-  st.requiredAreas[area] = !st.requiredAreas[area];
-  document.getElementById('art-'+area)?.classList.toggle('on', st.requiredAreas[area]);
-  if (!st.requiredAreas[area] && cur === AREA_SLIDE[area]) next();
+function toggleProcessArea(processKey, area) {
+  if (!st.processAreas) st.processAreas = {};
+  if (!st.processAreas[processKey]) {
+    st.processAreas[processKey] = Object.fromEntries(AREAS.map(a => [a, true]));
+  }
+  st.processAreas[processKey][area] = !st.processAreas[processKey][area];
+  if (!isAreaRequired(area) && cur === AREA_SLIDE[area]) next();
+  renderProcessAreaMatrix();
   updateNav();
+  renderAbastRecap();
+  AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
   save();
+}
+
+function renderProcessAreaMatrix() {
+  const cont = document.getElementById('process-area-matrix');
+  if (!cont) return;
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  const AREA_SHORT = { abastecimiento:'Abastec.', cumplimiento:'Cumpli.', finanzas:'Finanzas', legal:'Legal' };
+  const activeStd = Object.entries(st.evalTypes).filter(([,v]) => v).map(([k]) => k);
+  const activeCPs = (st.customProcesses || []).filter(p => p.saved && p.active !== false);
+  if (!activeStd.length && !activeCPs.length) {
+    cont.innerHTML = '<div style="font-size:.75rem;color:var(--gray);padding:.5rem">Sin procesos activos — activa al menos uno arriba.</div>';
+    return;
+  }
+  const pa = st.processAreas || {};
+  const thCells = AREAS.map(a => `<th style="text-align:center;padding:.5rem .4rem;color:var(--gray);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;min-width:72px;">${AREA_SHORT[a]}</th>`).join('');
+  let rows = '';
+  activeStd.forEach(k => {
+    const cells = AREAS.map(a => {
+      const on = pa[k] ? !!pa[k][a] : true;
+      return `<td style="text-align:center;padding:.35rem .4rem;"><button onclick="toggleProcessArea('${k}','${a}')" title="${AREA_LABELS[a]}" style="width:2.25rem;height:1.25rem;border-radius:.625rem;border:2px solid ${on?'var(--success)':'var(--gray-border)'};cursor:pointer;transition:all .2s;background:${on?'var(--success)':'var(--white)'};"></button></td>`;
+    }).join('');
+    rows += `<tr style="border-top:1px solid var(--gray-border);"><td style="padding:.5rem .75rem;font-size:.8rem;font-weight:600;color:var(--navy);">${TYPE_LABEL[k]}</td>${cells}</tr>`;
+  });
+  activeCPs.forEach((p, i) => {
+    const key = 'cp_' + i;
+    const cells = AREAS.map(a => {
+      const on = pa[key] ? !!pa[key][a] : true;
+      return `<td style="text-align:center;padding:.35rem .4rem;"><button onclick="toggleProcessArea('${key}','${a}')" title="${AREA_LABELS[a]}" style="width:2.25rem;height:1.25rem;border-radius:.625rem;border:2px solid ${on?'var(--blue)':'var(--gray-border)'};cursor:pointer;transition:all .2s;background:${on?'var(--blue)':'var(--white)'};"></button></td>`;
+    }).join('');
+    rows += `<tr style="border-top:1px solid var(--gray-border);"><td style="padding:.5rem .75rem;font-size:.8rem;font-weight:600;color:var(--blue);">${p.name} <span style="font-size:.65rem;color:var(--gray);font-weight:400;">(custom)</span></td>${cells}</tr>`;
+  });
+  cont.innerHTML = `<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;">
+    <thead><tr><th style="text-align:left;padding:.5rem .75rem;color:var(--gray);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Proceso</th>${thCells}</tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
 }
 
 // ── SAVE / EDIT PER AREA ──
@@ -1165,7 +1212,10 @@ function toggleEval(type) {
   document.getElementById('et-'+type).classList.toggle('on', st.evalTypes[type]);
   document.getElementById('ec-'+type).classList.toggle('active', st.evalTypes[type]);
   document.getElementById('ec-'+type).classList.toggle('inactive', !st.evalTypes[type]);
+  renderProcessAreaMatrix();
+  updateNav();
   renderAbastRecap();
+  AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
   save();
 }
 
@@ -1292,8 +1342,8 @@ function renderReviewAlerts(area) {
 
 function renderAbastRecap() {
   const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
-  const active = Object.entries(st.evalTypes).filter(([,v]) => v).map(([k]) => k);
-  const activeCPs = (st.customProcesses || []).filter(p => p.saved && p.active !== false);
+  const active = Object.entries(st.evalTypes).filter(([k, v]) => v && isAreaAssigned(k, 'abastecimiento')).map(([k]) => k);
+  const activeCPs = (st.customProcesses || []).filter((p, i) => p.saved && p.active !== false && isAreaAssigned('cp_' + i, 'abastecimiento'));
   const et = document.getElementById('abast-evaltypes');
   if (et) {
     const stdChips = active.map(k => `<span class="recap-chip">${TYPE_LABEL[k]}</span>`).join('');
@@ -1324,12 +1374,14 @@ function renderAbastRecap() {
 
 function renderScopeChips(containerId) {
   const cont = document.getElementById(containerId); if (!cont) return;
+  // Extraer el área del id: 'scope-procs-{area}'
+  const area = containerId.replace('scope-procs-', '');
   const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
-  const active = Object.entries(st.evalTypes).filter(([,v]) => v).map(([k]) => k);
-  const activeCPs = (st.customProcesses || []).filter(p => p.saved && p.active !== false);
+  const active = Object.entries(st.evalTypes).filter(([k, v]) => v && isAreaAssigned(k, area)).map(([k]) => k);
+  const activeCPs = (st.customProcesses || []).filter((p, i) => p.saved && p.active !== false && isAreaAssigned('cp_' + i, area));
   const stdChips = active.map(k => `<span class="recap-chip">${TYPE_LABEL[k]}</span>`).join('');
   const cpChips = activeCPs.map(p => `<span class="recap-chip" style="border-color:var(--blue);color:var(--blue)">${p.name}</span>`).join('');
-  cont.innerHTML = (stdChips + cpChips) || '<span class="recap-chip muted">Ningún proceso activo</span>';
+  cont.innerHTML = (stdChips + cpChips) || '<span class="recap-chip muted">No asignada a ningún proceso activo</span>';
 }
 
 function renderCrossAreaSummary(area) {
@@ -1338,7 +1390,7 @@ function renderCrossAreaSummary(area) {
 
   const AREA_ALERT_DOMAIN = {}; // sin filtro — cada área configura todas las alertas
 
-  const cards = AREAS.filter(a => a !== area && st.requiredAreas[a]).map(a => {
+  const cards = AREAS.filter(a => a !== area && isAreaRequired(a)).map(a => {
     const d = st.areas[a];
     const estado = d.locked ? 'aprobado' : 'pendiente';
     const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
@@ -1559,7 +1611,7 @@ function renderAllAlerts() {
 function renderAllAreasSummary(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
-  const cards = AREAS.filter(a => st.requiredAreas[a]).map(a => {
+  const cards = AREAS.filter(a => isAreaRequired(a)).map(a => {
     const d = st.areas[a];
     const estado = d.locked ? 'aprobado' : 'pendiente';
     const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
@@ -1608,7 +1660,7 @@ function renderCompactAreaAlerts(containerId) {
   const groups = [...new Set(ALERTS.map(a=>a.group))];
   let html = '';
   AREAS.forEach(area => {
-    if (!st.requiredAreas[area]) return;
+    if (!isAreaRequired(area)) return;
     const d = st.areas[area];
     const estado = d.locked ? 'aprobado' : 'pendiente';
     const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
@@ -1650,7 +1702,7 @@ function renderSyncAreaComments() {
   if (!cont) return;
   let html = '';
   AREAS.forEach(area => {
-    if (!st.requiredAreas[area]) return;
+    if (!isAreaRequired(area)) return;
     // Encontrar alertas que esta área configura (meta.area === area)
     const aAlerts = st.areas[area].alerts;
     const areaAlerts = ALERTS.map((meta, i) => ({ meta, i })).filter(({meta}) => meta.area === area);
@@ -1702,14 +1754,14 @@ function buildReport() {
     cfg.innerHTML = `<strong style="color:var(--navy)">Empresa:</strong> ${st.client||'—'}<br>
       <strong style="color:var(--navy)">Email:</strong> ${st.email||'—'}<br>
       <strong style="color:var(--navy)">Evaluaciones activas:</strong> ${types||'Ninguna'}<br>
-      <strong style="color:var(--navy)">Áreas configuradas:</strong> ${AREAS.filter(a=>st.requiredAreas[a]&&st.areas[a].locked).length} de ${AREAS.filter(a=>st.requiredAreas[a]).length}`;
+      <strong style="color:var(--navy)">Áreas configuradas:</strong> ${AREAS.filter(a=>isAreaRequired(a)&&st.areas[a].locked).length} de ${AREAS.filter(a=>isAreaRequired(a)).length}`;
   }
 
   renderAllAreasSummary('reportAllAreaCards');
   renderCompactAreaAlerts('reportCompactAlerts');
 
   // Validar encargados de áreas requeridas
-  const allRequired = Object.keys(st.requiredAreas).filter(a => st.requiredAreas[a]);
+  const allRequired = AREAS.filter(a => isAreaRequired(a));
   const areaErrors = allRequired.reduce((acc, a) => {
     const d = st.areas[a];
     const missing = [];
@@ -1743,6 +1795,7 @@ async function enviar() {
     email: st.email, client: st.client, timestamp: new Date().toISOString(),
     evalTypes: st.evalTypes,
     requiredAreas: st.requiredAreas,
+    processAreas: st.processAreas,
     areas: Object.fromEntries(AREAS.map(a => [a, {
       decision: st.areas[a].decision,
       notes: st.areas[a].notes,
@@ -1827,12 +1880,14 @@ function startPolling() {
       const currentArea = SLIDE_AREA[cur];
       let changed = false;
 
-      // 1. Sincronizar qué áreas participan (definido por Owner)
-      if (data.state.requiredAreas) {
+      // 1. Sincronizar qué áreas participan por proceso (definido por Owner)
+      if (data.state.processAreas) {
+        if (!st.processAreas) st.processAreas = {};
+        Object.assign(st.processAreas, data.state.processAreas);
+        renderProcessAreaMatrix();
+        changed = true;
+      } else if (data.state.requiredAreas) {
         Object.assign(st.requiredAreas, data.state.requiredAreas);
-        Object.entries(st.requiredAreas).forEach(([area, on]) => {
-          document.getElementById('art-' + area)?.classList.toggle('on', on);
-        });
         changed = true;
       }
 
@@ -1935,9 +1990,6 @@ function applyStateToUI() {
   const ei = document.getElementById('emailInput'); if (ei) ei.value = st.email || '';
   const ci = document.getElementById('clientInput'); if (ci) ci.value = st.client || '';
 
-  Object.entries(st.requiredAreas).forEach(([area, on]) => {
-    document.getElementById('art-'+area)?.classList.toggle('on', on);
-  });
   Object.entries(st.evalTypes).forEach(([type, active]) => {
     document.getElementById('et-'+type)?.classList.toggle('on', active);
     document.getElementById('ec-'+type)?.classList.toggle('active', active);
@@ -1964,6 +2016,7 @@ function applyStateToUI() {
 
   renderAllAlerts();
   renderCustomProcesses();
+  renderProcessAreaMatrix();
   AREAS.forEach(a => applyAreaSaveUI(a));
   updateAreaTags();
   if (st.sentAt) showSentBanner(st.sentAt);
