@@ -1610,8 +1610,13 @@ function renderCustomProcesses() {
 }
 
 function toggleCustomProcess(i) {
-  st.customProcesses[i].active = st.customProcesses[i].active === false ? true : false;
-  renderCustomProcesses(); save();
+  const isActive = st.customProcesses[i].active !== false;
+  st.customProcesses[i].active = !isActive;
+  const card = document.getElementById('cp-card-'+i);
+  const toggle = card?.querySelector('.eval-toggle');
+  if (card) { card.classList.toggle('active', !isActive); card.classList.toggle('inactive', isActive); }
+  if (toggle) toggle.classList.toggle('on', !isActive);
+  save();
   renderAbastRecap();
   ['cumplimiento','finanzas','legal'].forEach(a => renderScopeChips('scope-procs-' + a));
 }
