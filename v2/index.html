@@ -1960,12 +1960,10 @@ function renderAreaDocReview(area) {
     ? _activeDocTab[area] : processes[0].processKey;
 
   const tabsHtml = `<div class="alert-tabs">${processes.map(proc => {
-    const procReview = review[proc.processKey] || {};
     const allDocs = [...proc.docs.filter(d => d.req==='req'), ...proc.docs.filter(d => d.req==='opc')];
     const customList = (st.areas[area].customDocs?.[proc.processKey]||[]);
     const total = allDocs.length + customList.length;
-    const reviewed = allDocs.filter(d => procReview[d.idx]).length + customList.filter(n => procReview['c:'+n]).length;
-    const badge = total ? `${reviewed}/${total}` : '—';
+    const badge = total || '—';
     return `<button class="alert-tab${proc.processKey===savedKey?' active':''}" onclick="switchDocTab('${area}','${proc.processKey}')">${proc.label}<span class="alert-tab-badge">${badge}</span></button>`;
   }).join('')}</div>`;
 
@@ -1978,14 +1976,9 @@ function renderAreaDocReview(area) {
       : '';
     const addTag = `<span style="font-size:.6rem;font-weight:700;background:#EFF6FF;color:var(--blue);border:1px solid #BFDBFE;border-radius:.2rem;padding:.05rem .3rem;flex-shrink:0;">Add</span>`;
     const rows = allDocs.map(d => {
-      const s = procReview[d.idx] || null;
-      return `<div style="display:flex;align-items:center;gap:.4rem;padding:.2rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
+      return `<div style="display:flex;align-items:center;gap:.4rem;padding:.3rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
         ${d.req === 'req' ? reqTag : opcTag}
         <span style="flex:1;font-size:.75rem;color:var(--text);">${d.name}</span>
-        <div style="display:flex;gap:.2rem;">
-          <button onclick="setDocReview('${area}','${pk}',${d.idx},'ok')"  style="${btnBase}${s==='ok' ?okSel :off}" title="Confirmo">✓</button>
-          <button onclick="setDocReview('${area}','${pk}',${d.idx},'obs')" style="${btnBase}${s==='obs'?obsSel:off}" title="Con observación">⚠</button>
-        </div>
       </div>`;
     }).join('');
     const customDocsList = (st.areas[area].customDocs?.[pk] || []);
