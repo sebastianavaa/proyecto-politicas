@@ -662,6 +662,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       </button>
       <div id="add-process-toast" style="display:none;margin-top:.75rem;padding:.625rem 1rem;background:var(--success-bg);border:1px solid var(--success);border-radius:.5rem;font-size:.8rem;color:var(--success);font-weight:600;">✅ Proceso agregado</div>
     </div>
+    <div class="divider"></div>
+    <div class="req-areas-section">
+      <div class="req-areas-title">¿Qué áreas revisan a los proveedores?</div>
+      <p style="font-size:.75rem;color:var(--gray);margin:-.25rem 0 .75rem;line-height:1.5">Activa solo las áreas que participan en tu empresa. Las apagadas no aparecerán en la sesión ni quedarán pendientes.</p>
+      <div id="required-areas-list"></div>
+    </div>
   </div>
 </div>
 
@@ -1072,6 +1078,8 @@ function isAreaAssigned(processKey, area) {
 }
 
 function isAreaRequired(area) {
+  // El owner puede apagar áreas que no participan en su empresa.
+  if (st.requiredAreas && st.requiredAreas[area] === false) return false;
   // Un área participa si al menos un proceso activo la tiene asignada
   const hasStd = Object.entries(st.evalTypes).some(([k, v]) => v && isAreaAssigned(k, area));
   if (hasStd) return true;
@@ -1252,7 +1260,39 @@ async function startSession() {
   save();
 }
 
-// ── REQUIRED AREAS ──
+// ── REQUIRED AREAS (qué áreas revisan, configurado por el owner) ──
+const AREA_DESC = {
+  abastecimiento: 'Coordina el proceso y configura las alertas',
+  cumplimiento:   'Listas de sanciones, PEP y adverse media',
+  finanzas:       'Solidez financiera y situación tributaria',
+  legal:          'Constitución, demandas y situación legal',
+};
+function renderRequiredAreas() {
+  const cont = document.getElementById('required-areas-list');
+  if (!cont) return;
+  if (!st.requiredAreas) st.requiredAreas = { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true };
+  cont.innerHTML = AREAS.map(a => {
+    const on = st.requiredAreas[a] !== false;
+    return `<div class="area-req-row">
+      <div class="area-req-info">
+        <div class="area-req-name">${AREA_LABELS[a]}</div>
+        <div class="area-req-desc">${AREA_DESC[a] || ''}</div>
+      </div>
+      <div class="area-req-toggle ${on?'on':''}" onclick="toggleRequiredArea('${a}')"></div>
+    </div>`;
+  }).join('');
+}
+function toggleRequiredArea(area) {
+  if (!st.requiredAreas) st.requiredAreas = { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true };
+  st.requiredAreas[area] = st.requiredAreas[area] === false ? true : false;
+  if (!isAreaRequired(area) && cur === AREA_SLIDE[area]) next();
+  renderRequiredAreas();
+  updateNav();
+  renderAbastRecap();
+  AREAS.forEach(a => renderAreaDocReview(a));
+  save();
+}
+
 function toggleProcessArea(processKey, area) {
   if (!st.processAreas) st.processAreas = {};
   if (!st.processAreas[processKey]) {
@@ -2743,6 +2783,7 @@ function applyStateToUI() {
   renderAllStdDocSummaries();
   renderCustomProcesses();
   renderProcessAreaMatrix();
+  renderRequiredAreas();
   renderAbastRecap();
   AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
   AREAS.filter(a => a !== 'abastecimiento').forEach(a => renderCrossAreaSummary(a));
