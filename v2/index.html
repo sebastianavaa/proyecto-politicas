@@ -521,8 +521,14 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <p style="flex:1;font-size:.85rem;line-height:1.7;">En régimen de subcontratación, la empresa mandante es <strong>solidariamente responsable</strong> de las obligaciones laborales y previsionales del contratista frente a sus trabajadores.</p>
         <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--gray-border);font-size:.75rem;color:var(--gray);line-height:1.6;">Aplica cuando el proveedor utiliza trabajadores propios en instalaciones o faenas de la empresa contratante.</div>
       </div>
+      <div class="card" style="display:flex;flex-direction:column;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
+        <div class="card-icon" style="font-size:2.25rem;margin-bottom:.875rem;">💥</div>
+        <span class="law" style="background:var(--navy);color:white;">Riesgo operacional</span>
+        <h3 style="font-size:1rem;margin:.5rem 0 .5rem;">Tu operación y reputación</h3>
+        <p style="flex:1;font-size:.85rem;line-height:1.7;">Un proveedor en quiebra puede <strong>paralizar tu operación de un día para otro</strong>. Y sus problemas reputacionales se vuelven los tuyos: la prensa y tus clientes no distinguen entre tu empresa y tus proveedores.</p>
+        <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--blue-light);font-size:.75rem;color:var(--gray);line-height:1.6;">Este es el riesgo más inmediato y visible — y el que más duele cuando ocurre.</div>
+      </div>
     </div>
-    <div class="warn-box">💡 <strong>Además del riesgo legal:</strong> un proveedor en quiebra puede paralizar tu operación, y sus problemas reputacionales se vuelven los tuyos — la prensa y tus clientes no distinguen entre tu empresa y tus proveedores.</div>
   </div>
 </div>
 
@@ -732,8 +738,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Asigna quién revisa cada tipo de alerta grave. Un revisor puede cubrir múltiples categorías.</p>
       <div id="alert-reviewers-abastecimiento"></div>
       <button onclick="addAlertReviewer('abastecimiento')" style="display:flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.375rem .75rem;font-size:.775rem;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:.75rem;">+ Agregar revisor</button>
-      <div class="decision-title">Observaciones del área</div>
-      <textarea class="notes-ta" id="notes-abastecimiento" placeholder="Comentarios, propuestas de cambio..." oninput="saveNotes('abastecimiento',this.value)" style="min-height:52px;"></textarea>
       <button class="btn-area-save-main" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')">Guardar sección de Abastecimiento</button>
       <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
       <span class="area-save-status" id="save-status-abastecimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
@@ -756,14 +760,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <input type="email" id="resp-email-cumplimiento" placeholder="email@empresa.com" oninput="saveResp('cumplimiento','email',this.value)">
       </div>
     </div>
-    <div class="recap-box">
-      <div class="recap-title">Procesos en scope</div>
-      <div class="recap-chips" id="scope-procs-cumplimiento"></div>
-    </div>
-    <div class="cross-area-summary" id="cross-summary-cumplimiento">
-      <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
-      <div class="cross-area-cards" id="cross-summary-cumplimiento-cards"></div>
-    </div>
+
+
     <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
     <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
     <div id="alerts-cumplimiento"></div>
@@ -777,8 +775,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Asigna quién revisa cada tipo de alerta grave. Un revisor puede cubrir múltiples categorías.</p>
       <div id="alert-reviewers-cumplimiento"></div>
       <button onclick="addAlertReviewer('cumplimiento')" style="display:flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.375rem .75rem;font-size:.775rem;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:.75rem;">+ Agregar revisor</button>
-      <div class="decision-title">Observaciones del área</div>
-      <textarea class="notes-ta" id="notes-cumplimiento" placeholder="Comentarios, propuestas de cambio..." oninput="saveNotes('cumplimiento',this.value)" style="min-height:52px;"></textarea>
       <button class="btn-area-save-main" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')">Guardar sección de Cumplimiento</button>
       <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
       <span class="area-save-status" id="save-status-cumplimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
@@ -801,14 +797,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <input type="email" id="resp-email-finanzas" placeholder="email@empresa.com" oninput="saveResp('finanzas','email',this.value)">
       </div>
     </div>
-    <div class="recap-box">
-      <div class="recap-title">Procesos en scope</div>
-      <div class="recap-chips" id="scope-procs-finanzas"></div>
-    </div>
-    <div class="cross-area-summary" id="cross-summary-finanzas">
-      <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
-      <div class="cross-area-cards" id="cross-summary-finanzas-cards"></div>
-    </div>
+
+
     <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
     <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
     <div id="alerts-finanzas"></div>
@@ -822,8 +812,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Asigna quién revisa cada tipo de alerta grave. Un revisor puede cubrir múltiples categorías.</p>
       <div id="alert-reviewers-finanzas"></div>
       <button onclick="addAlertReviewer('finanzas')" style="display:flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.375rem .75rem;font-size:.775rem;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:.75rem;">+ Agregar revisor</button>
-      <div class="decision-title">Observaciones del área</div>
-      <textarea class="notes-ta" id="notes-finanzas" placeholder="Comentarios, propuestas de cambio..." oninput="saveNotes('finanzas',this.value)" style="min-height:52px;"></textarea>
       <button class="btn-area-save-main" id="save-btn-finanzas" onclick="guardarArea('finanzas')">Guardar sección de Finanzas</button>
       <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
       <span class="area-save-status" id="save-status-finanzas" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
@@ -846,14 +834,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <input type="email" id="resp-email-legal" placeholder="email@empresa.com" oninput="saveResp('legal','email',this.value)">
       </div>
     </div>
-    <div class="recap-box">
-      <div class="recap-title">Procesos en scope</div>
-      <div class="recap-chips" id="scope-procs-legal"></div>
-    </div>
-    <div class="cross-area-summary" id="cross-summary-legal">
-      <div class="cross-area-summary-title">Resumen en tiempo real — Otras áreas</div>
-      <div class="cross-area-cards" id="cross-summary-legal-cards"></div>
-    </div>
+
+
     <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
     <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
     <div id="alerts-legal"></div>
@@ -867,8 +849,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Asigna quién revisa cada tipo de alerta grave. Un revisor puede cubrir múltiples categorías.</p>
       <div id="alert-reviewers-legal"></div>
       <button onclick="addAlertReviewer('legal')" style="display:flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.375rem .75rem;font-size:.775rem;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:.75rem;">+ Agregar revisor</button>
-      <div class="decision-title">Observaciones del área</div>
-      <textarea class="notes-ta" id="notes-legal" placeholder="Comentarios, propuestas de cambio..." oninput="saveNotes('legal',this.value)" style="min-height:52px;"></textarea>
       <button class="btn-area-save-main" id="save-btn-legal" onclick="guardarArea('legal')">Guardar sección de Legal</button>
       <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
       <span class="area-save-status" id="save-status-legal" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
