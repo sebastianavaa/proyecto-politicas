@@ -918,8 +918,19 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 10: FLUJOS DE TRABAJO — ¿QUIÉN REVISA QUÉ? ── -->
+<!-- ── 10: CONSOLIDACIÓN DE ALERTAS (gana la severidad más alta) ── -->
 <div class="slide slide-std" data-n="10">
+  <div class="s-head"><div class="s-tag">Consolidación de severidades</div>
+    <h2>Severidad final de cada alerta</h2>
+    <p>Cada área ajustó la severidad desde su perspectiva. Aquí se consolidan: <strong>cuando hay desacuerdo, gana la severidad más alta</strong>. Esta es la severidad que regirá el monitoreo.</p>
+  </div>
+  <div class="s-body scrollable">
+    <div id="alert-consolidation"></div>
+  </div>
+</div>
+
+<!-- ── 11: FLUJOS DE TRABAJO — ¿QUIÉN REVISA QUÉ? ── -->
+<div class="slide slide-std" data-n="11">
   <div class="s-head"><div class="s-tag">Flujos de trabajo</div>
     <h2>¿Quién revisa qué?</h2>
     <p>Cuando un proveedor gatilla una alerta <strong>grave</strong>, alguien debe revisarla y decidir. Asigna por tema quién es la persona o área responsable de esa revisión.</p>
@@ -929,8 +940,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 11: SESIÓN SINCRONIZADA ── -->
-<div class="slide slide-std" data-n="11">
+<!-- ── 12: SESIÓN SINCRONIZADA ── -->
+<div class="slide slide-std" data-n="12">
   <div class="s-head"><div class="s-tag">Sesión sincronizada</div>
     <h2>Alineación final del equipo</h2>
     <p>Últimos cambios, decisiones finales y cierre de la política.</p>
@@ -952,8 +963,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 12: REPORTE FINAL ── -->
-<div class="slide slide-std" data-n="12">
+<!-- ── 13: REPORTE FINAL ── -->
+<div class="slide slide-std" data-n="13">
   <div class="s-head"><div class="s-tag">Reporte archivado</div>
     <h2>Resumen completo de la sesión</h2>
     <p>Vista consolidada de todo lo acordado. Este reporte fue enviado al equipo Plutto.</p>
@@ -988,13 +999,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <div id="nav">
   <button class="nav-btn" id="prevBtn" onclick="prev()" disabled>←</button>
-  <span id="counter">1 / 12</span>
+  <span id="counter">1 / 13</span>
   <button class="nav-btn" id="nextBtn" onclick="next()">→</button>
 </div>
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 12;
+const TOTAL = 13;
 let cur = 1;
 
 const AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];
@@ -1123,8 +1134,9 @@ function go(n, dir) {
   to.style.opacity = '0'; to.classList.add('active');
   requestAnimationFrame(() => requestAnimationFrame(() => { to.style.transform = ''; to.style.opacity = ''; }));
   cur = n;
-  if (n === 10) renderWorkflowReviewers();        // Slide 10 (¿Quién revisa qué?)
-  if (n >= TOTAL - 1) buildReport();              // Slide 11 (sync) y 12 (reporte)
+  if (n === 10) renderAlertConsolidation();       // Slide 10 (severidad final consolidada)
+  if (n === 11) renderWorkflowReviewers();        // Slide 11 (¿Quién revisa qué?)
+  if (n >= TOTAL - 1) buildReport();              // Slide 12 (sync) y 13 (reporte)
   updateNav(); save();
 }
 function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
@@ -1454,19 +1466,105 @@ function setAlertGroupComment(area, g, val){ if (!st.areas[area].alertGroupComme
 
 const GROUP_ICON = { 'Tributario':'🏛️', 'Financiero':'💰', 'Legal y Societario':'⚖️', 'Laboral':'👷', 'Cumplimiento':'🔎' };
 
+// ── CONSOLIDACIÓN DE SEVERIDADES ──
+// Cada área ajusta la severidad de las alertas desde su perspectiva.
+// La severidad efectiva = la MÁS ALTA entre todas las áreas que participan ("grave gana").
+// El on/off lo controla Abastecimiento (hub central).
+const SEV_RANK = { leve:0, media:1, grave:2 };
+
+function isAlertActive(i) {
+  return !!(st.areas.abastecimiento.alerts?.[i]?.activa);
+}
+
+// Devuelve { sev, porArea: {area: sev}, winners: [areas con la sev ganadora] }
+function consolidatedAlert(i) {
+  const porArea = {};
+  let bestRank = -1;
+  AREAS.forEach(a => {
+    if (!isAreaRequired(a)) return;
+    const cfg = st.areas[a].alerts?.[i];
+    if (!cfg) return;
+    porArea[a] = cfg.severidad;
+    if (SEV_RANK[cfg.severidad] > bestRank) bestRank = SEV_RANK[cfg.severidad];
+  });
+  const sev = bestRank >= 0 ? SEV_ORDER[bestRank] : ALERTS[i].sev;
+  const winners = Object.entries(porArea).filter(([,s]) => s === sev).map(([a]) => a);
+  return { sev, porArea, winners };
+}
+
+function effectiveAlertSeverity(i) { return consolidatedAlert(i).sev; }
+
 // ── FLUJOS DE TRABAJO: ¿quién revisa qué? (revisores genéricos por tema) ──
-// Las alertas graves se agrupan por tema. Para cada tema con al menos una alerta
-// grave activa, se asignan los responsables (persona/área) que la revisan.
+// Las alertas graves (severidad consolidada) se agrupan por tema. Para cada tema con
+// al menos una alerta grave activa, se asignan los responsables que la revisan.
 function graveAlertsByGroup() {
-  const abast = st.areas.abastecimiento.alerts || [];
   const map = {};
   ALERTS.forEach((meta, i) => {
-    const cfg = abast[i] || {};
-    if (cfg.activa && cfg.severidad === 'grave') {
+    if (isAlertActive(i) && effectiveAlertSeverity(i) === 'grave') {
       (map[meta.group] = map[meta.group] || []).push(meta.label);
     }
   });
   return map;
+}
+
+const SEV_COLOR = {
+  leve:  { bg:'var(--blue-light)', fg:'var(--blue)',   br:'var(--blue-light)' },
+  media: { bg:'var(--warn-bg)',    fg:'var(--warn-tx)', br:'var(--warn-br)' },
+  grave: { bg:'#FEE2E2',           fg:'var(--danger)',  br:'#FCA5A5' },
+};
+function sevPill(sev, strong) {
+  const c = SEV_COLOR[sev] || SEV_COLOR.leve;
+  return `<span style="display:inline-block;background:${c.bg};color:${c.fg};border:1px solid ${c.br};border-radius:.3rem;
+    padding:.1rem .5rem;font-size:.68rem;font-weight:${strong?'800':'700'};text-transform:uppercase;letter-spacing:.03em;">${SEV_LABEL[sev]}</span>`;
+}
+
+function renderAlertConsolidation() {
+  const cont = document.getElementById('alert-consolidation');
+  if (!cont) return;
+  const groups = [...new Set(ALERTS.map(a => a.group))];
+  const activeAreas = AREAS.filter(a => isAreaRequired(a));
+
+  let conflicts = 0;
+  const groupCards = groups.map(g => {
+    const items = ALERTS.map((meta, i) => ({ meta, i }))
+      .filter(({ meta, i }) => meta.group === g && isAlertActive(i));
+    if (!items.length) return '';
+    const rows = items.map(({ meta, i }) => {
+      const { sev, porArea, winners } = consolidatedAlert(i);
+      const distinct = new Set(Object.values(porArea));
+      const hasConflict = distinct.size > 1;
+      if (hasConflict) conflicts++;
+      const areaPills = activeAreas.map(a => {
+        const s = porArea[a];
+        if (!s) return '';
+        const isWinner = winners.includes(a) && hasConflict;
+        return `<span style="display:inline-flex;align-items:center;gap:.25rem;font-size:.66rem;color:var(--gray);">
+          <span style="font-weight:700;color:var(--navy);">${AREA_LABELS[a]}:</span> ${sevPill(s)}${isWinner?' <span style="color:var(--danger);font-weight:800;">←</span>':''}
+        </span>`;
+      }).join('');
+      return `<div style="display:flex;align-items:center;gap:.75rem;padding:.5rem 0;border-bottom:1px solid rgba(0,0,0,.05);flex-wrap:wrap;">
+        <span style="flex:1;min-width:180px;font-size:.8rem;color:var(--text);">${meta.label}</span>
+        <div style="display:flex;gap:.625rem;flex-wrap:wrap;align-items:center;">${areaPills}</div>
+        <div style="display:flex;align-items:center;gap:.375rem;flex-shrink:0;">
+          <span style="font-size:.62rem;color:var(--gray);font-weight:700;text-transform:uppercase;">Final</span>
+          ${sevPill(sev, true)}
+        </div>
+      </div>`;
+    }).join('');
+    return `<div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem 1.125rem;margin-bottom:.875rem;">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
+        <span style="font-size:1.1rem;">${GROUP_ICON[g]||''}</span>
+        <h3 style="font-size:.9rem;font-weight:800;color:var(--navy);margin:0;">${g}</h3>
+      </div>
+      ${rows}
+    </div>`;
+  }).join('');
+
+  const banner = conflicts > 0
+    ? `<div class="warn-box" style="margin-bottom:.875rem;">⚖️ <strong>${conflicts} alerta${conflicts>1?'s':''} con criterios distintos entre áreas.</strong> En cada caso prevalece la severidad más alta (marcada con ←). Revisa que el resultado consolidado haga sentido antes de continuar.</div>`
+    : `<div class="warn-box" style="margin-bottom:.875rem;background:var(--success-bg);border-color:var(--success);color:#065F46;">✅ <strong>Sin conflictos:</strong> todas las áreas coinciden en la severidad de cada alerta.</div>`;
+
+  cont.innerHTML = banner + (groupCards || '<div style="font-size:.85rem;color:var(--gray);text-align:center;padding:1rem;">No hay alertas activas configuradas.</div>');
 }
 
 function renderWorkflowReviewers() {
@@ -2384,6 +2482,18 @@ function buildExportPayload() {
       })),
     },
 
+    // ── MÓDULO 2b — Severidad consolidada (Slide: Severidad final) ──
+    // Para cada alerta activa: severidad final = la más alta entre las áreas ("grave gana").
+    modulo_2b_severidad_consolidada: {
+      slide: 'Severidad final de cada alerta',
+      criterio: 'Cuando las áreas difieren, prevalece la severidad más alta.',
+      alertas: ALERTS.map((m,i) => {
+        if (!isAlertActive(i)) return null;
+        const { sev, porArea } = consolidatedAlert(i);
+        return { alerta:m.label, grupo:m.group, severidadFinal:sev, porArea, conflicto: new Set(Object.values(porArea)).size > 1 };
+      }).filter(Boolean),
+    },
+
     // ── MÓDULO 3 — Revisión documental (Slides: cada área) ──
     modulo_3_revision_documental: {
       slide: 'Revisión de documentos por proceso',
@@ -2655,6 +2765,7 @@ function applyStateToUI() {
   AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
   AREAS.filter(a => a !== 'abastecimiento').forEach(a => renderCrossAreaSummary(a));
   AREAS.forEach(a => applyAreaSaveUI(a));
+  renderAlertConsolidation();
   renderWorkflowReviewers();
   updateAreaTags();
   const syncNotesEl = document.getElementById('syncNotes');
