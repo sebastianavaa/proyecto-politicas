@@ -86,9 +86,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 /* FLUJOS: fila de revisor (¿quién revisa qué?) */
 .wf-reviewer-row{display:flex;gap:.4rem;align-items:center;margin-bottom:.4rem;flex-wrap:nowrap;}
 
-/* ÁREA: botón guardar fijo al fondo (no se mueve según filas) */
-.area-save-sticky{position:sticky;bottom:0;z-index:6;background:var(--bg);
-  padding:.75rem 0 .5rem;margin-top:1rem;border-top:1px solid var(--gray-border);}
+/* ÁREA: botón guardar como footer fijo del slide (no se mueve según filas) */
+.area-save-footer{flex-shrink:0;background:var(--bg);padding:.75rem 3rem 1rem;border-top:1px solid var(--gray-border);}
+@media (max-width:640px){ .area-save-footer{padding:.625rem 1rem .75rem;} }
 
 /* ÁREA: alertas | documentos en 2 columnas */
 .area-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;}
@@ -839,11 +839,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div id="abast-alerts"></div>
       </div>
     </div>
-    <div class="area-save-sticky">
-      <button class="btn-area-save-main" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')" style="margin-top:0;">Guardar sección de Abastecimiento</button>
-      <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
-      <span class="area-save-status" id="save-status-abastecimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
-    </div>
+  </div>
+  <div class="area-save-footer">
+    <button class="btn-area-save-main" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')" style="margin-top:0;">Guardar sección de Abastecimiento</button>
+    <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
+    <span class="area-save-status" id="save-status-abastecimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
   </div>
 </div>
 
@@ -874,11 +874,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div id="alerts-cumplimiento"></div>
       </div>
     </div>
-    <div class="area-save-sticky">
-      <button class="btn-area-save-main" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')" style="margin-top:0;">Guardar sección de Cumplimiento</button>
-      <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
-      <span class="area-save-status" id="save-status-cumplimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
-    </div>
+  </div>
+  <div class="area-save-footer">
+    <button class="btn-area-save-main" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')" style="margin-top:0;">Guardar sección de Cumplimiento</button>
+    <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
+    <span class="area-save-status" id="save-status-cumplimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
   </div>
 </div>
 
@@ -909,11 +909,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div id="alerts-finanzas"></div>
       </div>
     </div>
-    <div class="area-save-sticky">
-      <button class="btn-area-save-main" id="save-btn-finanzas" onclick="guardarArea('finanzas')" style="margin-top:0;">Guardar sección de Finanzas</button>
-      <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
-      <span class="area-save-status" id="save-status-finanzas" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
-    </div>
+  </div>
+  <div class="area-save-footer">
+    <button class="btn-area-save-main" id="save-btn-finanzas" onclick="guardarArea('finanzas')" style="margin-top:0;">Guardar sección de Finanzas</button>
+    <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
+    <span class="area-save-status" id="save-status-finanzas" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
   </div>
 </div>
 
@@ -944,11 +944,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div id="alerts-legal"></div>
       </div>
     </div>
-    <div class="area-save-sticky">
-      <button class="btn-area-save-main" id="save-btn-legal" onclick="guardarArea('legal')" style="margin-top:0;">Guardar sección de Legal</button>
-      <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
-      <span class="area-save-status" id="save-status-legal" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
-    </div>
+  </div>
+  <div class="area-save-footer">
+    <button class="btn-area-save-main" id="save-btn-legal" onclick="guardarArea('legal')" style="margin-top:0;">Guardar sección de Legal</button>
+    <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
+    <span class="area-save-status" id="save-status-legal" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
   </div>
 </div>
 
