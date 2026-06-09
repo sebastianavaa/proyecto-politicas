@@ -526,8 +526,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 3: OWNER DEL PROYECTO ── -->
-<div class="slide slide-std" data-n="3">
+<!-- ── 4: OWNER DEL PROYECTO ── -->
+<div class="slide slide-std" data-n="4">
   <div class="s-head"><div class="s-tag">Configuración inicial</div>
     <h2>Owner del proyecto</h2>
     <p>Activa los procesos que aplican a tu empresa y selecciona qué áreas revisarán a los proveedores.</p>
@@ -629,8 +629,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 4: RESUMEN DE ROLES + EXPECTATIVAS ── -->
-<div class="slide slide-std" data-n="4">
+<!-- ── 3: RESUMEN DE ROLES + EXPECTATIVAS ── -->
+<div class="slide slide-std" data-n="3">
   <div class="s-head"><div class="s-tag">Flujo de trabajo</div>
     <h2>¿Cómo funciona esto?</h2>
     <p>3 fases para construir una política alineada en todo el equipo.</p>
@@ -704,6 +704,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="area-status" id="badge-abastecimiento">Pendiente</div>
   </div>
   <div class="s-body scrollable">
+    <div class="decision-section" style="margin-bottom:.875rem;">
+      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
+      <div class="resp-row">
+        <input type="text" id="resp-name-abastecimiento" placeholder="Nombre completo" oninput="saveResp('abastecimiento','name',this.value)">
+        <input type="email" id="resp-email-abastecimiento" placeholder="email@empresa.com" oninput="saveResp('abastecimiento','email',this.value)">
+      </div>
+    </div>
     <div class="recap-box">
       <div class="recap-title">Procesos de evaluación activos</div>
       <div class="recap-chips" id="abast-evaltypes"></div>
@@ -721,11 +728,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div id="doc-review-abastecimiento"></div>
     <div class="divider"></div>
     <div class="decision-section">
-      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
-      <div class="resp-row">
-        <input type="text" id="resp-name-abastecimiento" placeholder="Nombre completo" oninput="saveResp('abastecimiento','name',this.value)">
-        <input type="email" id="resp-email-abastecimiento" placeholder="email@empresa.com" oninput="saveResp('abastecimiento','email',this.value)">
-      </div>
       <div class="resp-label" style="margin-top:.75rem;">Revisores de alertas graves</div>
       <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Asigna quién revisa cada tipo de alerta grave. Un revisor puede cubrir múltiples categorías.</p>
       <div id="alert-reviewers-abastecimiento"></div>
@@ -747,6 +749,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="area-status" id="badge-cumplimiento">Pendiente</div>
   </div>
   <div class="s-body scrollable">
+    <div class="decision-section" style="margin-bottom:.875rem;">
+      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
+      <div class="resp-row">
+        <input type="text" id="resp-name-cumplimiento" placeholder="Nombre completo" oninput="saveResp('cumplimiento','name',this.value)">
+        <input type="email" id="resp-email-cumplimiento" placeholder="email@empresa.com" oninput="saveResp('cumplimiento','email',this.value)">
+      </div>
+    </div>
     <div class="recap-box">
       <div class="recap-title">Procesos en scope</div>
       <div class="recap-chips" id="scope-procs-cumplimiento"></div>
@@ -764,11 +773,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div id="doc-review-cumplimiento"></div>
     <div class="divider"></div>
     <div class="decision-section">
-      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
-      <div class="resp-row">
-        <input type="text" id="resp-name-cumplimiento" placeholder="Nombre completo" oninput="saveResp('cumplimiento','name',this.value)">
-        <input type="email" id="resp-email-cumplimiento" placeholder="email@empresa.com" oninput="saveResp('cumplimiento','email',this.value)">
-      </div>
       <div class="resp-label" style="margin-top:.75rem;">Revisores de alertas graves</div>
       <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Asigna quién revisa cada tipo de alerta grave. Un revisor puede cubrir múltiples categorías.</p>
       <div id="alert-reviewers-cumplimiento"></div>
@@ -790,6 +794,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="area-status" id="badge-finanzas">Pendiente</div>
   </div>
   <div class="s-body scrollable">
+    <div class="decision-section" style="margin-bottom:.875rem;">
+      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
+      <div class="resp-row">
+        <input type="text" id="resp-name-finanzas" placeholder="Nombre completo" oninput="saveResp('finanzas','name',this.value)">
+        <input type="email" id="resp-email-finanzas" placeholder="email@empresa.com" oninput="saveResp('finanzas','email',this.value)">
+      </div>
+    </div>
     <div class="recap-box">
       <div class="recap-title">Procesos en scope</div>
       <div class="recap-chips" id="scope-procs-finanzas"></div>
@@ -807,11 +818,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div id="doc-review-finanzas"></div>
     <div class="divider"></div>
     <div class="decision-section">
-      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
-      <div class="resp-row">
-        <input type="text" id="resp-name-finanzas" placeholder="Nombre completo" oninput="saveResp('finanzas','name',this.value)">
-        <input type="email" id="resp-email-finanzas" placeholder="email@empresa.com" oninput="saveResp('finanzas','email',this.value)">
-      </div>
       <div class="resp-label" style="margin-top:.75rem;">Revisores de alertas graves</div>
       <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Asigna quién revisa cada tipo de alerta grave. Un revisor puede cubrir múltiples categorías.</p>
       <div id="alert-reviewers-finanzas"></div>
@@ -833,6 +839,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="area-status" id="badge-legal">Pendiente</div>
   </div>
   <div class="s-body scrollable">
+    <div class="decision-section" style="margin-bottom:.875rem;">
+      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
+      <div class="resp-row">
+        <input type="text" id="resp-name-legal" placeholder="Nombre completo" oninput="saveResp('legal','name',this.value)">
+        <input type="email" id="resp-email-legal" placeholder="email@empresa.com" oninput="saveResp('legal','email',this.value)">
+      </div>
+    </div>
     <div class="recap-box">
       <div class="recap-title">Procesos en scope</div>
       <div class="recap-chips" id="scope-procs-legal"></div>
@@ -850,11 +863,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div id="doc-review-legal"></div>
     <div class="divider"></div>
     <div class="decision-section">
-      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
-      <div class="resp-row">
-        <input type="text" id="resp-name-legal" placeholder="Nombre completo" oninput="saveResp('legal','name',this.value)">
-        <input type="email" id="resp-email-legal" placeholder="email@empresa.com" oninput="saveResp('legal','email',this.value)">
-      </div>
       <div class="resp-label" style="margin-top:.75rem;">Revisores de alertas graves</div>
       <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Asigna quién revisa cada tipo de alerta grave. Un revisor puede cubrir múltiples categorías.</p>
       <div id="alert-reviewers-legal"></div>
