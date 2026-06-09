@@ -64,14 +64,14 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 /* STD SLIDE */
 .slide-std{background:var(--bg);}
-.s-head{background:var(--navy);color:white;padding:1.75rem 3rem 1.375rem;flex-shrink:0;
+.s-head{background:var(--navy);color:white;padding:1rem 3rem .9rem;flex-shrink:0;
   background:linear-gradient(135deg,var(--navy) 0%,#1E1E6E 100%);}
-.s-tag{font-size:.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--blue-light);margin-bottom:.375rem;}
-.s-head h2{font-size:clamp(1.4rem,2.6vw,2rem);font-weight:800;line-height:1.15;letter-spacing:-.02em;}
-.s-head p{color:rgba(255,255,255,.5);font-size:.8375rem;margin-top:.3rem;max-width:680px;line-height:1.5;}
-.s-body{padding:1.5rem 3rem;flex:1;overflow-y:auto;}
-.scrollable{overflow-y:auto;max-height:calc(100vh - 175px);padding-bottom:5rem;}
-.divider{height:.875rem;}
+.s-tag{font-size:.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--blue-light);margin-bottom:.25rem;}
+.s-head h2{font-size:clamp(1.25rem,2.2vw,1.7rem);font-weight:800;line-height:1.12;letter-spacing:-.02em;}
+.s-head p{color:rgba(255,255,255,.5);font-size:.8rem;margin-top:.2rem;max-width:760px;line-height:1.45;}
+.s-body{padding:1rem 3rem;flex:1;overflow-y:auto;}
+.scrollable{overflow-y:auto;max-height:calc(100vh - 120px);padding-bottom:1.5rem;}
+.divider{height:.625rem;}
 
 /* CARDS */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.875rem;}
@@ -82,6 +82,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 /* LEGAL GRID (slide 2) */
 .legal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:stretch;}
+
+/* ÁREA: alertas | documentos en 2 columnas */
+.area-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;}
+.area-cols .col-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;}
+@media (max-width:860px){ .area-cols{grid-template-columns:1fr;gap:1rem;} }
 
 /* 6 PREGUNTAS DEL FILTRO (slide 4) */
 .q-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;}
@@ -809,13 +814,16 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       </div>
     </div>
 
-    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:.25rem">⚙️ Configuración de alertas — severidad y monitoreo</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Define qué alertas activar y con qué severidad. Leve: se registra. Media: requiere revisión. Grave: el área responsable actúa como revisor del proceso.</p>
-    <div id="abast-alerts"></div>
-    <div class="divider"></div>
-    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
-    <div id="doc-review-abastecimiento"></div>
+    <div class="area-cols">
+      <div>
+        <div class="col-title">⚙️ Configuración de alertas — severidad y monitoreo</div>
+        <div id="abast-alerts"></div>
+      </div>
+      <div>
+        <div class="col-title">Revisión de documentos por proceso</div>
+        <div id="doc-review-abastecimiento"></div>
+      </div>
+    </div>
     <div class="divider"></div>
     <div class="decision-section">
       <button class="btn-area-save-main" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')">Guardar sección de Abastecimiento</button>
@@ -842,13 +850,16 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
 
 
-    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
-    <div id="alerts-cumplimiento"></div>
-    <div class="divider"></div>
-    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
-    <div id="doc-review-cumplimiento"></div>
+    <div class="area-cols">
+      <div>
+        <div class="col-title">Alertas — revisa la severidad</div>
+        <div id="alerts-cumplimiento"></div>
+      </div>
+      <div>
+        <div class="col-title">Revisión de documentos por proceso</div>
+        <div id="doc-review-cumplimiento"></div>
+      </div>
+    </div>
     <div class="divider"></div>
     <div class="decision-section">
       <button class="btn-area-save-main" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')">Guardar sección de Cumplimiento</button>
@@ -875,13 +886,16 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
 
 
-    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
-    <div id="alerts-finanzas"></div>
-    <div class="divider"></div>
-    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
-    <div id="doc-review-finanzas"></div>
+    <div class="area-cols">
+      <div>
+        <div class="col-title">Alertas — revisa la severidad</div>
+        <div id="alerts-finanzas"></div>
+      </div>
+      <div>
+        <div class="col-title">Revisión de documentos por proceso</div>
+        <div id="doc-review-finanzas"></div>
+      </div>
+    </div>
     <div class="divider"></div>
     <div class="decision-section">
       <button class="btn-area-save-main" id="save-btn-finanzas" onclick="guardarArea('finanzas')">Guardar sección de Finanzas</button>
@@ -908,13 +922,16 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
 
 
-    <div class="area-alerts-title" style="border-top:none;padding-top:0;margin-top:0">Alertas — revisa la severidad y comenta</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:-.4rem 0 .6rem;line-height:1.5">Todas las alertas son editables. Define la severidad desde tu perspectiva y deja comentarios para justificar tu criterio.</p>
-    <div id="alerts-legal"></div>
-    <div class="divider"></div>
-    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisión de documentos por proceso</div>
-    <p style="font-size:.75rem;color:var(--gray);margin:0 0 .625rem;line-height:1.5">Revisa los documentos y declaraciones que se solicitarán al proveedor. ¿Hacen sentido para tu área? Marca cada uno y deja comentarios si corresponde.</p>
-    <div id="doc-review-legal"></div>
+    <div class="area-cols">
+      <div>
+        <div class="col-title">Alertas — revisa la severidad</div>
+        <div id="alerts-legal"></div>
+      </div>
+      <div>
+        <div class="col-title">Revisión de documentos por proceso</div>
+        <div id="doc-review-legal"></div>
+      </div>
+    </div>
     <div class="divider"></div>
     <div class="decision-section">
       <button class="btn-area-save-main" id="save-btn-legal" onclick="guardarArea('legal')">Guardar sección de Legal</button>
