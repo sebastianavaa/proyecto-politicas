@@ -465,6 +465,21 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 </style>
 </head>
 <body>
+<!-- MODAL: crear documento nuevo -->
+<div id="new-doc-modal" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(20,20,79,.45);backdrop-filter:blur(2px);align-items:center;justify-content:center;">
+  <div style="background:var(--white);border-radius:1rem;padding:1.5rem;width:90%;max-width:420px;box-shadow:0 12px 40px rgba(0,0,0,.3);">
+    <h3 style="font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:.375rem;">Crear documento nuevo</h3>
+    <p style="font-size:.8rem;color:var(--gray);line-height:1.5;margin-bottom:.875rem;">Quedará disponible para proponerlo en cualquier proceso de todas las áreas.</p>
+    <input type="text" id="new-doc-input" placeholder="Nombre del documento"
+      style="width:100%;padding:.625rem .875rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.875rem;font-family:var(--font);color:var(--text);outline:none;"
+      onkeydown="if(event.key==='Enter')confirmNewDoc();if(event.key==='Escape')closeNewDocModal();">
+    <div id="new-doc-error" style="display:none;font-size:.75rem;color:var(--danger);margin-top:.5rem;"></div>
+    <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.25rem;">
+      <button onclick="closeNewDocModal()" style="background:transparent;border:1.5px solid var(--gray-border);color:var(--gray);padding:.5rem 1rem;border-radius:.5rem;font-size:.825rem;font-weight:700;cursor:pointer;font-family:var(--font);">Cancelar</button>
+      <button onclick="confirmNewDoc()" style="background:var(--blue);color:white;border:none;padding:.5rem 1.25rem;border-radius:.5rem;font-size:.825rem;font-weight:800;cursor:pointer;font-family:var(--font);">Guardar</button>
+    </div>
+  </div>
+</div>
 <div id="sent-banner">
   ✅ Esta sesión ya fue enviada el <strong id="sent-date"></strong>. Puedes volver a enviar si necesitas actualizar el reporte.
   <button id="sent-banner-close" onclick="document.getElementById('sent-banner').style.display='none'">✕</button>
@@ -1972,23 +1987,45 @@ function processLabel(pk) {
   return pk;
 }
 
+let _newDocCtx = null;
+
 function proposeDocFromSelect(area, processKey, sel) {
   const val = sel.value;
   sel.value = '';
   if (!val) return;
-  if (val === '__new__') {
-    const name = (prompt('Nombre del nuevo documento:') || '').trim();
-    if (!name) return;
-    if (getAllCatalogDocs().some(d => d.name.toLowerCase() === name.toLowerCase())) {
-      alert('Ese documento ya existe en la lista.');
-      return;
-    }
-    if (!st.customCatalogDocs) st.customCatalogDocs = [];
-    st.customCatalogDocs.push(name);
-    addDocProposal(area, processKey, name);
-    return;
-  }
+  if (val === '__new__') { openNewDocModal(area, processKey); return; }
   addDocProposal(area, processKey, val);
+}
+
+function openNewDocModal(area, processKey) {
+  _newDocCtx = { area, processKey };
+  const modal = document.getElementById('new-doc-modal');
+  const input = document.getElementById('new-doc-input');
+  const err   = document.getElementById('new-doc-error');
+  input.value = ''; err.style.display = 'none';
+  modal.style.display = 'flex';
+  setTimeout(() => input.focus(), 50);
+}
+
+function closeNewDocModal() {
+  document.getElementById('new-doc-modal').style.display = 'none';
+  _newDocCtx = null;
+}
+
+function confirmNewDoc() {
+  if (!_newDocCtx) return;
+  const input = document.getElementById('new-doc-input');
+  const err   = document.getElementById('new-doc-error');
+  const name  = (input.value || '').trim();
+  if (!name) { err.textContent = 'Ingresa un nombre.'; err.style.display = 'block'; return; }
+  if (getAllCatalogDocs().some(d => d.name.toLowerCase() === name.toLowerCase())) {
+    err.textContent = 'Ese documento ya existe en la lista.'; err.style.display = 'block'; return;
+  }
+  if (!st.customCatalogDocs) st.customCatalogDocs = [];
+  st.customCatalogDocs.push(name);
+  const { area, processKey } = _newDocCtx;
+  closeNewDocModal();
+  addDocProposal(area, processKey, name);
 }
 
 function addDocProposal(area, processKey, name) {
