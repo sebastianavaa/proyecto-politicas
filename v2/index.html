@@ -1034,6 +1034,7 @@ const st = {
     legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{}}
   },
   customProcesses: [],
+  customCatalogDocs: [],
   processDocConfig: {},
   sentAt:'',
   syncNotes:'',
@@ -1426,7 +1427,6 @@ const _activeAlertTab = {};
 
 function buildAlertTabsHTML(containerId, area, placeholder) {
   const aAlerts = st.areas[area].alerts;
-  const groupComments = st.areas[area].alertGroupComments || {};
   const groups = [...new Set(ALERTS.map(a => a.group))];
   const savedGroup = _activeAlertTab[containerId] || groups[0];
   const tabsHtml = `<div class="alert-tabs">${groups.map(g => {
@@ -1449,10 +1449,8 @@ function buildAlertTabsHTML(containerId, area, placeholder) {
         </div>
       </div>`;
     }).join('');
-    const gComment = groupComments[g] || '';
     return `<div class="alert-tab-panel${g===savedGroup?' active':''}" data-group="${g}">
       ${rows}
-      <textarea class="alert-cmt" rows="2" placeholder="${placeholder}" style="margin-top:.5rem;" oninput="setAlertGroupComment('${area}','${g}',this.value)">${gComment}</textarea>
     </div>`;
   }).join('');
   return tabsHtml + panelsHtml;
@@ -1851,7 +1849,6 @@ function renderAreaDocReview(area) {
     return;
   }
   const review   = st.areas[area].docReview   || {};
-  const comments = st.areas[area].docComments || {};
   const btnBase = 'font-size:.65rem;font-weight:700;padding:.15rem .5rem;border-radius:.25rem;border:1px solid;cursor:pointer;transition:all .15s;';
   const okSel   = 'background:#DCFCE7;color:#166534;border-color:#86EFAC;';
   const obsSel  = 'background:#FFFBEB;color:#D97706;border-color:#FCD34D;';
@@ -1875,7 +1872,6 @@ function renderAreaDocReview(area) {
   const panelsHtml = processes.map(proc => {
     const pk          = proc.processKey;
     const procReview  = review[pk] || {};
-    const comment     = comments[pk] || '';
     const allDocs     = [...proc.docs.filter(d => d.req==='req'), ...proc.docs.filter(d => d.req==='opc')];
     const noDocsMsg   = allDocs.length === 0
       ? `<div style="font-size:.75rem;color:var(--gray);padding:.25rem 0;font-style:italic;">Sin documentos configurados — agrégalos en la slide de configuración.</div>`
@@ -1898,21 +1894,31 @@ function renderAreaDocReview(area) {
         ${d}<button onclick="removeAreaCustomDoc('${area}','${pk}',${ci})" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:.75rem;padding:0;line-height:1;">✕</button>
       </span>`
     ).join('');
+    const inProcess = new Set(allDocs.map(d => d.name));
+    const proposed  = new Set(customDocsList);
+    const optionsHtml = getAllCatalogDocs()
+      .filter(d => !inProcess.has(d.name) && !proposed.has(d.name))
+      .map(d => `<option value="${d.name.replace(/"/g,'&quot;')}">${d.name}${d.custom ? ' (personalizado)' : ''}</option>`)
+      .join('');
+    const catalogCustom = st.customCatalogDocs || [];
+    const catalogMgmt = catalogCustom.length ? `<div style="display:flex;flex-wrap:wrap;gap:.3rem;align-items:center;margin-top:.45rem;">
+        <span style="font-size:.62rem;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Creados por el equipo:</span>
+        ${catalogCustom.map((n, ni) => `<span style="display:inline-flex;align-items:center;gap:.25rem;background:var(--gray-light);color:var(--navy);border:1px solid var(--gray-border);border-radius:1rem;padding:.15rem .5rem;font-size:.72rem;font-weight:600;">
+          ${n}<button onclick="deleteCatalogDoc(${ni})" title="Eliminar de la lista" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.75rem;padding:0;line-height:1;">🗑</button>
+        </span>`).join('')}
+      </div>` : '';
     return `<div class="alert-tab-panel${pk===savedKey?' active':''}" data-group="${pk}">
       ${noDocsMsg}${rows}
       <div style="margin-top:.5rem;">
-        <div style="display:flex;gap:.375rem;margin-bottom:.375rem;">
-          <input type="text" id="acd-${area}-${pk}" placeholder="Proponer documento adicional…"
-            style="flex:1;padding:.35rem .625rem;font-size:.75rem;border:1px solid var(--gray-border);border-radius:.375rem;font-family:var(--font);color:var(--text);"
-            onkeydown="if(event.key==='Enter'){event.preventDefault();addAreaCustomDoc('${area}','${pk}',this)}">
-          <button onclick="addAreaCustomDoc('${area}','${pk}',document.getElementById('acd-${area}-${pk}'))"
-            style="background:var(--blue);color:white;border:none;border-radius:.375rem;padding:.35rem .75rem;font-size:.75rem;font-weight:700;cursor:pointer;white-space:nowrap;">+ Agregar</button>
-        </div>
-        ${customDocTags ? `<div style="display:flex;flex-wrap:wrap;gap:.3rem;">${customDocTags}</div>` : ''}
+        <select onchange="proposeDocFromSelect('${area}','${pk}',this)"
+          style="width:100%;padding:.4rem .625rem;font-size:.75rem;border:1px solid var(--gray-border);border-radius:.375rem;font-family:var(--font);color:var(--text);background:var(--white);cursor:pointer;">
+          <option value="">+ Proponer documento adicional…</option>
+          ${optionsHtml}
+          <option value="__new__">✚ Crear documento nuevo…</option>
+        </select>
+        ${customDocTags ? `<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.45rem;">${customDocTags}</div>` : ''}
+        ${catalogMgmt}
       </div>
-      <textarea placeholder="Comentarios sobre los documentos de este proceso…"
-        style="width:100%;margin-top:.5rem;padding:.4rem .625rem;font-size:.75rem;border:1px solid var(--gray-border);border-radius:.375rem;resize:vertical;min-height:48px;font-family:var(--font);color:var(--text);background:var(--white);box-sizing:border-box;"
-        oninput="saveDocComment('${area}','${pk}',this.value)">${comment}</textarea>
     </div>`;
   }).join('');
 
@@ -1944,13 +1950,66 @@ function saveDocComment(area, processKey, val) {
   save();
 }
 
-function addAreaCustomDoc(area, processKey, input) {
-  const val = (input.value || '').trim(); if (!val) return;
+function getAllCatalogDocs() {
+  const std  = DOCS.map(d => ({ name: d.name, custom: false }));
+  const cust = (st.customCatalogDocs || []).map(n => ({ name: n, custom: true }));
+  return [...std, ...cust];
+}
+
+function processLabel(pk) {
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  if (TYPE_LABEL[pk]) return TYPE_LABEL[pk];
+  if (pk.startsWith('cp_')) return st.customProcesses?.[+pk.slice(3)]?.name || pk;
+  return pk;
+}
+
+function proposeDocFromSelect(area, processKey, sel) {
+  const val = sel.value;
+  sel.value = '';
+  if (!val) return;
+  if (val === '__new__') {
+    const name = (prompt('Nombre del nuevo documento:') || '').trim();
+    if (!name) return;
+    if (getAllCatalogDocs().some(d => d.name.toLowerCase() === name.toLowerCase())) {
+      alert('Ese documento ya existe en la lista.');
+      return;
+    }
+    if (!st.customCatalogDocs) st.customCatalogDocs = [];
+    st.customCatalogDocs.push(name);
+    addDocProposal(area, processKey, name);
+    return;
+  }
+  addDocProposal(area, processKey, val);
+}
+
+function addDocProposal(area, processKey, name) {
   if (!st.areas[area].customDocs) st.areas[area].customDocs = {};
   if (!st.areas[area].customDocs[processKey]) st.areas[area].customDocs[processKey] = [];
-  st.areas[area].customDocs[processKey].push(val);
-  input.value = '';
+  if (!st.areas[area].customDocs[processKey].includes(name)) st.areas[area].customDocs[processKey].push(name);
   renderAreaDocReview(area);
+  save();
+}
+
+function deleteCatalogDoc(catalogIdx) {
+  const name = (st.customCatalogDocs || [])[catalogIdx];
+  if (!name) return;
+  const usos = [];
+  Object.entries(st.areas).forEach(([a, data]) => {
+    Object.entries(data.customDocs || {}).forEach(([pk, list]) => {
+      if ((list || []).includes(name)) usos.push(`${AREA_LABELS[a] || a} → ${processLabel(pk)}`);
+    });
+  });
+  const msg = usos.length
+    ? `"${name}" está en uso en:\n• ${usos.join('\n• ')}\n\n¿Eliminarlo de todos modos? Se quitará de esos procesos.`
+    : `¿Eliminar "${name}" de la lista de documentos?`;
+  if (!confirm(msg)) return;
+  st.customCatalogDocs.splice(catalogIdx, 1);
+  Object.values(st.areas).forEach(data => {
+    Object.keys(data.customDocs || {}).forEach(pk => {
+      data.customDocs[pk] = data.customDocs[pk].filter(n => n !== name);
+    });
+  });
+  AREAS.forEach(a => renderAreaDocReview(a));
   save();
 }
 
@@ -2204,6 +2263,7 @@ function buildExportPayload() {
     // ── MÓDULO 3 — Revisión documental (Slides: cada área) ──
     modulo_3_revision_documental: {
       slide: 'Revisión de documentos por proceso',
+      documentosCreadosPorEquipo: st.customCatalogDocs || [],
       porArea: Object.fromEntries(activeAreas.map(a => {
         const review = st.areas[a].docReview || {};
         const comments = st.areas[a].docComments || {};
