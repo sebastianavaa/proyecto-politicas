@@ -492,41 +492,40 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   <div class="s-head"><div class="s-tag">El problema y la ley</div><h2>¿Por qué necesitas una política de compras?</h2>
   <p>Trabajar con proveedores sin un proceso formal expone a tu empresa a riesgos legales, financieros, reputacionales y operativos. Y la normativa chilena ya lo exige: cada riesgo tiene una ley detrás.</p></div>
   <div class="s-body scrollable">
-    <div class="cards" style="align-items:start;">
-      <div class="card" style="display:flex;flex-direction:column;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
-        <div class="card-icon" style="font-size:2.25rem;margin-bottom:.875rem;">💥</div>
+    <!-- Card destacada — riesgo operacional -->
+    <div class="card" style="display:flex;flex-direction:row;align-items:center;gap:1.25rem;padding:1.25rem 1.75rem;margin-bottom:.875rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
+      <div style="font-size:2rem;flex-shrink:0;">💥</div>
+      <div style="flex:1;">
         <span class="law" style="background:var(--navy);color:white;">Riesgo operacional</span>
-        <h3 style="font-size:1rem;margin:.5rem 0 .5rem;">Tu operación y reputación</h3>
-        <p style="flex:1;font-size:.85rem;line-height:1.7;">Un proveedor en quiebra puede <strong>paralizar tu operación de un día para otro</strong>. Y sus problemas reputacionales se vuelven los tuyos: la prensa y tus clientes no distinguen entre tu empresa y tus proveedores.</p>
-        <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--blue-light);font-size:.75rem;color:var(--gray);line-height:1.6;">Este es el riesgo más inmediato y visible — y el que más duele cuando ocurre.</div>
+        <h3 style="font-size:.95rem;margin:.375rem 0 .25rem;">Tu operación y reputación</h3>
+        <p style="font-size:.825rem;color:var(--gray);line-height:1.6;margin:0;">Un proveedor en quiebra puede <strong>paralizar tu operación de un día para otro</strong>. Sus problemas reputacionales se vuelven los tuyos — la prensa y tus clientes no distinguen entre tu empresa y tus proveedores.</p>
       </div>
-      <div class="card" style="display:flex;flex-direction:column;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
-        <div class="card-icon" style="font-size:2.25rem;margin-bottom:.875rem;">⚖️</div>
-        <span class="law" style="background:var(--navy);color:white;">Ley 20.393</span>
-        <h3 style="font-size:1rem;margin:.5rem 0 .5rem;">Responsabilidad penal</h3>
-        <p style="flex:1;font-size:.85rem;line-height:1.7;">Obliga a evaluar a los proveedores <strong>antes de contratarlos</strong>. Si no lo haces y el proveedor comete un delito, la empresa responde penalmente: multas, inhabilitaciones y clausura.</p>
-        <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--blue-light);font-size:.75rem;color:var(--gray);line-height:1.6;">Aplica a: delitos económicos, cohecho, lavado de activos, receptación y otros tipificados en la ley.</div>
+    </div>
+    <!-- Grid 4 cards legales -->
+    <div class="cards">
+      <div class="card" style="display:flex;flex-direction:column;padding:1.25rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⚖️</div>
+        <span class="law" style="background:var(--navy);color:white;width:fit-content;">Ley 20.393</span>
+        <h3 style="font-size:.875rem;margin:.4rem 0 .3rem;">Responsabilidad penal</h3>
+        <p style="flex:1;font-size:.775rem;color:var(--gray);line-height:1.6;">Obliga a evaluar proveedores <strong>antes de contratarlos</strong>. Sin due diligence, la empresa responde penalmente por delitos del proveedor.</p>
       </div>
-      <div class="card" style="display:flex;flex-direction:column;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
-        <div class="card-icon" style="font-size:2.25rem;margin-bottom:.875rem;">🕵️</div>
-        <span class="law" style="background:var(--navy);color:white;">Ley 19.913</span>
-        <h3 style="font-size:1rem;margin:.5rem 0 .5rem;">Lavado de activos</h3>
-        <p style="flex:1;font-size:.85rem;line-height:1.7;">Exige identificar <strong>beneficiarios finales</strong> y verificar que no estén sancionados. Ignorarlo expone a la empresa a involucramiento en lavado de activos o financiamiento del terrorismo.</p>
-        <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--blue-light);font-size:.75rem;color:var(--gray);line-height:1.6;">Requiere revisar listas OFAC, ONU y otras antes de contratar y periódicamente durante la relación.</div>
+      <div class="card" style="display:flex;flex-direction:column;padding:1.25rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🕵️</div>
+        <span class="law" style="background:var(--navy);color:white;width:fit-content;">Ley 19.913</span>
+        <h3 style="font-size:.875rem;margin:.4rem 0 .3rem;">Lavado de activos</h3>
+        <p style="flex:1;font-size:.775rem;color:var(--gray);line-height:1.6;">Exige identificar <strong>beneficiarios finales</strong> y verificar que no estén en listas de sanciones (OFAC, ONU, UE).</p>
       </div>
-      <div class="card" style="display:flex;flex-direction:column;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
-        <div class="card-icon" style="font-size:2.25rem;margin-bottom:.875rem;">🔄</div>
-        <span class="law" style="background:var(--navy);color:white;">Ley 21.595</span>
-        <h3 style="font-size:1rem;margin:.5rem 0 .5rem;">Monitoreo continuo</h3>
-        <p style="flex:1;font-size:.85rem;line-height:1.7;">No basta con evaluar una vez: obliga a <strong>monitorear permanentemente</strong> a los proveedores activos. Si surge un problema y no se detectó, la empresa también responde.</p>
-        <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--blue-light);font-size:.75rem;color:var(--gray);line-height:1.6;">El monitoreo debe ser periódico y quedar documentado. Plutto automatiza esta tarea.</div>
+      <div class="card" style="display:flex;flex-direction:column;padding:1.25rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">🔄</div>
+        <span class="law" style="background:var(--navy);color:white;width:fit-content;">Ley 21.595</span>
+        <h3 style="font-size:.875rem;margin:.4rem 0 .3rem;">Monitoreo continuo</h3>
+        <p style="flex:1;font-size:.775rem;color:var(--gray);line-height:1.6;">No basta con evaluar una vez: obliga a <strong>monitorear permanentemente</strong>. Si surge un problema no detectado, la empresa también responde.</p>
       </div>
-      <div class="card" style="display:flex;flex-direction:column;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
-        <div class="card-icon" style="font-size:2.25rem;margin-bottom:.875rem;">⚙️</div>
-        <span class="law" style="background:var(--navy);color:white;">Ley 20.123</span>
-        <h3 style="font-size:1rem;margin:.5rem 0 .5rem;">Subcontratación</h3>
-        <p style="flex:1;font-size:.85rem;line-height:1.7;">En régimen de subcontratación, la empresa mandante es <strong>solidariamente responsable</strong> de las obligaciones laborales y previsionales del contratista frente a sus trabajadores.</p>
-        <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--blue-light);font-size:.75rem;color:var(--gray);line-height:1.6;">Aplica cuando el proveedor utiliza trabajadores propios en instalaciones o faenas de la empresa contratante.</div>
+      <div class="card" style="display:flex;flex-direction:column;padding:1.25rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⚙️</div>
+        <span class="law" style="background:var(--navy);color:white;width:fit-content;">Ley 20.123</span>
+        <h3 style="font-size:.875rem;margin:.4rem 0 .3rem;">Subcontratación</h3>
+        <p style="flex:1;font-size:.775rem;color:var(--gray);line-height:1.6;">La empresa mandante es <strong>solidariamente responsable</strong> de las obligaciones laborales del contratista frente a sus trabajadores.</p>
       </div>
     </div>
   </div>
