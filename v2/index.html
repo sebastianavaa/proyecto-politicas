@@ -88,8 +88,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 /* ÁREA: alertas | documentos en 2 columnas */
 .area-cols{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;}
-.area-cols .col-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;}
-@media (max-width:860px){ .area-cols{grid-template-columns:1fr;gap:1rem;} }
+.area-cols .col-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);
+  margin-bottom:.5rem;height:1.1rem;line-height:1.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* Tiras de pestañas en una sola línea (scroll horizontal) para que ambas columnas alineen */
+.area-cols .alert-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;}
+.area-cols .alert-tabs::-webkit-scrollbar{display:none;}
+@media (max-width:860px){ .area-cols{grid-template-columns:1fr;gap:1rem;} .area-cols .col-title{white-space:normal;height:auto;} }
 
 /* 6 PREGUNTAS DEL FILTRO (slide 4) */
 .q-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;}
@@ -823,12 +827,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
     <div class="area-cols">
       <div>
-        <div class="col-title">⚙️ Configuración de alertas — severidad y monitoreo</div>
-        <div id="abast-alerts"></div>
-      </div>
-      <div>
         <div class="col-title">Revisión de documentos por proceso</div>
         <div id="doc-review-abastecimiento"></div>
+      </div>
+      <div>
+        <div class="col-title">⚙️ Configuración de alertas — severidad y monitoreo</div>
+        <div id="abast-alerts"></div>
       </div>
     </div>
     <div class="divider"></div>
@@ -859,12 +863,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
     <div class="area-cols">
       <div>
-        <div class="col-title">Alertas — revisa la severidad</div>
-        <div id="alerts-cumplimiento"></div>
-      </div>
-      <div>
         <div class="col-title">Revisión de documentos por proceso</div>
         <div id="doc-review-cumplimiento"></div>
+      </div>
+      <div>
+        <div class="col-title">Alertas — revisa la severidad</div>
+        <div id="alerts-cumplimiento"></div>
       </div>
     </div>
     <div class="divider"></div>
@@ -895,12 +899,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
     <div class="area-cols">
       <div>
-        <div class="col-title">Alertas — revisa la severidad</div>
-        <div id="alerts-finanzas"></div>
-      </div>
-      <div>
         <div class="col-title">Revisión de documentos por proceso</div>
         <div id="doc-review-finanzas"></div>
+      </div>
+      <div>
+        <div class="col-title">Alertas — revisa la severidad</div>
+        <div id="alerts-finanzas"></div>
       </div>
     </div>
     <div class="divider"></div>
@@ -931,12 +935,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
     <div class="area-cols">
       <div>
-        <div class="col-title">Alertas — revisa la severidad</div>
-        <div id="alerts-legal"></div>
-      </div>
-      <div>
         <div class="col-title">Revisión de documentos por proceso</div>
         <div id="doc-review-legal"></div>
+      </div>
+      <div>
+        <div class="col-title">Alertas — revisa la severidad</div>
+        <div id="alerts-legal"></div>
       </div>
     </div>
     <div class="divider"></div>
