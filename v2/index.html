@@ -1522,33 +1522,16 @@ function renderAlertConsolidation() {
   const cont = document.getElementById('alert-consolidation');
   if (!cont) return;
   const groups = [...new Set(ALERTS.map(a => a.group))];
-  const activeAreas = AREAS.filter(a => isAreaRequired(a));
 
-  let conflicts = 0;
   const groupCards = groups.map(g => {
     const items = ALERTS.map((meta, i) => ({ meta, i }))
       .filter(({ meta, i }) => meta.group === g && isAlertActive(i));
     if (!items.length) return '';
     const rows = items.map(({ meta, i }) => {
-      const { sev, porArea, winners } = consolidatedAlert(i);
-      const distinct = new Set(Object.values(porArea));
-      const hasConflict = distinct.size > 1;
-      if (hasConflict) conflicts++;
-      const areaPills = activeAreas.map(a => {
-        const s = porArea[a];
-        if (!s) return '';
-        const isWinner = winners.includes(a) && hasConflict;
-        return `<span style="display:inline-flex;align-items:center;gap:.25rem;font-size:.66rem;color:var(--gray);">
-          <span style="font-weight:700;color:var(--navy);">${AREA_LABELS[a]}:</span> ${sevPill(s)}${isWinner?' <span style="color:var(--danger);font-weight:800;">←</span>':''}
-        </span>`;
-      }).join('');
-      return `<div style="display:flex;align-items:center;gap:.75rem;padding:.5rem 0;border-bottom:1px solid rgba(0,0,0,.05);flex-wrap:wrap;">
-        <span style="flex:1;min-width:180px;font-size:.8rem;color:var(--text);">${meta.label}</span>
-        <div style="display:flex;gap:.625rem;flex-wrap:wrap;align-items:center;">${areaPills}</div>
-        <div style="display:flex;align-items:center;gap:.375rem;flex-shrink:0;">
-          <span style="font-size:.62rem;color:var(--gray);font-weight:700;text-transform:uppercase;">Final</span>
-          ${sevPill(sev, true)}
-        </div>
+      const { sev } = consolidatedAlert(i);
+      return `<div style="display:flex;align-items:center;gap:.75rem;padding:.55rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
+        <span style="flex:1;font-size:.8rem;color:var(--text);">${meta.label}</span>
+        ${sevPill(sev, true)}
       </div>`;
     }).join('');
     return `<div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem 1.125rem;margin-bottom:.875rem;">
@@ -1560,9 +1543,7 @@ function renderAlertConsolidation() {
     </div>`;
   }).join('');
 
-  const banner = conflicts > 0
-    ? `<div class="warn-box" style="margin-bottom:.875rem;">⚖️ <strong>${conflicts} alerta${conflicts>1?'s':''} con criterios distintos entre áreas.</strong> En cada caso prevalece la severidad más alta (marcada con ←). Revisa que el resultado consolidado haga sentido antes de continuar.</div>`
-    : `<div class="warn-box" style="margin-bottom:.875rem;background:var(--success-bg);border-color:var(--success);color:#065F46;">✅ <strong>Sin conflictos:</strong> todas las áreas coinciden en la severidad de cada alerta.</div>`;
+  const banner = `<div class="warn-box" style="margin-bottom:.875rem;">⚖️ A partir del análisis de cada área, se determina la severidad final de cada alerta tomando la más alta. <strong>Esta es la severidad que regirá el monitoreo.</strong></div>`;
 
   cont.innerHTML = banner + (groupCards || '<div style="font-size:.85rem;color:var(--gray);text-align:center;padding:1rem;">No hay alertas activas configuradas.</div>');
 }
