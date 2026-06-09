@@ -1901,7 +1901,6 @@ function renderAreaDocReview(area) {
         <div style="display:flex;gap:.2rem;">
           <button onclick="setDocReview('${area}','${pk}',${d.idx},'ok')"  style="${btnBase}${s==='ok' ?okSel :off}" title="Confirmo">✓</button>
           <button onclick="setDocReview('${area}','${pk}',${d.idx},'obs')" style="${btnBase}${s==='obs'?obsSel:off}" title="Con observación">⚠</button>
-          <button onclick="setDocReview('${area}','${pk}',${d.idx},'no')"  style="${btnBase}${s==='no' ?noSel :off}" title="No aplica">✕</button>
         </div>
       </div>`;
     }).join('');
