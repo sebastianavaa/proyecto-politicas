@@ -753,10 +753,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div id="doc-review-abastecimiento"></div>
     <div class="divider"></div>
     <div class="decision-section">
-      <div class="resp-label" style="margin-top:.75rem;">Revisores de alertas graves</div>
-      <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Asigna quién revisa cada tipo de alerta grave. Un revisor puede cubrir múltiples categorías.</p>
-      <div id="alert-reviewers-abastecimiento"></div>
-      <button onclick="addAlertReviewer('abastecimiento')" style="display:flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.375rem .75rem;font-size:.775rem;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:.75rem;">+ Agregar revisor</button>
       <button class="btn-area-save-main" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')">Guardar sección de Abastecimiento</button>
       <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
       <span class="area-save-status" id="save-status-abastecimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
@@ -790,10 +786,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div id="doc-review-cumplimiento"></div>
     <div class="divider"></div>
     <div class="decision-section">
-      <div class="resp-label" style="margin-top:.75rem;">Revisores de alertas graves</div>
-      <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Asigna quién revisa cada tipo de alerta grave. Un revisor puede cubrir múltiples categorías.</p>
-      <div id="alert-reviewers-cumplimiento"></div>
-      <button onclick="addAlertReviewer('cumplimiento')" style="display:flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.375rem .75rem;font-size:.775rem;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:.75rem;">+ Agregar revisor</button>
       <button class="btn-area-save-main" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')">Guardar sección de Cumplimiento</button>
       <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
       <span class="area-save-status" id="save-status-cumplimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
@@ -827,10 +819,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div id="doc-review-finanzas"></div>
     <div class="divider"></div>
     <div class="decision-section">
-      <div class="resp-label" style="margin-top:.75rem;">Revisores de alertas graves</div>
-      <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Asigna quién revisa cada tipo de alerta grave. Un revisor puede cubrir múltiples categorías.</p>
-      <div id="alert-reviewers-finanzas"></div>
-      <button onclick="addAlertReviewer('finanzas')" style="display:flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.375rem .75rem;font-size:.775rem;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:.75rem;">+ Agregar revisor</button>
       <button class="btn-area-save-main" id="save-btn-finanzas" onclick="guardarArea('finanzas')">Guardar sección de Finanzas</button>
       <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
       <span class="area-save-status" id="save-status-finanzas" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
@@ -864,10 +852,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div id="doc-review-legal"></div>
     <div class="divider"></div>
     <div class="decision-section">
-      <div class="resp-label" style="margin-top:.75rem;">Revisores de alertas graves</div>
-      <p style="font-size:.72rem;color:var(--gray);margin:-.2rem 0 .5rem;line-height:1.4;">Asigna quién revisa cada tipo de alerta grave. Un revisor puede cubrir múltiples categorías.</p>
-      <div id="alert-reviewers-legal"></div>
-      <button onclick="addAlertReviewer('legal')" style="display:flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.375rem .75rem;font-size:.775rem;font-weight:700;color:var(--blue);cursor:pointer;margin-bottom:.75rem;">+ Agregar revisor</button>
       <button class="btn-area-save-main" id="save-btn-legal" onclick="guardarArea('legal')">Guardar sección de Legal</button>
       <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">✏️ Editar</button>
       <span class="area-save-status" id="save-status-legal" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
@@ -875,8 +859,19 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 9: SESIÓN SINCRONIZADA ── -->
+<!-- ── 9: FLUJOS DE TRABAJO — ¿QUIÉN REVISA QUÉ? ── -->
 <div class="slide slide-std" data-n="9">
+  <div class="s-head"><div class="s-tag">Flujos de trabajo</div>
+    <h2>¿Quién revisa qué?</h2>
+    <p>Cuando un proveedor gatilla una alerta <strong>grave</strong>, alguien debe revisarla y decidir. Asigna por tema quién es la persona o área responsable de esa revisión.</p>
+  </div>
+  <div class="s-body scrollable">
+    <div id="workflow-reviewers"></div>
+  </div>
+</div>
+
+<!-- ── 10: SESIÓN SINCRONIZADA ── -->
+<div class="slide slide-std" data-n="10">
   <div class="s-head"><div class="s-tag">Sesión sincronizada</div>
     <h2>Alineación final del equipo</h2>
     <p>Últimos cambios, decisiones finales y cierre de la política.</p>
@@ -898,8 +893,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 10: REPORTE FINAL ── -->
-<div class="slide slide-std" data-n="10">
+<!-- ── 11: REPORTE FINAL ── -->
+<div class="slide slide-std" data-n="11">
   <div class="s-head"><div class="s-tag">Reporte archivado</div>
     <h2>Resumen completo de la sesión</h2>
     <p>Vista consolidada de todo lo acordado. Este reporte fue enviado al equipo Plutto.</p>
@@ -934,13 +929,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <div id="nav">
   <button class="nav-btn" id="prevBtn" onclick="prev()" disabled>←</button>
-  <span id="counter">1 / 10</span>
+  <span id="counter">1 / 11</span>
   <button class="nav-btn" id="nextBtn" onclick="next()">→</button>
 </div>
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 10;
+const TOTAL = 11;
 let cur = 1;
 
 const AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];
@@ -1050,6 +1045,7 @@ const st = {
   },
   customProcesses: [],
   customCatalogDocs: [],
+  workflowReviewers: {},
   processDocConfig: {},
   sentAt:'',
   syncNotes:'',
@@ -1068,7 +1064,8 @@ function go(n, dir) {
   to.style.opacity = '0'; to.classList.add('active');
   requestAnimationFrame(() => requestAnimationFrame(() => { to.style.transform = ''; to.style.opacity = ''; }));
   cur = n;
-  if (n >= TOTAL - 1) buildReport(); // Slide 9 (sync) y 10 (reporte)
+  if (n === 9) renderWorkflowReviewers();        // Slide 9 (¿Quién revisa qué?)
+  if (n >= TOTAL - 1) buildReport();              // Slide 10 (sync) y 11 (reporte)
   updateNav(); save();
 }
 function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
@@ -1398,44 +1395,72 @@ function setAlertGroupComment(area, g, val){ if (!st.areas[area].alertGroupComme
 
 const GROUP_ICON = { 'Tributario':'🏛️', 'Financiero':'💰', 'Legal y Societario':'⚖️', 'Laboral':'👷', 'Cumplimiento':'🔎' };
 
-function renderAlertReviewers(area) {
-  const cont = document.getElementById('alert-reviewers-' + area);
+// ── FLUJOS DE TRABAJO: ¿quién revisa qué? (revisores genéricos por tema) ──
+// Las alertas graves se agrupan por tema. Para cada tema con al menos una alerta
+// grave activa, se asignan los responsables (persona/área) que la revisan.
+function graveAlertsByGroup() {
+  const abast = st.areas.abastecimiento.alerts || [];
+  const map = {};
+  ALERTS.forEach((meta, i) => {
+    const cfg = abast[i] || {};
+    if (cfg.activa && cfg.severidad === 'grave') {
+      (map[meta.group] = map[meta.group] || []).push(meta.label);
+    }
+  });
+  return map;
+}
+
+function renderWorkflowReviewers() {
+  const cont = document.getElementById('workflow-reviewers');
   if (!cont) return;
-  const reviewers = st.areas[area].alertReviewers || [];
-  const groups = [...new Set(ALERTS.map(a => a.group))];
-  const inp = 'padding:.4rem .625rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.8rem;font-family:var(--font);width:100%;box-sizing:border-box;background:white;';
-  cont.innerHTML = reviewers.map((r, i) => {
-    const active = Array.isArray(r.groups) ? r.groups : [];
-    const chips = groups.map(g => {
-      const on = active.includes(g);
-      return `<button onclick="toggleAlertReviewerGroup('${area}',${i},'${g}')" style="display:inline-flex;align-items:center;gap:.2rem;padding:.2rem .5rem;border-radius:2rem;border:1.5px solid ${on?'var(--blue)':'var(--gray-border)'};background:${on?'var(--blue-light)':'transparent'};color:${on?'var(--blue)':'var(--gray)'};font-size:.72rem;font-weight:${on?'700':'500'};cursor:pointer;white-space:nowrap;flex-shrink:0;">${GROUP_ICON[g]||''}<span class="chip-lbl"> ${g}</span></button>`;
-    }).join('');
-    return `<div style="display:flex;gap:.375rem;align-items:center;margin-bottom:.375rem;flex-wrap:nowrap;">
-      <input type="text" value="${r.name||''}" placeholder="Nombre completo" style="${inp}flex:1;min-width:0;" oninput="saveAlertReviewer('${area}',${i},'name',this.value)">
-      <input type="email" value="${r.email||''}" placeholder="email@empresa.com" style="${inp}flex:1;min-width:0;" oninput="saveAlertReviewer('${area}',${i},'email',this.value)">
-      <div style="display:flex;gap:.25rem;flex-shrink:0;">${chips}</div>
-      <button onclick="removeAlertReviewer('${area}',${i})" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:1.1rem;padding:.25rem .375rem;line-height:1;flex-shrink:0;">×</button>
+  if (!st.workflowReviewers) st.workflowReviewers = {};
+  const graveMap = graveAlertsByGroup();
+  const groups = Object.keys(graveMap);
+  const inp = 'padding:.45rem .7rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.825rem;font-family:var(--font);box-sizing:border-box;background:white;';
+
+  if (!groups.length) {
+    cont.innerHTML = `<div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.5rem;text-align:center;font-size:.85rem;color:var(--gray);line-height:1.6;">
+      No hay alertas configuradas como <strong>graves</strong> todavía.<br>Ajusta la severidad de las alertas en la sección de Abastecimiento para definir quién las revisa.</div>`;
+    return;
+  }
+
+  cont.innerHTML = groups.map(g => {
+    const reviewers = st.workflowReviewers[g] || [];
+    const alertChips = graveMap[g].map(l =>
+      `<span style="display:inline-block;background:#FEE2E2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.3rem;padding:.1rem .45rem;font-size:.7rem;font-weight:600;margin:.15rem .25rem .15rem 0;">${l}</span>`
+    ).join('');
+    const reviewerRows = reviewers.map((r, i) =>
+      `<div style="display:flex;gap:.4rem;align-items:center;margin-bottom:.4rem;flex-wrap:nowrap;">
+        <input type="text" value="${(r.name||'').replace(/"/g,'&quot;')}" placeholder="Nombre o área responsable" style="${inp}flex:1;min-width:0;" oninput="saveWorkflowReviewer('${g}',${i},'name',this.value)">
+        <input type="email" value="${(r.email||'').replace(/"/g,'&quot;')}" placeholder="email@empresa.com" style="${inp}flex:1;min-width:0;" oninput="saveWorkflowReviewer('${g}',${i},'email',this.value)">
+        <button onclick="removeWorkflowReviewer('${g}',${i})" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:1.2rem;padding:.25rem .4rem;line-height:1;flex-shrink:0;" title="Quitar revisor">×</button>
+      </div>`
+    ).join('');
+    return `<div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem 1.25rem;margin-bottom:.875rem;">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.625rem;">
+        <span style="font-size:1.25rem;">${GROUP_ICON[g]||''}</span>
+        <h3 style="font-size:.95rem;font-weight:800;color:var(--navy);margin:0;flex:1;">${g}</h3>
+        <span style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--danger);background:var(--danger-bg);border:1px solid #FCA5A5;border-radius:1rem;padding:.15rem .6rem;">${graveMap[g].length} alerta${graveMap[g].length>1?'s':''} grave${graveMap[g].length>1?'s':''}</span>
+      </div>
+      <div style="margin-bottom:.875rem;">${alertChips}</div>
+      <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin-bottom:.5rem;">Revisan estas alertas</div>
+      ${reviewerRows || '<div style="font-size:.78rem;color:var(--gray);font-style:italic;margin-bottom:.5rem;">Aún sin responsables asignados.</div>'}
+      <button onclick="addWorkflowReviewer('${g}')" style="display:inline-flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.4rem .8rem;font-size:.78rem;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--font);">+ Agregar responsable</button>
     </div>`;
   }).join('');
 }
-function addAlertReviewer(area) {
-  if (!st.areas[area].alertReviewers) st.areas[area].alertReviewers = [];
-  st.areas[area].alertReviewers.push({ name:'', email:'', groups:[] });
-  renderAlertReviewers(area); save();
+
+function addWorkflowReviewer(group) {
+  if (!st.workflowReviewers[group]) st.workflowReviewers[group] = [];
+  st.workflowReviewers[group].push({ name:'', email:'' });
+  renderWorkflowReviewers(); save();
 }
-function removeAlertReviewer(area, i) {
-  st.areas[area].alertReviewers.splice(i, 1);
-  renderAlertReviewers(area); save();
+function removeWorkflowReviewer(group, i) {
+  st.workflowReviewers[group]?.splice(i, 1);
+  renderWorkflowReviewers(); save();
 }
-function saveAlertReviewer(area, i, field, val) {
-  st.areas[area].alertReviewers[i][field] = val; save();
-}
-function toggleAlertReviewerGroup(area, i, group) {
-  const r = st.areas[area].alertReviewers[i];
-  if (!Array.isArray(r.groups)) r.groups = [];
-  const idx = r.groups.indexOf(group);
-  if (idx >= 0) r.groups.splice(idx, 1); else r.groups.push(group);
-  renderAlertReviewers(area); save();
+function saveWorkflowReviewer(group, i, field, val) {
+  if (st.workflowReviewers[group]?.[i]) { st.workflowReviewers[group][i][field] = val; save(); }
 }
 
 const _activeAlertTab = {};
@@ -2326,13 +2351,21 @@ function buildExportPayload() {
       })),
     },
 
-    // ── MÓDULO 4 — Responsables y revisores (Slides: cada área) ──
+    // ── MÓDULO 4 — Responsables por área ──
     modulo_4_responsables: {
-      slide: 'Encargado del área y revisores de alertas graves',
+      slide: 'Encargado del área',
       porArea: Object.fromEntries(activeAreas.map(a => [a, {
         encargado: { nombre: st.areas[a].responsible?.name || '', email: st.areas[a].responsible?.email || '' },
-        revisoresAlertasGraves: (st.areas[a].alertReviewers || []).map(r => ({ nombre:r.name||'', email:r.email||'', grupos:r.groups||[] })),
         guardado: !!st.areas[a].locked,
+      }])),
+    },
+
+    // ── MÓDULO 4b — Flujos de trabajo: ¿quién revisa qué? (revisores de alertas graves por tema) ──
+    modulo_4b_flujos_revision: {
+      slide: '¿Quién revisa qué? — Revisores de alertas graves por tema',
+      porTema: Object.fromEntries(Object.entries(graveAlertsByGroup()).map(([g, alertas]) => [g, {
+        alertasGraves: alertas,
+        revisores: (st.workflowReviewers?.[g] || []).map(r => ({ nombre:r.name||'', email:r.email||'' })),
       }])),
     },
 
@@ -2570,7 +2603,7 @@ function applyStateToUI() {
   AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
   AREAS.filter(a => a !== 'abastecimiento').forEach(a => renderCrossAreaSummary(a));
   AREAS.forEach(a => applyAreaSaveUI(a));
-  AREAS.forEach(a => renderAlertReviewers(a));
+  renderWorkflowReviewers();
   updateAreaTags();
   const syncNotesEl = document.getElementById('syncNotes');
   if (syncNotesEl) syncNotesEl.value = st.syncNotes || '';
