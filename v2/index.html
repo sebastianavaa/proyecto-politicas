@@ -1863,9 +1863,10 @@ function renderAreaDocReview(area) {
   const tabsHtml = `<div class="alert-tabs">${processes.map(proc => {
     const procReview = review[proc.processKey] || {};
     const allDocs = [...proc.docs.filter(d => d.req==='req'), ...proc.docs.filter(d => d.req==='opc')];
-    const reviewed = allDocs.filter(d => procReview[d.idx]).length;
-    const customCount = (st.areas[area].customDocs?.[proc.processKey]||[]).length;
-    const badge = allDocs.length ? `${reviewed}/${allDocs.length}` : (customCount ? customCount : '—');
+    const customList = (st.areas[area].customDocs?.[proc.processKey]||[]);
+    const total = allDocs.length + customList.length;
+    const reviewed = allDocs.filter(d => procReview[d.idx]).length + customList.filter(n => procReview['c:'+n]).length;
+    const badge = total ? `${reviewed}/${total}` : '—';
     return `<button class="alert-tab${proc.processKey===savedKey?' active':''}" onclick="switchDocTab('${area}','${proc.processKey}')">${proc.label}<span class="alert-tab-badge">${badge}</span></button>`;
   }).join('')}</div>`;
 
@@ -1876,6 +1877,7 @@ function renderAreaDocReview(area) {
     const noDocsMsg   = allDocs.length === 0
       ? `<div style="font-size:.75rem;color:var(--gray);padding:.25rem 0;font-style:italic;">Sin documentos configurados — agrégalos en la slide de configuración.</div>`
       : '';
+    const addTag = `<span style="font-size:.6rem;font-weight:700;background:#EFF6FF;color:var(--blue);border:1px solid #BFDBFE;border-radius:.2rem;padding:.05rem .3rem;flex-shrink:0;">Add</span>`;
     const rows = allDocs.map(d => {
       const s = procReview[d.idx] || null;
       return `<div style="display:flex;align-items:center;gap:.4rem;padding:.2rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
@@ -1889,11 +1891,20 @@ function renderAreaDocReview(area) {
       </div>`;
     }).join('');
     const customDocsList = (st.areas[area].customDocs?.[pk] || []);
-    const customDocTags  = customDocsList.map((d, ci) =>
-      `<span style="display:inline-flex;align-items:center;gap:.25rem;background:#EFF6FF;color:var(--blue);border:1px solid #BFDBFE;border-radius:1rem;padding:.15rem .5rem;font-size:.72rem;font-weight:600;">
-        ${d}<button onclick="removeAreaCustomDoc('${area}','${pk}',${ci})" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:.75rem;padding:0;line-height:1;">✕</button>
-      </span>`
-    ).join('');
+    const customRows = customDocsList.map((name, ci) => {
+      const rk = 'c:' + name;
+      const s  = procReview[rk] || null;
+      return `<div style="display:flex;align-items:center;gap:.4rem;padding:.2rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
+        ${addTag}
+        <span style="flex:1;font-size:.75rem;color:var(--text);">${name}</span>
+        <div style="display:flex;gap:.2rem;align-items:center;">
+          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','ok')"  style="${btnBase}${s==='ok' ?okSel :off}" title="Confirmo">✓</button>
+          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','obs')" style="${btnBase}${s==='obs'?obsSel:off}" title="Con observación">⚠</button>
+          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','no')"  style="${btnBase}${s==='no' ?noSel :off}" title="No aplica">✕</button>
+          <button onclick="removeAreaCustomDoc('${area}','${pk}',${ci})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .2rem;line-height:1;" title="Quitar de este proceso">×</button>
+        </div>
+      </div>`;
+    }).join('');
     const inProcess = new Set(allDocs.map(d => d.name));
     const proposed  = new Set(customDocsList);
     const optionsHtml = getAllCatalogDocs()
@@ -1908,7 +1919,7 @@ function renderAreaDocReview(area) {
         </span>`).join('')}
       </div>` : '';
     return `<div class="alert-tab-panel${pk===savedKey?' active':''}" data-group="${pk}">
-      ${noDocsMsg}${rows}
+      ${noDocsMsg}${rows}${customRows}
       <div style="margin-top:.5rem;">
         <select onchange="proposeDocFromSelect('${area}','${pk}',this)"
           style="width:100%;padding:.4rem .625rem;font-size:.75rem;border:1px solid var(--gray-border);border-radius:.375rem;font-family:var(--font);color:var(--text);background:var(--white);cursor:pointer;">
@@ -1916,7 +1927,6 @@ function renderAreaDocReview(area) {
           ${optionsHtml}
           <option value="__new__">✚ Crear documento nuevo…</option>
         </select>
-        ${customDocTags ? `<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.45rem;">${customDocTags}</div>` : ''}
         ${catalogMgmt}
       </div>
     </div>`;
@@ -2014,7 +2024,9 @@ function deleteCatalogDoc(catalogIdx) {
 }
 
 function removeAreaCustomDoc(area, processKey, idx) {
+  const name = st.areas[area].customDocs?.[processKey]?.[idx];
   st.areas[area].customDocs?.[processKey]?.splice(idx, 1);
+  if (name && st.areas[area].docReview?.[processKey]) delete st.areas[area].docReview[processKey]['c:' + name];
   renderAreaDocReview(area);
   save();
 }
@@ -2271,7 +2283,7 @@ function buildExportPayload() {
         return [a, {
           porProceso: procesos.filter(proc => isAreaAssigned(proc.key, a)).map(proc => ({
             proceso: proc.nombre,
-            documentos: Object.entries(review[proc.key] || {}).map(([idx,estado]) => ({ documento: DOCS[+idx]?.name || ('#'+idx), estado: ESTADO_DOC[estado] || estado })),
+            documentos: Object.entries(review[proc.key] || {}).map(([idx,estado]) => ({ documento: idx.startsWith('c:') ? idx.slice(2) : (DOCS[+idx]?.name || ('#'+idx)), estado: ESTADO_DOC[estado] || estado })),
             documentosAdicionales: customDocs[proc.key] || [],
             comentario: comments[proc.key] || '',
           })),
