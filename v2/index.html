@@ -1900,7 +1900,6 @@ function renderAreaDocReview(area) {
         <div style="display:flex;gap:.2rem;align-items:center;">
           <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','ok')"  style="${btnBase}${s==='ok' ?okSel :off}" title="Confirmo">✓</button>
           <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','obs')" style="${btnBase}${s==='obs'?obsSel:off}" title="Con observación">⚠</button>
-          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','no')"  style="${btnBase}${s==='no' ?noSel :off}" title="No aplica">✕</button>
           <button onclick="removeAreaCustomDoc('${area}','${pk}',${ci})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .2rem;line-height:1;" title="Quitar de este proceso">×</button>
         </div>
       </div>`;
