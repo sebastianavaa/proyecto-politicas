@@ -1007,6 +1007,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   <div class="s-body scrollable">
     <div id="workflow-reviewers"></div>
   </div>
+  <div class="area-save-footer">
+    <button class="btn-area-save-main" id="save-btn-reviewers" onclick="saveReviewersNow()" style="margin-top:0;">Guardar revisores</button>
+    <span id="save-status-reviewers" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
+  </div>
 </div>
 
 <!-- ── 12: REPORTE FINAL ── -->
@@ -1703,14 +1707,42 @@ function renderWorkflowReviewers() {
 function addWorkflowReviewer(group) {
   if (!st.workflowReviewers[group]) st.workflowReviewers[group] = [];
   st.workflowReviewers[group].push({ name:'', email:'' });
-  renderWorkflowReviewers(); save();
+  renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
 }
 function removeWorkflowReviewer(group, i) {
   st.workflowReviewers[group]?.splice(i, 1);
-  renderWorkflowReviewers(); save();
+  renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
 }
 function saveWorkflowReviewer(group, i, field, val) {
-  if (st.workflowReviewers[group]?.[i]) { st.workflowReviewers[group][i][field] = val; save(); }
+  if (st.workflowReviewers[group]?.[i]) { st.workflowReviewers[group][i][field] = val; save(); _resetReviewerSaveBtn(); }
+}
+function _resetReviewerSaveBtn() {
+  const btn = document.getElementById('save-btn-reviewers');
+  const status = document.getElementById('save-status-reviewers');
+  if (btn) { btn.textContent = 'Guardar revisores'; btn.disabled = false; btn.className = 'btn-area-save-main'; }
+  if (status) { status.textContent = ''; status.style.color = 'var(--gray)'; }
+}
+}
+function saveReviewersNow() {
+  clearTimeout(_remoteTimer);
+  _savePending = true;
+  _lastLocalChange = Date.now();
+  localStorage.setItem(st.sessionId ? 'dd_v2_' + st.sessionId : 'dd_v2', JSON.stringify(st));
+  const btn = document.getElementById('save-btn-reviewers');
+  const status = document.getElementById('save-status-reviewers');
+  if (btn) { btn.textContent = 'Guardando…'; btn.disabled = true; }
+  fetch(API_URL + '?s=' + encodeURIComponent(st.sessionId), {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(st)
+  }).then(() => {
+    _savePending = false;
+    if (btn) { btn.textContent = '✓ Revisores guardados'; btn.className = 'btn-area-save-main saved'; }
+    if (status) { status.textContent = 'Guardado a las ' + new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}); }
+  }).catch(() => {
+    _savePending = false;
+    if (btn) { btn.textContent = 'Guardar revisores'; btn.disabled = false; btn.className = 'btn-area-save-main'; }
+    if (status) { status.textContent = 'Error al guardar — reintenta'; status.style.color = 'var(--danger)'; }
+  });
 }
 
 const _activeAlertTab = {};
