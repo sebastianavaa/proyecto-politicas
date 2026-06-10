@@ -960,19 +960,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 10: CONSOLIDACIÓN DE ALERTAS (gana la severidad más alta) ── -->
-<div class="slide slide-std" data-n="10">
-  <div class="s-head"><div class="s-tag">Consolidación de severidades</div>
-    <h2>Severidad final de cada alerta</h2>
-    <p>Cada área ajustó la severidad desde su perspectiva. Aquí se consolidan: <strong>cuando hay desacuerdo, gana la severidad más alta</strong>. Esta es la severidad que regirá el monitoreo.</p>
-  </div>
-  <div class="s-body scrollable">
-    <div id="alert-consolidation"></div>
-  </div>
-</div>
-
 <!-- ── 11: FLUJOS DE TRABAJO — ¿QUIÉN REVISA QUÉ? ── -->
-<div class="slide slide-std" data-n="11">
+<div class="slide slide-std" data-n="10">
   <div class="s-head"><div class="s-tag">Flujos de trabajo</div>
     <h2>¿Quién revisa qué?</h2>
     <p>Cuando un proveedor gatilla una alerta <strong>grave</strong>, alguien debe revisarla y decidir. Asigna por tema quién es la persona o área responsable de esa revisión.</p>
@@ -983,7 +972,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 </div>
 
 <!-- ── 12: REPORTE FINAL ── -->
-<div class="slide slide-std" data-n="12">
+<div class="slide slide-std" data-n="11">
   <div class="s-head"><div class="s-tag">Política de compras</div>
     <h2 id="report-title">Política DD Proveedores</h2>
     <p id="report-subtitle">Configuración acordada y lista para operar.</p>
@@ -1019,7 +1008,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 12;
+const TOTAL = 11;
 let cur = 1;
 
 const AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];
@@ -1151,9 +1140,8 @@ function go(n, dir) {
   to.style.opacity = '0'; to.classList.add('active');
   requestAnimationFrame(() => requestAnimationFrame(() => { to.style.transform = ''; to.style.opacity = ''; }));
   cur = n;
-  if (n === 10) renderAlertConsolidation();       // Slide 10 (severidad final consolidada)
-  if (n === 11) renderWorkflowReviewers();        // Slide 11 (¿Quién revisa qué?)
-  if (n >= TOTAL) buildReport();                   // Slide 12 (reporte final)
+  if (n === 10) renderWorkflowReviewers();        // Slide 10 (¿Quién revisa qué?)
+  if (n >= TOTAL) buildReport();                   // Slide 11 (reporte final)
   updateNav(); save(); setTimeout(reIcons, 60);
 }
 function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
@@ -2899,7 +2887,6 @@ function applyStateToUI() {
   AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
   AREAS.filter(a => a !== 'abastecimiento').forEach(a => renderCrossAreaSummary(a));
   AREAS.forEach(a => applyAreaSaveUI(a));
-  renderAlertConsolidation();
   renderWorkflowReviewers();
   updateAreaTags();
   const syncNotesEl = document.getElementById('syncNotes');
