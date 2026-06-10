@@ -2308,6 +2308,11 @@ function saveCustomProcess(i) {
 function editCustomProcess(i) {
   st.customProcesses[i].saved = false;
   renderCustomProcesses(); save();
+  go(AREA_SLIDE.owner, -1);
+  setTimeout(() => {
+    const card = document.getElementById('cp-card-' + i);
+    if (card) card.scrollIntoView({ behavior:'smooth', block:'center' });
+  }, 200);
 }
 function removeCustomProcess(i) {
   st.customProcesses.splice(i, 1);
