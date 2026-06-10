@@ -495,6 +495,21 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 </style>
 </head>
 <body>
+<!-- MODAL: crear proceso personalizado -->
+<div id="new-process-modal" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(20,20,79,.45);backdrop-filter:blur(2px);align-items:center;justify-content:center;">
+  <div style="background:var(--white);border-radius:1rem;padding:1.5rem;width:90%;max-width:420px;box-shadow:0 12px 40px rgba(0,0,0,.3);">
+    <h3 style="font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:.375rem;">Crear proceso personalizado</h3>
+    <p style="font-size:.8rem;color:var(--gray);line-height:1.5;margin-bottom:.875rem;">Una vez creado podrás agregar documentos desde el tab del proceso en cada área.</p>
+    <input type="text" id="new-process-input" placeholder="Nombre del proceso *"
+      style="width:100%;padding:.625rem .875rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.875rem;font-family:var(--font);color:var(--text);outline:none;"
+      onkeydown="if(event.key==='Enter')confirmNewProcess();if(event.key==='Escape')closeNewProcessModal();">
+    <div id="new-process-error" style="display:none;font-size:.75rem;color:var(--danger);margin-top:.5rem;"></div>
+    <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.25rem;">
+      <button onclick="closeNewProcessModal()" style="background:transparent;border:1.5px solid var(--gray-border);color:var(--gray);padding:.5rem 1rem;border-radius:.5rem;font-size:.825rem;font-weight:700;cursor:pointer;font-family:var(--font);">Cancelar</button>
+      <button onclick="confirmNewProcess()" style="background:var(--blue);color:white;border:none;padding:.5rem 1.25rem;border-radius:.5rem;font-size:.825rem;font-weight:800;cursor:pointer;font-family:var(--font);">Crear proceso</button>
+    </div>
+  </div>
+</div>
 <!-- MODAL: crear documento nuevo -->
 <div id="new-doc-modal" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(20,20,79,.45);backdrop-filter:blur(2px);align-items:center;justify-content:center;">
   <div style="background:var(--white);border-radius:1rem;padding:1.5rem;width:90%;max-width:420px;box-shadow:0 12px 40px rgba(0,0,0,.3);">
@@ -673,14 +688,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       </div>
     </div>
     <div class="divider"></div>
-    <div class="req-areas-section">
-      <div class="req-areas-title">Procesos adicionales</div>
-      <p style="font-size:.75rem;color:var(--gray);margin:-.25rem 0 .75rem;line-height:1.5">Agrega procesos propios que no están en la lista — pueden ser por industria, tipo de contrato, o criterio interno.</p>
+    <div class="req-areas-section" id="custom-procs-section">
+      <div class="req-areas-title">Procesos personalizados</div>
       <div id="custom-processes-list"></div>
-      <button onclick="addCustomProcess()" style="width:100%;background:transparent;border:2px dashed var(--gray-border);border-radius:.875rem;padding:.875rem;font-size:.875rem;font-weight:700;color:var(--blue);cursor:pointer;transition:all .2s;margin-top:.25rem;">
-        + Agregar proceso personalizado
-      </button>
-      <div id="add-process-toast" style="display:none;margin-top:.75rem;padding:.625rem 1rem;background:var(--success-bg);border:1px solid var(--success);border-radius:.5rem;font-size:.8rem;color:var(--success);font-weight:600;">✅ Proceso agregado</div>
     </div>
     <div class="divider"></div>
     <div class="req-areas-section">
@@ -1943,7 +1953,7 @@ function renderCPDocRows(i) {
 function renderCustomProcesses() {
   const cont = document.getElementById('custom-processes-list'); if (!cont) return;
   if (!st.customProcesses.length) {
-    cont.innerHTML = '<div style="font-size:.8rem;color:var(--gray);text-align:center;padding:1.5rem 0;">Sin procesos personalizados aún.</div>';
+    cont.innerHTML = '<div style="font-size:.78rem;color:var(--gray);padding:.375rem 0;line-height:1.6;">Sin procesos personalizados — crea uno usando el <strong style="color:var(--navy);font-size:.85rem;">+</strong> en el tab de documentos de cualquier área.</div>';
     return;
   }
   cont.innerHTML = st.customProcesses.map((p, i) => {
@@ -2087,6 +2097,40 @@ function getAreaActiveDocs(area) {
 }
 
 const _activeDocTab = {};
+let _newProcessArea = null;
+
+function openNewProcessModal(area) {
+  _newProcessArea = area;
+  const input = document.getElementById('new-process-input');
+  const err   = document.getElementById('new-process-error');
+  input.value = '';
+  err.style.display = 'none';
+  document.getElementById('new-process-modal').style.display = 'flex';
+  setTimeout(() => input.focus(), 50);
+}
+function closeNewProcessModal() {
+  document.getElementById('new-process-modal').style.display = 'none';
+  _newProcessArea = null;
+}
+function confirmNewProcess() {
+  const name = document.getElementById('new-process-input').value.trim();
+  const err  = document.getElementById('new-process-error');
+  if (!name) {
+    err.textContent = 'El nombre es obligatorio.'; err.style.display = 'block';
+    document.getElementById('new-process-input').focus(); return;
+  }
+  if (st.customProcesses.some(p => p.name.trim().toLowerCase() === name.toLowerCase())) {
+    err.textContent = 'Ya existe un proceso con ese nombre.'; err.style.display = 'block'; return;
+  }
+  st.customProcesses.push({ name, description:'', docs:[], docConfig:{}, saved:true, active:true });
+  const newIdx  = st.customProcesses.length - 1;
+  const area    = _newProcessArea;
+  closeNewProcessModal();
+  AREAS.forEach(a => renderAreaDocReview(a));
+  renderCustomProcesses();
+  save();
+  if (area) { _activeDocTab[area] = 'cp_' + newIdx; renderAreaDocReview(area); }
+}
 
 function renderAreaDocReview(area) {
   const cont = document.getElementById('doc-review-'+area); if (!cont) return;
@@ -2113,7 +2157,7 @@ function renderAreaDocReview(area) {
     const total = allDocs.length + customList.length;
     const badge = total || '—';
     return `<button class="alert-tab${proc.processKey===savedKey?' active':''}" onclick="switchDocTab('${area}','${proc.processKey}')">${proc.label}<span class="alert-tab-badge">${badge}</span></button>`;
-  }).join('')}</div>`;
+  }).join('')}<button class="alert-tab" onclick="openNewProcessModal('${area}')" title="Crear proceso personalizado" style="padding:.25rem .6rem;font-weight:900;font-size:1rem;line-height:1;flex-shrink:0;">+</button></div>`;
 
   const panelsHtml = processes.map(proc => {
     const pk          = proc.processKey;
