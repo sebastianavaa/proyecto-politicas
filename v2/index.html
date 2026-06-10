@@ -1589,7 +1589,7 @@ const GROUP_ICON = { 'Tributario':'landmark', 'Financiero':'banknote', 'Legal y 
 const SEV_RANK = { leve:0, media:1, grave:2 };
 
 function isAlertActive(i) {
-  return !!(st.areas.abastecimiento.locked && st.areas.abastecimiento.alerts?.[i]?.activa);
+  return AREAS.some(a => isAreaRequired(a) && st.areas[a].locked && st.areas[a].alerts?.[i]?.activa);
 }
 
 // Devuelve { sev, porArea: {area: sev}, winners: [areas con la sev ganadora] }
@@ -1676,7 +1676,7 @@ function renderWorkflowReviewers() {
 
   if (!groups.length) {
     cont.innerHTML = `<div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.5rem;text-align:center;font-size:.85rem;color:var(--gray);line-height:1.6;">
-      No hay alertas configuradas como <strong>graves</strong> todavía.<br>Ajusta la severidad de las alertas en la sección de Abastecimiento para definir quién las revisa.</div>`;
+      No hay alertas configuradas como <strong>graves</strong> todavía.<br>Ajusta la severidad de las alertas en cada área y guárdalas para definir quién las revisa.</div>`;
     return;
   }
 
