@@ -1690,8 +1690,9 @@ function buildAlertTabsHTML(containerId, area, placeholder) {
   const tabsHtml = `<div class="alert-tabs">${groups.map(g => {
     const activeCount = ALERTS.filter((meta,i) => meta.group === g && aAlerts[i].activa).length;
     const total = ALERTS.filter(meta => meta.group === g).length;
-    const icon = ALERTS.find(a => a.group === g)?.icon || '';
-    return `<button class="alert-tab${g===savedGroup?' active':''}" onclick="switchAlertTab('${containerId}','${g}')">${icon} ${g}<span class="alert-tab-badge">${activeCount}/${total}</span></button>`;
+    const iconName = GROUP_ICON[g] || '';
+    const iconHtml = iconName ? `<i data-lucide="${iconName}" style="width:.75rem;height:.75rem;margin-right:.2rem;vertical-align:middle;flex-shrink:0;"></i>` : '';
+    return `<button class="alert-tab${g===savedGroup?' active':''}" onclick="switchAlertTab('${containerId}','${g}')">${iconHtml}${g}<span class="alert-tab-badge">${activeCount}/${total}</span></button>`;
   }).join('')}</div>`;
   const panelsHtml = groups.map(g => {
     const rows = ALERTS.map((meta,i) => ({meta,i})).filter(({meta}) => meta.group === g).map(({meta,i}) => {
@@ -1726,11 +1727,13 @@ function switchAlertTab(containerId, group) {
 function renderAbastAlerts() {
   const cont = document.getElementById('abast-alerts'); if (!cont) return;
   cont.innerHTML = buildAlertTabsHTML('abast-alerts', 'abastecimiento', 'Comentario sobre esta alerta (opcional)…');
+  reIcons();
 }
 
 function renderReviewAlerts(area) {
   const cont = document.getElementById('alerts-'+area); if (!cont) return;
   cont.innerHTML = buildAlertTabsHTML('alerts-'+area, area, 'Comentario del área…');
+  reIcons();
 }
 
 function renderAbastRecap() {
@@ -1811,9 +1814,10 @@ function renderCrossAreaSummary(area) {
       const gActive = gAlerts.filter(({i}) => aAlerts[i].activa).length;
       const gTotal = gAlerts.length;
       const pct = gTotal ? Math.round(gActive/gTotal*100) : 0;
-      const icon = ALERTS.find(x => x.group === g)?.icon || '';
+      const iconName2 = GROUP_ICON[g] || '';
+      const iconHtml2 = iconName2 ? `<i data-lucide="${iconName2}" style="width:.65rem;height:.65rem;margin-right:.2rem;vertical-align:middle;flex-shrink:0;"></i>` : '';
       return `<div class="cross-area-group-row">
-        <span class="cross-area-group-label">${icon} ${g}</span>
+        <span class="cross-area-group-label">${iconHtml2}${g}</span>
         <div class="cross-area-group-bar"><div class="cross-area-group-fill" style="width:${pct}%"></div></div>
         <span class="cross-area-group-count">${gActive}/${gTotal}</span>
       </div>`;
@@ -2218,6 +2222,7 @@ function renderAreaDocReview(area) {
   }).join('');
 
   cont.innerHTML = tabsHtml + panelsHtml;
+  reIcons();
 }
 
 function switchDocTab(area, processKey) {
@@ -2367,9 +2372,10 @@ function renderAllAreasSummary(containerId) {
       const gActive = gAlerts.filter(({ i }) => aAlerts[i].activa).length;
       const gTotal = gAlerts.length;
       const pct = gTotal ? Math.round(gActive / gTotal * 100) : 0;
-      const icon = ALERTS.find(x => x.group === g)?.icon || '';
+      const iconName2 = GROUP_ICON[g] || '';
+      const iconHtml2 = iconName2 ? `<i data-lucide="${iconName2}" style="width:.65rem;height:.65rem;margin-right:.2rem;vertical-align:middle;flex-shrink:0;"></i>` : '';
       return `<div class="cross-area-group-row">
-        <span class="cross-area-group-label">${icon} ${g}</span>
+        <span class="cross-area-group-label">${iconHtml2}${g}</span>
         <div class="cross-area-group-bar"><div class="cross-area-group-fill" style="width:${pct}%"></div></div>
         <span class="cross-area-group-count">${gActive}/${gTotal}</span>
       </div>`;
