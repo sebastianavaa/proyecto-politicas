@@ -3119,6 +3119,8 @@ function mergeState(d) {
       if (Array.isArray(d.areas[a].alerts)) st.areas[a].alerts = normalizeAlerts(d.areas[a].alerts);
     }
   });
+  if (d.workflowReviewers) st.workflowReviewers = d.workflowReviewers;
+  if (typeof d.reviewersLocked === 'boolean') st.reviewersLocked = d.reviewersLocked;
   // Migración: si había alerts globales, copiarlos a todas las áreas
   if (Array.isArray(d.alerts)) {
     const normalized = normalizeAlerts(d.alerts);
