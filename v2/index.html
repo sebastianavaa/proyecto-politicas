@@ -2302,12 +2302,14 @@ function renderAreaDocReview(area) {
     const customRows = customDocsList.map((name, ci) => {
       const rk = 'c:' + name;
       const s  = procReview[rk] || null;
+      const reqSel2 = 'background:#DCFCE7;color:#166534;border-color:#86EFAC;';
+      const opcSel2 = 'background:#FFFBEB;color:#D97706;border-color:#FCD34D;';
       return `<div style="display:flex;align-items:center;gap:.4rem;padding:.2rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
         ${addTag}
         <span style="flex:1;font-size:.75rem;color:var(--text);">${name}</span>
         <div style="display:flex;gap:.2rem;align-items:center;">
-          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','ok')"  style="${btnBase}${s==='ok' ?okSel :off}" title="Marcar como OK">OK</button>
-          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','obs')" style="${btnBase}${s==='obs'?obsSel:off}" title="Marcar con observación">Obs.</button>
+          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','req')" style="${btnBase}${s==='req'?reqSel2:off}">Req</button>
+          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','opc')" style="${btnBase}${s==='opc'?opcSel2:off}">Opc</button>
           <button onclick="removeAreaCustomDoc('${area}','${pk}',${ci})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .2rem;line-height:1;" title="Quitar de este proceso">×</button>
         </div>
       </div>`;
