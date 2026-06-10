@@ -3365,8 +3365,12 @@ function showTip(el) {
   tip.style.top = top + 'px';
   tip.style.left = left + 'px';
 }
-function hideTip() { const t = document.getElementById('_gtip'); if (t) t.style.display = 'none'; }
+let _hideTipTimer = null;
+function hideTip() {
+  _hideTipTimer = setTimeout(() => { const t = document.getElementById('_gtip'); if (t) t.style.display = 'none'; }, 120);
+}
+function cancelHideTip() { clearTimeout(_hideTipTimer); }
 </script>
-<div id="_gtip" onmouseleave="hideTip()"></div>
+<div id="_gtip" onmouseenter="cancelHideTip()" onmouseleave="hideTip()"></div>
 </body>
 </html>
