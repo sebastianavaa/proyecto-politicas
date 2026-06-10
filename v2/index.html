@@ -122,6 +122,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .td-danger{color:var(--danger);font-weight:600;}
 
 /* EVAL TYPE CARDS */
+.tpl-btn{font-size:.75rem;font-weight:700;padding:.3rem .7rem;border-radius:.4rem;border:1.5px solid var(--gray-border);background:transparent;color:var(--gray);cursor:pointer;font-family:var(--font);transition:background .1s,color .1s,border-color .1s;}
+.tpl-btn.on{background:var(--accent);color:white;border-color:var(--accent);}
 .eval-cards{display:flex;flex-direction:column;gap:.5rem;}
 .eval-card{background:var(--white);border:2px solid var(--gray-border);border-radius:.875rem;
   padding:.9rem 1.125rem;display:flex;align-items:flex-start;gap:.875rem;transition:all .2s;cursor:pointer;}
@@ -533,8 +535,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div style="margin-bottom:1rem;">
       <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--navy);margin-bottom:.5rem;">Partir desde una plantilla</div>
       <div style="display:flex;flex-wrap:wrap;gap:.375rem;margin-bottom:.5rem;">
-        <button id="tpl-btn-none" onclick="selectProcessTemplate(null)"
-          style="font-size:.75rem;font-weight:700;padding:.3rem .7rem;border-radius:.4rem;border:1.5px solid var(--accent);background:var(--accent);color:white;cursor:pointer;font-family:var(--font);transition:all .15s;">Desde cero</button>
+        <button id="tpl-btn-none" class="tpl-btn on" data-tpl-id="none" onclick="selectProcessTemplate(null)">Desde cero</button>
       </div>
       <div id="tpl-desc" style="font-size:.75rem;color:var(--gray);min-height:1.1rem;"></div>
     </div>
@@ -2372,14 +2373,8 @@ let _selectedTemplate = null;
 function selectProcessTemplate(id) {
   _selectedTemplate = id;
   const tpl = id ? PROCESS_TEMPLATES.find(t => t.id === id) : null;
-  // Actualizar estilos de chips
-  const noneBtn = document.getElementById('tpl-btn-none');
-  const activeStyle = 'background:var(--accent);color:white;border-color:var(--accent);';
-  const inactiveStyle = 'background:transparent;color:var(--gray);border-color:var(--gray-border);';
-  if (noneBtn) noneBtn.style.cssText = noneBtn.style.cssText.replace(/background:[^;]+;color:[^;]+;border-color:[^;]+;/, id === null ? activeStyle : inactiveStyle);
-  PROCESS_TEMPLATES.forEach(t => {
-    const btn = document.getElementById('tpl-btn-' + t.id);
-    if (btn) btn.style.cssText = btn.style.cssText.replace(/background:[^;]+;color:[^;]+;border-color:[^;]+;/, id === t.id ? activeStyle : inactiveStyle);
+  document.querySelectorAll('#new-process-modal .tpl-btn').forEach(btn => {
+    btn.classList.toggle('on', btn.dataset.tplId === (id ?? 'none'));
   });
   const descEl = document.getElementById('tpl-desc');
   if (descEl) descEl.textContent = tpl ? tpl.desc : '';
@@ -2398,12 +2393,10 @@ function openNewProcessModal(area) {
   const chipsContainer = document.querySelector('#new-process-modal [style*="flex-wrap:wrap"]');
   if (chipsContainer) {
     const tplChips = PROCESS_TEMPLATES.map(t =>
-      `<button id="tpl-btn-${t.id}" onclick="selectProcessTemplate('${t.id}')"
-        style="font-size:.75rem;font-weight:700;padding:.3rem .7rem;border-radius:.4rem;border:1.5px solid var(--gray-border);background:transparent;color:var(--gray);cursor:pointer;font-family:var(--font);transition:all .15s;">${t.name}</button>`
+      `<button id="tpl-btn-${t.id}" class="tpl-btn" data-tpl-id="${t.id}" onclick="selectProcessTemplate('${t.id}')">${t.name}</button>`
     ).join('');
     chipsContainer.innerHTML =
-      `<button id="tpl-btn-none" onclick="selectProcessTemplate(null)"
-        style="font-size:.75rem;font-weight:700;padding:.3rem .7rem;border-radius:.4rem;border:1.5px solid var(--accent);background:var(--accent);color:white;cursor:pointer;font-family:var(--font);transition:all .15s;">Desde cero</button>` + tplChips;
+      `<button id="tpl-btn-none" class="tpl-btn on" data-tpl-id="none" onclick="selectProcessTemplate(null)">Desde cero</button>` + tplChips;
   }
   document.getElementById('tpl-desc').textContent = '';
   document.getElementById('new-process-modal').style.display = 'flex';
