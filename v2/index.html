@@ -2457,7 +2457,7 @@ function renderAreaDocReview(area) {
     const cpIdx = proc.processKey.startsWith('cp_') ? proc.processKey.slice(3) : null;
     const removeX = cpIdx !== null ? `<span onclick="event.stopPropagation();removeCustomProcess(${cpIdx})" title="Eliminar proceso" style="margin-left:.25rem;opacity:.6;font-size:.75rem;line-height:1;cursor:pointer;">×</span>` : '';
     const tipHtml = proc.desc ? `<span class="alert-tip" data-tip="${proc.desc.replace(/"/g,'&quot;')}" onclick="event.stopPropagation()" onmouseenter="showTip(this)" onmouseleave="hideTip()"><i data-lucide="info"></i></span>` : '';
-    return `<button class="alert-tab${proc.processKey===savedKey?' active':''}" onclick="switchDocTab('${area}','${proc.processKey}')">${proc.label}${tipHtml}<span class="alert-tab-badge">${badge}</span>${removeX}</button>`;
+    return `<button class="alert-tab${proc.processKey===savedKey?' active':''}" onclick="switchDocTab('${area}','${proc.processKey}')">${proc.label}${tipHtml}${removeX}</button>`;
   }).join('')}<button class="alert-tab" onclick="openNewProcessModal('${area}')" title="Crear proceso personalizado" style="padding:.25rem .6rem;font-weight:900;font-size:1rem;line-height:1;flex-shrink:0;">+</button></div>`;
 
   const panelsHtml = processes.map(proc => {
