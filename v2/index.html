@@ -984,33 +984,28 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <!-- ── 12: REPORTE FINAL ── -->
 <div class="slide slide-std" data-n="12">
-  <div class="s-head"><div class="s-tag">Reporte archivado</div>
-    <h2>Resumen completo de la sesión</h2>
-    <p>Vista consolidada de todo lo acordado. Este reporte fue enviado al equipo Plutto.</p>
+  <div class="s-head"><div class="s-tag">Política de compras</div>
+    <h2 id="report-title">Política DD Proveedores</h2>
+    <p id="report-subtitle">Configuración acordada y lista para operar.</p>
   </div>
   <div class="s-body scrollable">
-    <div class="cross-area-summary" style="margin-bottom:.75rem;">
-      <div class="cross-area-summary-title">Estado por área</div>
-      <div class="cross-area-cards" id="reportAllAreaCards"></div>
+    <!-- Fila superior: empresa + procesos + áreas -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+      <div id="report-procesos" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem 1rem;"></div>
+      <div id="report-areas" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem 1rem;"></div>
     </div>
-    <div class="divider"></div>
-    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Configuración acordada</div>
-    <div id="reportConfig" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem;font-size:.8rem;color:var(--gray);line-height:1.9;margin-bottom:1rem;"></div>
-    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Alertas activas por área</div>
-    <div id="reportCompactAlerts" style="margin-bottom:1rem;"></div>
-    <div style="background:var(--gray-light);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
-      <span style="font-size:.8rem;color:var(--gray);flex:1;"><strong style="color:var(--navy)">Link de esta sesión</strong> — compártelo con las áreas que faltan</span>
-      <button class="btn-copy" id="btn-copy-report" onclick="copySessionLink('btn-copy-report')">Copiar link</button>
-    </div>
-    <div id="validation-warning" class="validation-warning" style="display:none;"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-      <div>
-        <div style="font-size:.875rem;font-weight:700;color:var(--navy);">¿Todo listo?</div>
-        <div style="font-size:.8rem;color:var(--gray);">Se enviará el reporte completo al equipo Plutto.</div>
-      </div>
+    <!-- Alertas consolidadas -->
+    <div id="report-alertas" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem 1rem;margin-bottom:.75rem;"></div>
+    <!-- Revisores -->
+    <div id="report-revisores" style="background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem 1rem;margin-bottom:.75rem;"></div>
+    <!-- Enviar -->
+    <div id="validation-warning" class="validation-warning" style="display:none;margin-bottom:.5rem;"></div>
+    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
+      <button class="btn-copy" id="btn-copy-report" onclick="copySessionLink('btn-copy-report')" style="flex-shrink:0;">Copiar link</button>
+      <div style="flex:1;min-width:0;font-size:.75rem;color:var(--gray);">Comparte el link con áreas que faltan</div>
       <button class="btn-send" id="sendBtn" onclick="enviar()"><i data-lucide="send" style="width:.9rem;height:.9rem;margin-right:.4rem;vertical-align:middle;"></i>Enviar reporte</button>
     </div>
-    <div id="send-toast" style="display:none;margin-top:.75rem;padding:.625rem 1rem;background:var(--success-bg);border:1px solid var(--success);border-radius:.5rem;font-size:.8rem;color:var(--success);font-weight:600;">✅ Reporte enviado correctamente</div>
+    <div id="send-toast" style="display:none;margin-top:.625rem;padding:.5rem .875rem;background:var(--success-bg);border:1px solid var(--success);border-radius:.5rem;font-size:.8rem;color:var(--success);font-weight:600;">✓ Reporte enviado correctamente</div>
   </div>
 </div>
 
@@ -2466,27 +2461,85 @@ function renderSyncAreaComments() {
 
 // ── REPORT ──
 function buildReport() {
-  // Slide 12: Sesión sincronizada
-  const syncNotesEl = document.getElementById('syncNotes');
-  if (syncNotesEl) syncNotesEl.value = st.syncNotes || '';
-  renderSyncAreaComments();
-  renderAllAreasSummary('syncAllAreaCards');
-  renderCompactAreaAlerts('syncCompactAlerts');
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  const activeAreas = AREAS.filter(a => isAreaRequired(a));
+  const activeTypes = Object.entries(st.evalTypes).filter(([,v])=>v).map(([k])=>TYPE_LABEL[k]);
+  const customProcs = (st.customProcesses||[]).filter(p=>p.saved&&p.active!==false).map(p=>p.name);
+  const allProcs = [...activeTypes, ...customProcs];
 
-  // Slide 13: Reporte final (archivado)
-  const cfg = document.getElementById('reportConfig');
-  if (cfg) {
-    const types = Object.entries(st.evalTypes).filter(([,v])=>v).map(([k])=>({
-      express:'Proveedor Spot',completa:'Proveedor General',reforzada:'Proveedor Crítico',internacional:'Proveedor Internacional',subcontratacion:'Subcontratación'
-    }[k])).join(', ');
-    cfg.innerHTML = `<strong style="color:var(--navy)">Empresa:</strong> ${st.client||'—'}<br>
-      <strong style="color:var(--navy)">Email:</strong> ${st.email||'—'}<br>
-      <strong style="color:var(--navy)">Evaluaciones activas:</strong> ${types||'Ninguna'}<br>
-      <strong style="color:var(--navy)">Áreas configuradas:</strong> ${AREAS.filter(a=>isAreaRequired(a)&&st.areas[a].locked).length} de ${AREAS.filter(a=>isAreaRequired(a)).length}`;
+  // Header
+  const titleEl = document.getElementById('report-title');
+  if (titleEl && st.client) titleEl.textContent = `Política DD — ${st.client}`;
+  const subEl = document.getElementById('report-subtitle');
+  if (subEl) subEl.textContent = `${st.email||''}${st.email?' · ':''}Configuración acordada y lista para operar.`;
+
+  // Procesos activos
+  const procEl = document.getElementById('report-procesos');
+  if (procEl) {
+    const chips = allProcs.map(p=>`<span style="display:inline-block;background:var(--blue-light);color:var(--blue);border-radius:.375rem;padding:.15rem .55rem;font-size:.72rem;font-weight:700;margin:.15rem .25rem .15rem 0;">${p}</span>`).join('');
+    procEl.innerHTML = `<div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Procesos de evaluación</div>${chips||'<span style="font-size:.75rem;color:var(--gray)">Ninguno activo</span>'}`;
   }
 
-  renderAllAreasSummary('reportAllAreaCards');
-  renderCompactAreaAlerts('reportCompactAlerts');
+  // Áreas + encargados
+  const areasEl = document.getElementById('report-areas');
+  if (areasEl) {
+    const rows = activeAreas.map(a => {
+      const r = st.areas[a].responsible;
+      const done = st.areas[a].locked;
+      const badge = done
+        ? `<span style="font-size:.6rem;font-weight:700;background:var(--success-bg);color:var(--success);border-radius:1rem;padding:.1rem .45rem;">✓</span>`
+        : `<span style="font-size:.6rem;font-weight:700;background:var(--gray-light);color:var(--gray);border-radius:1rem;padding:.1rem .45rem;">Pendiente</span>`;
+      return `<div style="display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid var(--gray-border);font-size:.78rem;">
+        <span style="font-weight:700;color:var(--navy);flex:1;">${AREA_LABELS[a]}</span>
+        <span style="color:var(--gray);font-size:.72rem;">${r?.name||'—'}</span>
+        ${badge}
+      </div>`;
+    }).join('');
+    areasEl.innerHTML = `<div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Áreas y encargados</div>${rows}`;
+  }
+
+  // Alertas consolidadas por grupo
+  const alertasEl = document.getElementById('report-alertas');
+  if (alertasEl) {
+    const SEV_STYLE = { leve:'background:#F0FDF4;color:#16A34A;', media:'background:#FFFBEB;color:#D97706;', grave:'background:#FEF2F2;color:#DC2626;' };
+    const groups = [...new Set(ALERTS.map(a=>a.group))];
+    const cols = groups.map(g => {
+      const active = ALERTS.map((m,i)=>({m,i})).filter(({m,i})=>m.group===g&&isAlertActive(i));
+      if (!active.length) return '';
+      const pills = active.map(({m,i})=>{
+        const {sev} = consolidatedAlert(i);
+        return `<span style="display:inline-block;${SEV_STYLE[sev]}border-radius:.25rem;padding:.05rem .4rem;font-size:.63rem;font-weight:600;margin:.1rem .2rem .1rem 0;white-space:nowrap;">${m.label}</span>`;
+      }).join('');
+      const iconName = GROUP_ICON[g]||'';
+      const iconHtml = iconName?`<i data-lucide="${iconName}" style="width:.75rem;height:.75rem;margin-right:.3rem;vertical-align:middle;"></i>`:'';
+      return `<div style="margin-bottom:.375rem;">
+        <div style="font-size:.68rem;font-weight:700;color:var(--navy);margin-bottom:.2rem;display:flex;align-items:center;">${iconHtml}${g}</div>
+        <div style="line-height:1.6;">${pills}</div>
+      </div>`;
+    }).filter(Boolean).join('');
+    alertasEl.innerHTML = `<div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Alertas que se monitorearán <span style="font-weight:400;color:var(--gray);text-transform:none;letter-spacing:0;">(severidad consolidada)</span></div>${cols||'<span style="font-size:.75rem;color:var(--gray)">Sin alertas activas</span>'}`;
+    reIcons();
+  }
+
+  // Revisores de alertas graves
+  const revisEl = document.getElementById('report-revisores');
+  if (revisEl) {
+    const graveMap = graveAlertsByGroup();
+    const rows = Object.entries(graveMap).map(([g, alerts]) => {
+      const reviewers = (st.workflowReviewers?.[g]||[]).filter(r=>r.name||r.email);
+      const reviewerText = reviewers.length ? reviewers.map(r=>`<strong>${r.name||r.email}</strong>`).join(', ') : '<span style="color:var(--gray);font-style:italic;">Sin asignar</span>';
+      const iconName = GROUP_ICON[g]||'';
+      const iconHtml = iconName?`<i data-lucide="${iconName}" style="width:.7rem;height:.7rem;margin-right:.3rem;vertical-align:middle;"></i>`:'';
+      return `<div style="display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid var(--gray-border);font-size:.78rem;">
+        <span style="display:flex;align-items:center;font-weight:700;color:var(--navy);min-width:9rem;">${iconHtml}${g}</span>
+        <span style="flex:1;font-size:.75rem;">${reviewerText}</span>
+      </div>`;
+    }).join('');
+    revisEl.innerHTML = rows
+      ? `<div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;">Revisores de alertas graves</div>${rows}`
+      : `<div style="font-size:.75rem;color:var(--gray);">Sin alertas graves configuradas.</div>`;
+    reIcons();
+  }
 
   // Validar encargados de áreas requeridas
   const allRequired = AREAS.filter(a => isAreaRequired(a));
