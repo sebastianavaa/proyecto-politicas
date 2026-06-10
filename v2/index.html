@@ -1682,9 +1682,13 @@ function renderWorkflowReviewers() {
 
   const rows = groups.map((g, gi) => {
     const reviewers = st.workflowReviewers[g] || [];
+    const hasReviewer = reviewers.some(r => r.name || r.email);
     const alertChips = graveMap[g].map(l =>
       `<span style="background:#FEE2E2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .35rem;font-size:.63rem;font-weight:600;white-space:nowrap;">${l}</span>`
     ).join('');
+    const reqBadge = !hasReviewer
+      ? `<span style="font-size:.6rem;font-weight:700;background:#FEF2F2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .35rem;flex-shrink:0;">Requerido</span>`
+      : '';
     const reviewerInputs = reviewers.map((r, i) =>
       `<div style="display:flex;gap:.3rem;align-items:center;margin-top:.25rem;">
         <input type="text" value="${(r.name||'').replace(/"/g,'&quot;')}" placeholder="Nombre o área" style="${inp}flex:1;min-width:0;padding:.3rem .55rem;font-size:.75rem;" oninput="saveWorkflowReviewer('${g}',${i},'name',this.value)">
@@ -1697,6 +1701,7 @@ function renderWorkflowReviewers() {
       <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
         <i data-lucide="${GROUP_ICON[g]||''}" style="width:.85rem;height:.85rem;stroke-width:2;flex-shrink:0;color:var(--navy);"></i>
         <span style="font-size:.82rem;font-weight:800;color:var(--navy);min-width:9rem;">${g}</span>
+        ${reqBadge}
         <div style="display:flex;flex-wrap:wrap;gap:.25rem;flex:1;">${alertChips}</div>
         <button onclick="addWorkflowReviewer('${g}')" style="background:transparent;border:1.5px dashed var(--gray-border);border-radius:.375rem;padding:.2rem .55rem;font-size:.7rem;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--font);flex-shrink:0;white-space:nowrap;">+ Revisor</button>
       </div>
@@ -1754,6 +1759,13 @@ function editReviewers() {
   applyReviewersSaveUI();
 }
 function saveReviewersNow() {
+  const graveMap = graveAlertsByGroup();
+  const missing = Object.keys(graveMap).filter(g => !(st.workflowReviewers?.[g]||[]).some(r => r.name || r.email));
+  if (missing.length) {
+    const status = document.getElementById('save-status-reviewers');
+    if (status) { status.textContent = 'Asigna al menos un revisor por cada grupo con alertas graves.'; status.style.color = 'var(--danger)'; }
+    return;
+  }
   st.reviewersLocked = true;
   clearTimeout(_remoteTimer);
   _savePending = true;
