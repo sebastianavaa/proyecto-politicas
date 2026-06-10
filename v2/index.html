@@ -99,6 +99,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .area-cols .alert-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;}
 .area-cols .alert-tabs::-webkit-scrollbar{display:none;}
 @media (max-width:860px){ .area-cols{grid-template-columns:1fr;gap:1rem;} .area-cols .col-title{white-space:normal;height:auto;} }
+.area-cols.locked-content{pointer-events:none;opacity:.6;user-select:none;}
 
 /* 6 PREGUNTAS DEL FILTRO (slide 4) */
 .q-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;}
@@ -1435,6 +1436,9 @@ function setAreaEditable(area, editable) {
   });
   document.querySelectorAll(`[onclick*="addExtra('${area}')"]`).forEach(b => b.disabled = !editable);
   document.querySelectorAll(`#tags-${area} button`).forEach(b => b.disabled = !editable);
+  // Bloquear/desbloquear toda la zona editable del área
+  const slide = document.querySelector(`[data-n="${AREA_SLIDE[area]}"]`);
+  slide?.querySelector('.area-cols')?.classList.toggle('locked-content', !editable);
 }
 
 function toggleEvalDocs(event, id) {
@@ -1565,15 +1569,16 @@ const GROUP_ICON = { 'Tributario':'landmark', 'Financiero':'banknote', 'Legal y 
 const SEV_RANK = { leve:0, media:1, grave:2 };
 
 function isAlertActive(i) {
-  return !!(st.areas.abastecimiento.alerts?.[i]?.activa);
+  return !!(st.areas.abastecimiento.locked && st.areas.abastecimiento.alerts?.[i]?.activa);
 }
 
 // Devuelve { sev, porArea: {area: sev}, winners: [areas con la sev ganadora] }
+// Solo considera áreas que ya guardaron (locked)
 function consolidatedAlert(i) {
   const porArea = {};
   let bestRank = -1;
   AREAS.forEach(a => {
-    if (!isAreaRequired(a)) return;
+    if (!isAreaRequired(a) || !st.areas[a].locked) return;
     const cfg = st.areas[a].alerts?.[i];
     if (!cfg) return;
     porArea[a] = cfg.severidad;
@@ -1822,6 +1827,16 @@ function renderCrossAreaSummary(area) {
     const d = st.areas[a];
     const estado = d.locked ? 'aprobado' : 'pendiente';
     const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
+
+    if (!d.locked) {
+      return `<div class="cross-area-card">
+        <div class="cross-area-card-header">
+          <span class="cross-area-card-name">${AREA_LABELS[a]}</span>
+          <div class="cross-area-badge pendiente">Pendiente</div>
+        </div>
+        <div style="font-size:.72rem;color:var(--gray);padding:.25rem 0;">Sin guardar — los datos aparecerán cuando el área guarde su sección.</div>
+      </div>`;
+    }
 
     // Alertas del dominio de esta área
     const domainFilter = AREA_ALERT_DOMAIN[a] || (() => true);
@@ -2397,8 +2412,15 @@ function renderAllAreasSummary(containerId) {
   if (!container) return;
   const cards = AREAS.filter(a => isAreaRequired(a)).map(a => {
     const d = st.areas[a];
-    const estado = d.locked ? 'aprobado' : 'pendiente';
-    const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
+    if (!d.locked) {
+      return `<div class="cross-area-card">
+        <div class="cross-area-card-header">
+          <span class="cross-area-card-name">${AREA_LABELS[a]}</span>
+          <div class="cross-area-badge pendiente">Pendiente</div>
+        </div>
+        <div style="font-size:.72rem;color:var(--gray);padding:.25rem 0;">Sin guardar — los datos aparecerán cuando el área guarde su sección.</div>
+      </div>`;
+    }
     const aAlerts = st.areas[a].alerts;
     const groups = [...new Set(ALERTS.map(m => m.group))];
     const groupRows = groups.map(g => {
@@ -2427,7 +2449,7 @@ function renderAllAreasSummary(containerId) {
     return `<div class="cross-area-card">
       <div class="cross-area-card-header">
         <span class="cross-area-card-name">${AREA_LABELS[a]}</span>
-        <div class="cross-area-badge ${estado}">${estadoLabel}</div>
+        <div class="cross-area-badge aprobado">Completado</div>
       </div>
       ${groupRows ? `<div class="cross-area-alert-groups">${groupRows}</div>` : ''}
       ${sevPills ? `<div class="cross-area-sev-bar">${sevPills}</div>` : ''}
@@ -2456,6 +2478,13 @@ function renderCompactAreaAlerts(containerId) {
   AREAS.forEach(area => {
     if (!isAreaRequired(area)) return;
     const d = st.areas[area];
+    if (!d.locked) {
+      html += `<div style="padding:.5rem .75rem;background:var(--white);border:1px solid var(--gray-border);border-radius:.625rem;margin-bottom:.375rem;display:flex;align-items:center;gap:.5rem;">
+        <span style="font-size:.78rem;font-weight:700;color:var(--navy);flex:1;">${AREA_LABELS[area]}</span>
+        <span style="font-size:.62rem;font-weight:800;padding:.1rem .4rem;border-radius:.25rem;background:var(--gray-light);color:var(--gray);">Pendiente</span>
+      </div>`;
+      return;
+    }
     const estado = d.locked ? 'aprobado' : 'pendiente';
     const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
     const aAlerts = st.areas[area].alerts;
@@ -2497,6 +2526,13 @@ function renderSyncAreaComments() {
   let html = '';
   AREAS.forEach(area => {
     if (!isAreaRequired(area)) return;
+    if (!st.areas[area].locked) {
+      html += `<div style="padding:.75rem 0;border-bottom:1px solid var(--gray-border);">
+        <div style="font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:.25rem;">${AREA_LABELS[area]}</div>
+        <div style="font-size:.75rem;color:var(--gray);font-style:italic;">Pendiente — sin guardar</div>
+      </div>`;
+      return;
+    }
     // Encontrar alertas que esta área configura (meta.area === area)
     const aAlerts = st.areas[area].alerts;
     const areaAlerts = ALERTS.map((meta, i) => ({ meta, i })).filter(({meta}) => meta.area === area);
