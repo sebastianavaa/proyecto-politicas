@@ -2764,14 +2764,16 @@ function save() {
 }
 
 let _remoteTimer = null;
+let _savePending = false;
 function saveRemote() {
   if (!st.sessionId) return;
   clearTimeout(_remoteTimer);
+  _savePending = true;
   _remoteTimer = setTimeout(() => {
     fetch(API_URL + '?s=' + encodeURIComponent(st.sessionId), {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify(st)
-    }).catch(()=>{});
+    }).then(() => { _savePending = false; }).catch(() => { _savePending = false; });
   }, 1000);
 }
 
@@ -2787,6 +2789,9 @@ function startPolling() {
       if (!data.state) return;
       const currentArea = SLIDE_AREA[cur];
       let changed = false;
+
+      // No sincronizar si hay cambios locales pendientes de envío al servidor
+      if (_savePending) return;
 
       // 1. Sincronizar qué áreas participan por proceso (definido por Owner)
       if (data.state.processAreas) {
