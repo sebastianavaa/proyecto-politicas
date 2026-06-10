@@ -559,12 +559,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 <!-- MODAL: editar descripción proceso custom -->
-<div id="edit-proc-desc-modal" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(20,20,79,.45);backdrop-filter:blur(2px);align-items:center;justify-content:center;">
+<div id="edit-proc-desc-modal" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(20,20,79,.45);backdrop-filter:blur(2px);align-items:center;justify-content:center;" onclick="if(event.target===this)closeEditProcDescModal()">
   <div style="background:var(--white);border-radius:1rem;padding:1.25rem 1.5rem;width:90%;max-width:400px;box-shadow:0 12px 40px rgba(0,0,0,.3);">
     <h3 style="font-size:.9rem;font-weight:800;color:var(--navy);margin-bottom:.75rem;" id="edit-proc-desc-title">Descripción del proceso</h3>
     <textarea id="edit-proc-desc-input" rows="3" placeholder="¿Cuándo aplica este proceso?"
       style="width:100%;padding:.625rem .875rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.8rem;font-family:var(--font);color:var(--text);outline:none;box-sizing:border-box;resize:none;line-height:1.5;"
-      onkeydown="if(event.key==='Escape')closeEditProcDescModal();if(event.key==='Enter'&&(event.metaKey||event.ctrlKey))saveEditProcDesc();"></textarea>
+      onkeydown="if(event.key==='Escape')closeEditProcDescModal();else if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveEditProcDesc();}"></textarea>
     <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.875rem;">
       <button onclick="closeEditProcDescModal()" style="background:transparent;border:1.5px solid var(--gray-border);color:var(--gray);padding:.4rem .875rem;border-radius:.5rem;font-size:.8rem;font-weight:700;cursor:pointer;font-family:var(--font);">Cancelar</button>
       <button onclick="saveEditProcDesc()" style="background:var(--blue);color:white;border:none;padding:.4rem 1rem;border-radius:.5rem;font-size:.8rem;font-weight:800;cursor:pointer;font-family:var(--font);">Guardar</button>
