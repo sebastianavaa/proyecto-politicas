@@ -2251,7 +2251,9 @@ function renderCustomProcesses() {
       <div class="eval-toggle ${isActive?'on':''}" style="margin-top:.2rem;flex-shrink:0;cursor:pointer;" onclick="toggleCustomProcess(${i})"></div>
       <div style="flex:1;min-width:0;">
         <h4 style="font-size:.875rem;font-weight:700;color:var(--navy);margin-bottom:.1rem;">${p.name}</h4>
-        ${p.description?`<div style="font-size:.72rem;color:var(--accent-dark);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem;">${p.description}</div>`:''}
+        ${p.description
+          ? `<div style="font-size:.72rem;color:var(--gray);margin-bottom:.25rem;line-height:1.4;">${p.description}</div>`
+          : `<div style="font-size:.7rem;color:var(--gray);opacity:.55;margin-bottom:.25rem;font-style:italic;">Sin descripción — haz clic en Editar para agregar una.</div>`}
         <div class="eval-docs-list" id="cp-summary-${i}" style="display:block;">
           ${reqDocs.length?`<strong>Requeridos:</strong> ${reqDocs.map(d=>d.name).join(' · ')}<br>`:''}
           ${opcDocs.length?`<strong>Opcionales:</strong> ${opcDocs.map(d=>d.name).join(' · ')}`:''}
@@ -2261,7 +2263,7 @@ function renderCustomProcesses() {
         <div id="cp-docs-${i}" style="display:none;margin-top:.5rem;padding:.625rem .75rem;background:var(--gray-light);border-radius:.5rem;">
           <div id="cp-doc-rows-${i}">${renderCPDocRows(i)}</div>
         </div>
-        <button onclick="editCustomProcess(${i})" style="font-size:.7rem;color:var(--gray);background:none;border:none;cursor:pointer;padding:.25rem 0 0;display:block;margin-top:.1rem;"><i data-lucide="pencil" style="width:.75rem;height:.75rem;margin-right:.25rem;vertical-align:middle;"></i>Editar nombre</button>
+        <button onclick="editCustomProcess(${i})" style="font-size:.7rem;color:var(--gray);background:none;border:none;cursor:pointer;padding:.25rem 0 0;display:block;margin-top:.1rem;"><i data-lucide="pencil" style="width:.75rem;height:.75rem;margin-right:.25rem;vertical-align:middle;"></i>Editar</button>
       </div>
       <button class="cp-remove" onclick="removeCustomProcess(${i})" title="Eliminar">✕</button>
     </div>`;
