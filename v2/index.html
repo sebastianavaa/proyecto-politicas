@@ -99,6 +99,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .area-cols .alert-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;}
 .area-cols .alert-tabs::-webkit-scrollbar{display:none;}
 @media (max-width:860px){ .area-cols{grid-template-columns:1fr;gap:1rem;} .area-cols .col-title{white-space:normal;height:auto;} }
+@media (max-width:680px){ .owner-cols{grid-template-columns:1fr !important;} }
 .locked-content{pointer-events:none;opacity:.6;user-select:none;}
 
 /* 6 PREGUNTAS DEL FILTRO (slide 4) */
@@ -640,6 +641,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div class="area-status" id="badge-owner">Pendiente</div>
   </div>
   <div class="s-body scrollable">
+    <div class="owner-cols" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
     <div class="req-areas-section">
       <div class="req-areas-title">Procesos de evaluación activos</div>
       <div class="eval-cards" style="gap:.5rem;">
@@ -691,12 +693,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
       </div>
     </div>
-    <div class="divider"></div>
+    </div><!-- /eval-cards section -->
     <div class="req-areas-section">
-      <div class="req-areas-title">¿Qué áreas revisan a los proveedores?</div>
-      <p style="font-size:.75rem;color:var(--gray);margin:-.25rem 0 .75rem;line-height:1.5">Activa solo las áreas que participan en tu empresa. Las apagadas no aparecerán en la sesión ni quedarán pendientes.</p>
+      <div class="req-areas-title">¿Qué áreas revisan?</div>
+      <p style="font-size:.75rem;color:var(--gray);margin:-.25rem 0 .75rem;line-height:1.5">Activa solo las áreas que participan en tu empresa. Las apagadas no aparecerán en la sesión.</p>
       <div id="required-areas-list"></div>
     </div>
+    </div><!-- /grid -->
   </div>
 </div>
 
