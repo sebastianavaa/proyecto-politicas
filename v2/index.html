@@ -1666,13 +1666,28 @@ function renderAlertConsolidation() {
   reIcons();
 }
 
+// Recolecta responsables únicos ya ingresados en las áreas
+function getReviewerPool() {
+  const seen = new Set();
+  const pool = [];
+  AREAS.forEach(a => {
+    const r = st.areas[a].responsible;
+    if (r?.name || r?.email) {
+      const key = (r.name + '|' + r.email).toLowerCase().trim();
+      if (!seen.has(key)) { seen.add(key); pool.push({ name: r.name||'', email: r.email||'' }); }
+    }
+  });
+  return pool;
+}
+
 function renderWorkflowReviewers() {
   const cont = document.getElementById('workflow-reviewers');
   if (!cont) return;
   if (!st.workflowReviewers) st.workflowReviewers = {};
   const graveMap = graveAlertsByGroup();
   const groups = Object.keys(graveMap);
-  const inp = 'padding:.45rem .7rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.825rem;font-family:var(--font);box-sizing:border-box;background:white;';
+  const pool = getReviewerPool();
+  const inp = 'padding:.3rem .55rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.75rem;font-family:var(--font);box-sizing:border-box;background:white;';
 
   if (!groups.length) {
     cont.innerHTML = `<div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.5rem;text-align:center;font-size:.85rem;color:var(--gray);line-height:1.6;">
@@ -1681,48 +1696,92 @@ function renderWorkflowReviewers() {
   }
 
   const rows = groups.map((g, gi) => {
-    const reviewers = st.workflowReviewers[g] || [];
-    const hasReviewer = reviewers.some(r => r.name || r.email);
-    const alertChips = graveMap[g].map(l =>
-      `<span style="background:#FEE2E2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .35rem;font-size:.63rem;font-weight:600;white-space:nowrap;">${l}</span>`
-    ).join('');
+    const assigned = st.workflowReviewers[g] || [];
+    const assignedKeys = new Set(assigned.map(r => r.name+'|'+r.email));
+    const hasReviewer  = assigned.some(r => r.name || r.email);
     const reqBadge = !hasReviewer
       ? `<span style="font-size:.6rem;font-weight:700;background:#FEF2F2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .35rem;flex-shrink:0;">Requerido</span>`
       : '';
-    const reviewerInputs = reviewers.map((r, i) =>
-      `<div style="display:flex;gap:.3rem;align-items:center;margin-top:.25rem;">
-        <input type="text" value="${(r.name||'').replace(/"/g,'&quot;')}" placeholder="Nombre o área" style="${inp}flex:1;min-width:0;padding:.3rem .55rem;font-size:.75rem;" oninput="saveWorkflowReviewer('${g}',${i},'name',this.value)">
-        <input type="email" value="${(r.email||'').replace(/"/g,'&quot;')}" placeholder="email@empresa.com" style="${inp}flex:1;min-width:0;padding:.3rem .55rem;font-size:.75rem;" oninput="saveWorkflowReviewer('${g}',${i},'email',this.value)">
-        <button onclick="removeWorkflowReviewer('${g}',${i})" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:.95rem;padding:.1rem .3rem;line-height:1;flex-shrink:0;">×</button>
+    const alertChips = graveMap[g].map(l =>
+      `<span style="background:#FEE2E2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .35rem;font-size:.63rem;font-weight:600;white-space:nowrap;">${l}</span>`
+    ).join('');
+
+    // Chips desde el pool de áreas
+    const poolChips = pool.map(r => {
+      const key = r.name+'|'+r.email;
+      const on  = assignedKeys.has(key);
+      const lbl = r.name || r.email;
+      const onSt  = 'background:var(--navy);color:white;border-color:var(--navy);';
+      const offSt = 'background:var(--white);color:var(--gray);border-color:var(--gray-border);';
+      const esc = (s) => s.replace(/'/g,"\\'");
+      return `<button onclick="togglePoolReviewer('${esc(g)}','${esc(r.name)}','${esc(r.email)}')"
+        title="${r.email||''}"
+        style="font-size:.75rem;font-weight:600;padding:.25rem .65rem;border-radius:.4rem;border:1.5px solid;cursor:pointer;transition:all .15s;font-family:var(--font);${on?onSt:offSt}">${lbl}</button>`;
+    }).join('');
+
+    // Inputs manuales (para revisores fuera del pool)
+    const manualReviewers = assigned.filter(r => !pool.some(p => p.name===r.name && p.email===r.email));
+    const manualInputs = manualReviewers.map((r, mi) =>
+      `<div style="display:flex;gap:.3rem;align-items:center;margin-top:.3rem;" data-manual="${g}-${mi}">
+        <input type="text" value="${(r.name||'').replace(/"/g,'&quot;')}" placeholder="Nombre o área"
+          style="${inp}flex:1;min-width:0;" oninput="saveManualReviewer('${g}',${mi},'name',this.value)">
+        <input type="email" value="${(r.email||'').replace(/"/g,'&quot;')}" placeholder="email@empresa.com"
+          style="${inp}flex:1;min-width:0;" oninput="saveManualReviewer('${g}',${mi},'email',this.value)">
+        <button onclick="removeManualReviewer('${g}',${mi})" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:.95rem;padding:.1rem .3rem;line-height:1;flex-shrink:0;">×</button>
       </div>`
     ).join('');
+
+    const noPool = pool.length === 0
+      ? `<span style="font-size:.72rem;color:var(--gray);font-style:italic;">Completa los responsables de cada área para ver sugerencias aquí.</span>`
+      : '';
+
     const border = gi > 0 ? 'border-top:1px solid var(--gray-border);' : '';
-    return `<div style="padding:.5rem 0;${border}">
-      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+    return `<div style="padding:.6rem 0;${border}">
+      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.4rem;">
         <i data-lucide="${GROUP_ICON[g]||''}" style="width:.85rem;height:.85rem;stroke-width:2;flex-shrink:0;color:var(--navy);"></i>
-        <span style="font-size:.82rem;font-weight:800;color:var(--navy);min-width:9rem;">${g}</span>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);">${g}</span>
         ${reqBadge}
-        <div style="display:flex;flex-wrap:wrap;gap:.25rem;flex:1;">${alertChips}</div>
-        <button onclick="addWorkflowReviewer('${g}')" style="background:transparent;border:1.5px dashed var(--gray-border);border-radius:.375rem;padding:.2rem .55rem;font-size:.7rem;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--font);flex-shrink:0;white-space:nowrap;">+ Revisor</button>
+        <div style="display:flex;flex-wrap:wrap;gap:.2rem;flex:1;">${alertChips}</div>
       </div>
-      ${reviewerInputs}
+      <div style="display:flex;flex-wrap:wrap;gap:.3rem;align-items:center;">
+        ${noPool}${poolChips}
+        <button onclick="addManualReviewer('${g}')" style="background:transparent;border:1.5px dashed var(--gray-border);border-radius:.375rem;padding:.2rem .5rem;font-size:.68rem;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--font);white-space:nowrap;">+ otro</button>
+      </div>
+      ${manualInputs}
     </div>`;
   }).join('');
   cont.innerHTML = `<div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:.25rem 1rem;">${rows}</div>`;
   reIcons();
 }
 
-function addWorkflowReviewer(group) {
+function togglePoolReviewer(group, name, email) {
+  if (!st.workflowReviewers) st.workflowReviewers = {};
+  if (!st.workflowReviewers[group]) st.workflowReviewers[group] = [];
+  const arr = st.workflowReviewers[group];
+  const idx = arr.findIndex(r => r.name === name && r.email === email);
+  if (idx >= 0) arr.splice(idx, 1); else arr.push({ name, email });
+  renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
+}
+function addManualReviewer(group) {
   if (!st.workflowReviewers[group]) st.workflowReviewers[group] = [];
   st.workflowReviewers[group].push({ name:'', email:'' });
   renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
 }
-function removeWorkflowReviewer(group, i) {
-  st.workflowReviewers[group]?.splice(i, 1);
+function removeManualReviewer(group, manualIdx) {
+  const pool = getReviewerPool();
+  const manual = (st.workflowReviewers[group]||[]).filter(r => !pool.some(p => p.name===r.name && p.email===r.email));
+  const target = manual[manualIdx]; if (!target) return;
+  const pos = st.workflowReviewers[group].findIndex(r => r.name===target.name && r.email===target.email);
+  if (pos >= 0) st.workflowReviewers[group].splice(pos, 1);
   renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
 }
-function saveWorkflowReviewer(group, i, field, val) {
-  if (st.workflowReviewers[group]?.[i]) { st.workflowReviewers[group][i][field] = val; save(); _resetReviewerSaveBtn(); }
+function saveManualReviewer(group, manualIdx, field, val) {
+  const pool = getReviewerPool();
+  const arr  = st.workflowReviewers[group] || [];
+  const manual = arr.filter(r => !pool.some(p => p.name===r.name && p.email===r.email));
+  const target = manual[manualIdx]; if (!target) return;
+  target[field] = val;
+  save(); _resetReviewerSaveBtn();
 }
 function _resetReviewerSaveBtn() {
   if (st.reviewersLocked) return;
