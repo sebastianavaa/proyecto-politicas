@@ -982,31 +982,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 12: SESIÓN SINCRONIZADA ── -->
+<!-- ── 12: REPORTE FINAL ── -->
 <div class="slide slide-std" data-n="12">
-  <div class="s-head"><div class="s-tag">Sesión sincronizada</div>
-    <h2>Alineación final del equipo</h2>
-    <p>Últimos cambios, decisiones finales y cierre de la política.</p>
-  </div>
-  <div class="s-body scrollable">
-    <div class="cross-area-summary" style="margin-bottom:.75rem;">
-      <div class="cross-area-summary-title">Estado por área</div>
-      <div class="cross-area-cards" id="syncAllAreaCards"></div>
-    </div>
-    <div class="divider"></div>
-    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Alertas activas por área</div>
-    <div id="syncCompactAlerts"></div>
-    <div class="divider"></div>
-    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;">Notas finales de alineación</div>
-    <textarea class="notes-ta" id="syncNotes" placeholder="Observaciones finales, puntos de acuerdo, próximos pasos…" oninput="st.syncNotes=this.value;save()" style="min-height:100px;"></textarea>
-    <div style="display:flex;justify-content:flex-end;margin-top:1rem;">
-      <button class="btn-area-save-main" onclick="save();next()">Guardar y continuar →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── 13: REPORTE FINAL ── -->
-<div class="slide slide-std" data-n="13">
   <div class="s-head"><div class="s-tag">Reporte archivado</div>
     <h2>Resumen completo de la sesión</h2>
     <p>Vista consolidada de todo lo acordado. Este reporte fue enviado al equipo Plutto.</p>
@@ -1047,7 +1024,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 <script>
 const WEBHOOK_URL = 'https://plutto-ops-backbone.fly.dev/webhook/proyecto-politicas-v2';
-const TOTAL = 13;
+const TOTAL = 12;
 let cur = 1;
 
 const AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];
@@ -1181,7 +1158,7 @@ function go(n, dir) {
   cur = n;
   if (n === 10) renderAlertConsolidation();       // Slide 10 (severidad final consolidada)
   if (n === 11) renderWorkflowReviewers();        // Slide 11 (¿Quién revisa qué?)
-  if (n >= TOTAL - 1) buildReport();              // Slide 12 (sync) y 13 (reporte)
+  if (n >= TOTAL) buildReport();                   // Slide 12 (reporte final)
   updateNav(); save(); setTimeout(reIcons, 60);
 }
 function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
