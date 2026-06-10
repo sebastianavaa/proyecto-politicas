@@ -2323,24 +2323,35 @@ function editCustomProcess(i) {
   renderCustomProcesses(); save();
 }
 
-let _editProcDescIdx = null;
-function openEditProcDescModal(i) {
-  _editProcDescIdx = i;
-  const p = st.customProcesses[i];
-  document.getElementById('edit-proc-desc-title').textContent = p.name;
-  document.getElementById('edit-proc-desc-input').value = p.description || '';
+let _editProcDescTarget = null;
+function openEditProcDescModal(target) {
+  _editProcDescTarget = target;
+  const name = target.type === 'custom'
+    ? st.customProcesses[target.idx].name
+    : (PROCESS_TEMPLATES.find(t => t.id === target.key)?.name || target.key);
+  const currentDesc = target.type === 'custom'
+    ? (st.customProcesses[target.idx].description || '')
+    : (st.processDescriptions?.[target.key] || PROCESS_TEMPLATES.find(t => t.id === target.key)?.desc || '');
+  document.getElementById('edit-proc-desc-title').textContent = name;
+  document.getElementById('edit-proc-desc-input').value = currentDesc;
   document.getElementById('edit-proc-desc-modal').style.display = 'flex';
   setTimeout(() => document.getElementById('edit-proc-desc-input').focus(), 50);
 }
 function closeEditProcDescModal() {
   document.getElementById('edit-proc-desc-modal').style.display = 'none';
-  _editProcDescIdx = null;
+  _editProcDescTarget = null;
 }
 function saveEditProcDesc() {
-  if (_editProcDescIdx === null) return;
-  st.customProcesses[_editProcDescIdx].description = document.getElementById('edit-proc-desc-input').value.trim();
+  if (!_editProcDescTarget) return;
+  const val = document.getElementById('edit-proc-desc-input').value.trim();
+  if (_editProcDescTarget.type === 'custom') {
+    st.customProcesses[_editProcDescTarget.idx].description = val;
+    renderCustomProcesses();
+  } else {
+    if (!st.processDescriptions) st.processDescriptions = {};
+    st.processDescriptions[_editProcDescTarget.key] = val;
+  }
   save();
-  renderCustomProcesses();
   AREAS.forEach(a => renderAreaDocReview(a));
   closeEditProcDescModal();
 }
@@ -2389,7 +2400,8 @@ function getAreaActiveDocs(area) {
     const cfg = getProcessDocConfig(k);
     const docs = Object.entries(cfg).map(([j, s]) => ({ idx:+j, name:DOCS[+j]?.name, req:s })).filter(d => d.name);
     const tpl = PROCESS_TEMPLATES.find(t => t.id === k);
-    if (docs.length) result.push({ processKey:k, label:TYPE_LABEL[k]||k, docs, desc: tpl?.desc||'' });
+    const desc = (st.processDescriptions?.[k]) || tpl?.desc || '';
+    if (docs.length) result.push({ processKey:k, label:TYPE_LABEL[k]||k, docs, desc });
   });
   (st.customProcesses||[]).forEach((p, i) => {
     if (!p.saved || p.active===false || !isAreaAssigned('cp_'+i, area)) return;
@@ -2491,7 +2503,7 @@ function renderAreaDocReview(area) {
     const badge = total || '—';
     const cpIdx = proc.processKey.startsWith('cp_') ? proc.processKey.slice(3) : null;
     const removeX = cpIdx !== null ? `<span onclick="event.stopPropagation();removeCustomProcess(${cpIdx})" title="Eliminar proceso" style="margin-left:.25rem;opacity:.6;font-size:.75rem;line-height:1;cursor:pointer;">×</span>` : '';
-    const tipAttrs = cpIdx !== null ? `data-cp-idx="${cpIdx}"` : '';
+    const tipAttrs = cpIdx !== null ? `data-cp-idx="${cpIdx}"` : `data-std-key="${proc.processKey}"`;
     const tipHtml = proc.desc ? `<span class="alert-tip" data-tip="${proc.desc.replace(/"/g,'&quot;')}" ${tipAttrs} onclick="event.stopPropagation()" onmouseenter="showTip(this)" onmouseleave="hideTip()"><i data-lucide="info"></i></span>` : '';
     return `<button class="alert-tab${proc.processKey===savedKey?' active':''}" onclick="switchDocTab('${area}','${proc.processKey}')">${proc.label}${tipHtml}${removeX}</button>`;
   }).join('')}<button class="alert-tab" onclick="openNewProcessModal('${area}')" title="Crear proceso personalizado" style="padding:.25rem .6rem;font-weight:900;font-size:1rem;line-height:1;flex-shrink:0;">+</button></div>`;
@@ -3269,6 +3281,7 @@ function mergeState(d) {
   if (d.syncNotes) st.syncNotes = d.syncNotes;
   if (Array.isArray(d.customProcesses)) st.customProcesses = d.customProcesses;
   if (d.processDocConfig) { if (!st.processDocConfig) st.processDocConfig = {}; Object.assign(st.processDocConfig, d.processDocConfig); }
+  if (d.processDescriptions) st.processDescriptions = d.processDescriptions;
   if (d.processAreas) {
     if (!st.processAreas) st.processAreas = {};
     Object.entries(d.processAreas).forEach(([k, v]) => {
@@ -3379,16 +3392,20 @@ function showTip(el) {
   tip.innerHTML = '';
   tip.appendChild(document.createTextNode(el.dataset.tip));
   const cpIdx = el.dataset.cpIdx;
-  if (cpIdx !== undefined && cpIdx !== '') {
+  const stdKey = el.dataset.stdKey;
+  const hasEdit = (cpIdx !== undefined && cpIdx !== '') || (stdKey !== undefined && stdKey !== '');
+  if (hasEdit) {
     const btn = document.createElement('button');
     btn.title = 'Editar descripción';
     btn.style.cssText = 'background:none;border:none;cursor:pointer;color:rgba(255,255,255,.65);padding:0;margin-left:.45rem;vertical-align:middle;display:inline-flex;align-items:center;';
     btn.innerHTML = '<i data-lucide="pencil" style="width:.65rem;height:.65rem;pointer-events:none;"></i>';
-    btn.onclick = () => { hideTip(); openEditProcDescModal(+cpIdx); };
+    btn.onclick = cpIdx !== undefined && cpIdx !== ''
+      ? () => { hideTip(); openEditProcDescModal({ type:'custom', idx:+cpIdx }); }
+      : () => { hideTip(); openEditProcDescModal({ type:'std', key:stdKey }); };
     tip.appendChild(btn);
     if (window.lucide) window.lucide.createIcons({ nodes: [btn] });
   }
-  tip.style.pointerEvents = cpIdx !== undefined && cpIdx !== '' ? 'auto' : 'none';
+  tip.style.pointerEvents = hasEdit ? 'auto' : 'none';
   tip.style.display = 'block';
   const r = el.getBoundingClientRect();
   const tw = 210, th = tip.offsetHeight || 60;
