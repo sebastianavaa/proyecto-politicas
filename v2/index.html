@@ -1525,7 +1525,34 @@ function normalizeAlerts(arr) {
   });
 }
 
-function setAlertActive(area, i)           { st.areas[area].alerts[i].activa = !st.areas[area].alerts[i].activa; renderAllAlerts(); save(); }
+function setAlertActive(area, i) {
+  st.areas[area].alerts[i].activa = !st.areas[area].alerts[i].activa;
+  // Toggle clase en el elemento existente para que la transición CSS se ejecute
+  const cfg = document.getElementById('acfg-' + area + '-' + i);
+  if (cfg) cfg.classList.toggle('on', st.areas[area].alerts[i].activa);
+  _updateAlertTabBadges(area);
+  // Actualizar solo los sumarios, sin reconstruir las filas de alertas
+  renderCrossAreaSummary(area);
+  renderCompactAreaAlerts('syncCompactAlerts');
+  renderCompactAreaAlerts('reportCompactAlerts');
+  renderAllAreasSummary('syncAllAreaCards');
+  renderAllAreasSummary('reportAllAreaCards');
+  save();
+}
+function _updateAlertTabBadges(area) {
+  const containerId = area === 'abastecimiento' ? 'abast-alerts' : 'alerts-' + area;
+  const cont = document.getElementById(containerId); if (!cont) return;
+  const aAlerts = st.areas[area].alerts;
+  cont.querySelectorAll('.alert-tab').forEach(btn => {
+    const match = btn.getAttribute('onclick')?.match(/'([^']+)'\)$/);
+    if (!match) return;
+    const g = match[1];
+    const gAlerts = ALERTS.map((meta, idx) => ({ meta, idx })).filter(({ meta }) => meta.group === g);
+    const active = gAlerts.filter(({ idx }) => aAlerts[idx].activa).length;
+    const badge = btn.querySelector('.alert-tab-badge');
+    if (badge) badge.textContent = `${active}/${gAlerts.length}`;
+  });
+}
 function setAlertSeverity(area, i, sev)    { st.areas[area].alerts[i].severidad = sev; renderAllAlerts(); save(); }
 function setAlertGroupComment(area, g, val){ if (!st.areas[area].alertGroupComments) st.areas[area].alertGroupComments = {}; st.areas[area].alertGroupComments[g] = val; save(); }
 
@@ -1687,7 +1714,7 @@ function buildAlertTabsHTML(containerId, area, placeholder) {
       const sevBtns = SEV_ORDER.map(s =>
         `<button class="sev-opt ${a.severidad===s?'on':''}" data-sev="${s}" onclick="setAlertSeverity('${area}',${i},'${s}')">${SEV_LABEL[s]}</button>`
       ).join('');
-      return `<div class="alert-cfg ${a.activa?'on':'off'}">
+      return `<div class="alert-cfg ${a.activa?'on':'off'}" id="acfg-${area}-${i}">
         <div class="alert-cfg-top">
           <div class="a-toggle" onclick="setAlertActive('${area}',${i})"></div>
           <span class="a-label">${meta.label}</span>
