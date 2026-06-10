@@ -1618,30 +1618,30 @@ function renderWorkflowReviewers() {
     return;
   }
 
-  const cards = groups.map(g => {
+  const rows = groups.map((g, gi) => {
     const reviewers = st.workflowReviewers[g] || [];
     const alertChips = graveMap[g].map(l =>
-      `<span style="display:inline-block;background:#FEE2E2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .35rem;font-size:.65rem;font-weight:600;margin:.1rem .2rem .1rem 0;">${l}</span>`
+      `<span style="background:#FEE2E2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .35rem;font-size:.63rem;font-weight:600;white-space:nowrap;">${l}</span>`
     ).join('');
-    const reviewerRows = reviewers.map((r, i) =>
-      `<div class="wf-reviewer-row" style="margin-bottom:.3rem;">
-        <input type="text" value="${(r.name||'').replace(/"/g,'&quot;')}" placeholder="Nombre o área" style="${inp}flex:1;min-width:0;padding:.35rem .6rem;font-size:.775rem;" oninput="saveWorkflowReviewer('${g}',${i},'name',this.value)">
-        <input type="email" value="${(r.email||'').replace(/"/g,'&quot;')}" placeholder="email@empresa.com" style="${inp}flex:1;min-width:0;padding:.35rem .6rem;font-size:.775rem;" oninput="saveWorkflowReviewer('${g}',${i},'email',this.value)">
-        <button onclick="removeWorkflowReviewer('${g}',${i})" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:1rem;padding:.2rem .35rem;line-height:1;flex-shrink:0;" title="Quitar revisor">×</button>
+    const reviewerInputs = reviewers.map((r, i) =>
+      `<div style="display:flex;gap:.3rem;align-items:center;margin-top:.25rem;">
+        <input type="text" value="${(r.name||'').replace(/"/g,'&quot;')}" placeholder="Nombre o área" style="${inp}flex:1;min-width:0;padding:.3rem .55rem;font-size:.75rem;" oninput="saveWorkflowReviewer('${g}',${i},'name',this.value)">
+        <input type="email" value="${(r.email||'').replace(/"/g,'&quot;')}" placeholder="email@empresa.com" style="${inp}flex:1;min-width:0;padding:.3rem .55rem;font-size:.75rem;" oninput="saveWorkflowReviewer('${g}',${i},'email',this.value)">
+        <button onclick="removeWorkflowReviewer('${g}',${i})" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:.95rem;padding:.1rem .3rem;line-height:1;flex-shrink:0;">×</button>
       </div>`
     ).join('');
-    return `<div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem .875rem;">
-      <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem;">
-        <i data-lucide="${GROUP_ICON[g]||''}" style="width:1rem;height:1rem;stroke-width:2;vertical-align:middle;flex-shrink:0;"></i>
-        <h3 style="font-size:.85rem;font-weight:800;color:var(--navy);margin:0;flex:1;">${g}</h3>
-        <span style="font-size:.6rem;font-weight:700;text-transform:uppercase;color:var(--danger);background:var(--danger-bg);border:1px solid #FCA5A5;border-radius:1rem;padding:.1rem .5rem;flex-shrink:0;">${graveMap[g].length}g</span>
+    const border = gi > 0 ? 'border-top:1px solid var(--gray-border);' : '';
+    return `<div style="padding:.5rem 0;${border}">
+      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+        <i data-lucide="${GROUP_ICON[g]||''}" style="width:.85rem;height:.85rem;stroke-width:2;flex-shrink:0;color:var(--navy);"></i>
+        <span style="font-size:.82rem;font-weight:800;color:var(--navy);min-width:9rem;">${g}</span>
+        <div style="display:flex;flex-wrap:wrap;gap:.25rem;flex:1;">${alertChips}</div>
+        <button onclick="addWorkflowReviewer('${g}')" style="background:transparent;border:1.5px dashed var(--gray-border);border-radius:.375rem;padding:.2rem .55rem;font-size:.7rem;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--font);flex-shrink:0;white-space:nowrap;">+ Responsable</button>
       </div>
-      <div style="margin-bottom:.375rem;line-height:1.4;">${alertChips}</div>
-      ${reviewerRows || '<div style="font-size:.72rem;color:var(--gray);font-style:italic;margin-bottom:.3rem;">Sin responsable asignado.</div>'}
-      <button onclick="addWorkflowReviewer('${g}')" style="display:inline-flex;align-items:center;gap:.25rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.4rem;padding:.3rem .6rem;font-size:.72rem;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--font);margin-top:.2rem;">+ Responsable</button>
+      ${reviewerInputs}
     </div>`;
   }).join('');
-  cont.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.625rem;">${cards}</div>`;
+  cont.innerHTML = `<div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:.25rem 1rem;">${rows}</div>`;
   reIcons();
 }
 
