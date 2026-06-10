@@ -365,7 +365,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 
 /* SENT BANNER */
 #sent-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:600;
-  background:#1A4FA8;color:white;padding:.625rem 1.5rem;
+  background:var(--navy);color:white;padding:.625rem 1.5rem;
   font-size:.8125rem;text-align:center;line-height:1.5;
   box-shadow:0 2px 8px rgba(0,0,0,.25);}
 #sent-banner strong{color:var(--accent);}
@@ -390,13 +390,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .cross-area-group-row{display:flex;align-items:center;gap:.5rem;}
 .cross-area-group-label{font-size:.65rem;color:var(--gray);width:5.5rem;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .cross-area-group-bar{flex:1;height:.35rem;background:var(--gray-border);border-radius:.25rem;overflow:hidden;}
-.cross-area-group-fill{height:100%;background:var(--blue);border-radius:.25rem;transition:width .3s;}
+.cross-area-group-fill{height:100%;background:var(--accent);border-radius:.25rem;transition:width .3s;}
 .cross-area-group-count{font-size:.68rem;font-weight:700;color:var(--navy);width:2rem;text-align:right;flex-shrink:0;}
 .cross-area-sev-bar{display:flex;gap:.375rem;align-items:center;margin-top:.375rem;flex-wrap:wrap;}
 .cross-area-sev-pill{font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:.25rem;}
-.cross-area-sev-pill.leve{background:#F0FDF4;color:#16A34A;}
-.cross-area-sev-pill.media{background:#FFFBEB;color:#D97706;}
-.cross-area-sev-pill.grave{background:#FEF2F2;color:#DC2626;}
+.cross-area-sev-pill.leve{background:var(--success-bg);color:var(--success);}
+.cross-area-sev-pill.media{background:var(--warn-bg);color:var(--warn-tx);}
+.cross-area-sev-pill.grave{background:var(--danger-bg);color:var(--danger);}
 
 /* ── MOBILE ── */
 @media (max-width: 640px) {
@@ -495,6 +495,26 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 }
 /* LUCIDE ICONS */
 .lucide{display:inline-block;vertical-align:middle;flex-shrink:0;}
+
+/* Inputs de responsable en el header del área */
+.head-resp{display:flex;gap:.5rem;margin-top:.625rem;flex-wrap:wrap;}
+.head-resp input{flex:1;min-width:140px;padding:.4rem .75rem;border:1.5px solid rgba(255,255,255,.22);border-radius:.5rem;
+  background:rgba(255,255,255,.1);color:white;font-size:.8rem;font-family:var(--font);outline:none;transition:border .2s;}
+.head-resp input::placeholder{color:rgba(255,255,255,.4);}
+.head-resp input:focus{border-color:rgba(255,255,255,.6);}
+.head-resp input.err{border-color:var(--danger);}
+.head-resp input:disabled{opacity:.55;cursor:not-allowed;}
+
+/* Cross-area summary — accordion colapsable */
+.cross-area-accordion{background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;margin-bottom:.875rem;overflow:hidden;}
+.cross-area-accordion-trigger{display:flex;align-items:center;justify-content:space-between;padding:.625rem 1rem;cursor:pointer;user-select:none;gap:.5rem;}
+.cross-area-accordion-trigger:hover{background:var(--gray-light);}
+.cross-area-accordion-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);}
+.cross-area-accordion-meta{font-size:.7rem;color:var(--gray);margin-right:.25rem;}
+.cross-area-accordion-chevron{color:var(--gray);transition:transform .2s;flex-shrink:0;}
+.cross-area-accordion-chevron.open{transform:rotate(180deg);}
+.cross-area-accordion-body{padding:.5rem 1rem .75rem;}
+.cross-area-accordion-body.collapsed{display:none;}
 </style>
 </head>
 <body>
@@ -540,12 +560,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   <div class="cover-logo"><div class="cover-logo-dot"></div>PLUTTO<div class="cover-logo-dot"></div></div>
   <h1>Política de Debida<br>Diligencia de Proveedores</h1>
   <p class="subtitle">Configuremos juntos el proceso que se adapta a tu empresa.</p>
-  <div class="input-wrap">
-    <div class="input-row">
-      <input type="text" id="clientInput" class="txt-input" placeholder="Nombre de la empresa" style="max-width:240px"/>
-      <input type="email" id="emailInput" class="txt-input" placeholder="tu@empresa.com" onkeydown="if(event.key==='Enter')startSession()"/>
+  <div class="input-wrap" style="max-width:420px;">
+    <div class="input-row" style="flex-direction:column;gap:.625rem;">
+      <input type="text" id="clientInput" class="txt-input" placeholder="Nombre de la empresa" style="width:100%;"/>
+      <input type="email" id="emailInput" class="txt-input" placeholder="tu@empresa.com" style="width:100%;" onkeydown="if(event.key==='Enter')startSession()"/>
     </div>
-    <button class="btn-primary" onclick="startSession()">Comenzar sesión →</button>
+    <button class="btn-primary" style="width:100%;" onclick="startSession()">Comenzar sesión →</button>
   </div>
   <div class="session-link-box" id="session-link-box">
     <p style="display:flex;align-items:center;gap:.375rem;"><i data-lucide="link" style="width:.85rem;height:.85rem;flex-shrink:0;"></i>Comparte este link con todas las áreas para que completen su sección:</p>
@@ -563,37 +583,37 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   <p>Trabajar con proveedores sin un proceso formal expone a tu empresa a riesgos legales, financieros, reputacionales y operativos. Y la normativa chilena ya lo exige: cada riesgo tiene una ley detrás.</p></div>
   <div class="s-body" style="display:flex;flex-direction:column;gap:1rem;overflow:hidden;">
     <!-- Card destacada — riesgo operacional -->
-    <div class="card" style="display:flex;flex-direction:row;align-items:center;gap:1.5rem;padding:1.375rem 2rem;flex-shrink:0;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
+    <div class="card" style="display:flex;flex-direction:row;align-items:center;gap:1.5rem;padding:1.375rem 2rem;flex-shrink:0;border-left:3px solid var(--accent);">
       <div style="flex-shrink:0;color:var(--accent);display:flex;"><i data-lucide="alert-triangle" style="width:2.25rem;height:2.25rem;stroke-width:1.5;"></i></div>
       <div style="flex:1;">
-        <span class="law" style="background:var(--navy);color:white;">Riesgo operacional</span>
+        <span class="law" style="background:var(--gray-light);color:var(--accent);">Riesgo operacional</span>
         <h3 style="font-size:1.05rem;margin:.375rem 0 .25rem;">Tu operación y reputación</h3>
         <p style="font-size:.9rem;color:var(--gray);line-height:1.6;margin:0;">Un proveedor en quiebra puede <strong>paralizar tu operación de un día para otro</strong>. Sus problemas reputacionales se vuelven los tuyos — la prensa y tus clientes no distinguen entre tu empresa y tus proveedores.</p>
       </div>
     </div>
     <!-- Grid 4 cards legales — llenan ancho y alto -->
     <div class="legal-grid" style="flex:1;min-height:0;">
-      <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--gray-border);">
         <div><i data-lucide="scale" style="width:2rem;height:2rem;stroke-width:1.5;"></i></div>
-        <span class="law" style="background:var(--navy);color:white;width:fit-content;">Ley 20.393</span>
+        <span class="law" style="background:var(--gray-light);color:var(--accent);width:fit-content;">Ley 20.393</span>
         <h3 style="font-size:1rem;margin:0;">Responsabilidad penal</h3>
         <p style="font-size:.85rem;color:var(--gray);line-height:1.7;margin:0;">Obliga a evaluar proveedores <strong>antes de contratarlos</strong>. Sin due diligence, la empresa responde penalmente por delitos del proveedor: multas, inhabilitaciones y clausura.</p>
       </div>
-      <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--gray-border);">
         <div><i data-lucide="search" style="width:2rem;height:2rem;stroke-width:1.5;"></i></div>
-        <span class="law" style="background:var(--navy);color:white;width:fit-content;">Ley 19.913</span>
+        <span class="law" style="background:var(--gray-light);color:var(--accent);width:fit-content;">Ley 19.913</span>
         <h3 style="font-size:1rem;margin:0;">Lavado de activos</h3>
         <p style="font-size:.85rem;color:var(--gray);line-height:1.7;margin:0;">Exige identificar <strong>beneficiarios finales</strong> y verificar que no estén en listas de sanciones (OFAC, ONU, UE) antes de contratar y durante la relación.</p>
       </div>
-      <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--gray-border);">
         <div><i data-lucide="refresh-cw" style="width:2rem;height:2rem;stroke-width:1.5;"></i></div>
-        <span class="law" style="background:var(--navy);color:white;width:fit-content;">Ley 21.595</span>
+        <span class="law" style="background:var(--gray-light);color:var(--accent);width:fit-content;">Ley 21.595</span>
         <h3 style="font-size:1rem;margin:0;">Monitoreo continuo</h3>
         <p style="font-size:.85rem;color:var(--gray);line-height:1.7;margin:0;">No basta con evaluar una vez: obliga a <strong>monitorear permanentemente</strong> a los proveedores activos. Si surge un problema no detectado, la empresa también responde.</p>
       </div>
-      <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--gray-border);">
         <div><i data-lucide="users" style="width:2rem;height:2rem;stroke-width:1.5;"></i></div>
-        <span class="law" style="background:var(--navy);color:white;width:fit-content;">Ley 20.123</span>
+        <span class="law" style="background:var(--gray-light);color:var(--accent);width:fit-content;">Ley 20.123</span>
         <h3 style="font-size:1rem;margin:0;">Subcontratación</h3>
         <p style="font-size:.85rem;color:var(--gray);line-height:1.7;margin:0;">La empresa mandante es <strong>solidariamente responsable</strong> de las obligaciones laborales y previsionales del contratista frente a sus trabajadores.</p>
       </div>
@@ -618,13 +638,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Compra menor a USD 20.000</div>
             <h4>Proveedor Spot</h4>
-            <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .5rem;line-height:1.5;">Mínima fricción para compras de bajo monto. Cubre el riesgo legal básico sin ralentizar el proceso de compra.</p>
-            <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Compra puntual o esporádica</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Proveedor sin continuidad</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Sin acceso a datos sensibles</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Riesgo operacional bajo</span>
-            </div>
+            <p style="font-size:.775rem;color:var(--gray);margin:.2rem 0 0;line-height:1.5;">Mínima fricción para compras de bajo monto. Cubre el riesgo legal básico sin ralentizar el proceso de compra.</p>
           </div>
         </div>
 
@@ -633,13 +647,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Compra entre USD 20.000 y USD 100.000</div>
             <h4>Proveedor General</h4>
-            <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .5rem;line-height:1.5;">Revisión legal y financiera estándar. Equilibra rigurosidad con agilidad para contratos de mediana envergadura.</p>
-            <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Relación contractual recurrente</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Servicios o suministros continuos</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Impacto medio en la operación</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Requiere solidez financiera básica</span>
-            </div>
+            <p style="font-size:.775rem;color:var(--gray);margin:.2rem 0 0;line-height:1.5;">Revisión legal y financiera estándar. Equilibra rigurosidad con agilidad para contratos de mediana envergadura.</p>
           </div>
         </div>
 
@@ -648,13 +656,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Compra mayor a USD 100.000</div>
             <h4>Proveedor Crítico</h4>
-            <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .5rem;line-height:1.5;">Evaluación exhaustiva en todas las áreas. Para proveedores cuya falla podría comprometer la operación o la reputación de la empresa.</p>
-            <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Alto impacto operacional</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Acceso a datos o infraestructura crítica</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Contratos de largo plazo</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Exigencia regulatoria o de directorio</span>
-            </div>
+            <p style="font-size:.775rem;color:var(--gray);margin:.2rem 0 0;line-height:1.5;">Evaluación exhaustiva en todas las áreas. Para proveedores cuya falla podría comprometer la operación o la reputación de la empresa.</p>
           </div>
         </div>
 
@@ -663,13 +665,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Proveedor con domicilio fuera de Chile</div>
             <h4>Proveedor Internacional</h4>
-            <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .5rem;line-height:1.5;">Documentación equivalente y verificación contra listas de sanciones globales. Aplica independiente del monto.</p>
-            <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Domicilio fuera de Chile</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Verificación OFAC / ONU / UE</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Riesgo de sanciones internacionales</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Documentación en idioma extranjero</span>
-            </div>
+            <p style="font-size:.775rem;color:var(--gray);margin:.2rem 0 0;line-height:1.5;">Documentación equivalente y verificación contra listas de sanciones globales. Aplica independiente del monto.</p>
           </div>
         </div>
 
@@ -678,13 +674,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Proveedor con trabajadores en tus instalaciones (Ley 20.123)</div>
             <h4>Subcontratación</h4>
-            <p style="font-size:.75rem;color:var(--gray);margin:.2rem 0 .5rem;line-height:1.5;">Protege a tu empresa de la responsabilidad solidaria por deudas laborales y previsionales del contratista.</p>
-            <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Trabajadores en tus faenas o instalaciones</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Servicios de personal o facilities</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Obligación solidaria Ley 20.123</span>
-              <span style="font-size:.7rem;background:var(--gray-light);color:var(--navy);padding:.15rem .5rem;border-radius:.25rem;font-weight:600;">Auditoría laboral y previsional</span>
-            </div>
+            <p style="font-size:.775rem;color:var(--gray);margin:.2rem 0 0;line-height:1.5;">Protege a tu empresa de la responsabilidad solidaria por deudas laborales y previsionales del contratista.</p>
           </div>
         </div>
 
@@ -717,11 +707,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           </div>
         </div>
         <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.375rem;">Comprador del proyecto</div>
-        <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.25rem;display:flex;flex-direction:column;line-height:1.6;">
-          <li>✓ Revisa el panorama general</li>
-          <li>✓ Activa/desactiva tipos de evaluación</li>
-          <li>✓ Selecciona qué áreas participan</li>
-          <li>✓ Hace cambios iniciales en alertas</li>
+        <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.375rem;display:flex;flex-direction:column;">
+          <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Revisa el panorama general</li>
+          <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Activa/desactiva tipos de evaluación</li>
+          <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Selecciona qué áreas participan</li>
+          <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Hace cambios iniciales en alertas</li>
         </ul>
       </div>
 
@@ -736,11 +726,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         </div>
         <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.375rem;">Cada área (asincrónica)</div>
         <div id="roles-fase2-areas" style="font-size:.75rem;color:var(--blue);font-weight:600;margin-bottom:.375rem;"></div>
-        <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.25rem;display:flex;flex-direction:column;line-height:1.6;">
-          <li>✓ Revisa su especialidad</li>
-          <li>✓ Ajusta severidad de sus alertas</li>
-          <li>✓ Comenta y propone cambios</li>
-          <li>✓ Da visto bueno</li>
+        <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.375rem;display:flex;flex-direction:column;">
+          <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Revisa su especialidad</li>
+          <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Ajusta severidad de sus alertas</li>
+          <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Comenta y propone cambios</li>
+          <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Da visto bueno</li>
         </ul>
       </div>
 
@@ -754,11 +744,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           </div>
         </div>
         <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.375rem;">Todo el equipo (en vivo)</div>
-        <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.25rem;display:flex;flex-direction:column;line-height:1.6;">
-          <li>✓ Revisan cambios acumulados</li>
-          <li>✓ Toman decisiones finales</li>
-          <li>✓ Cierran la política</li>
-          <li>✓ Exportan la versión acordada</li>
+        <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.375rem;display:flex;flex-direction:column;">
+          <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Revisan cambios acumulados</li>
+          <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Toman decisiones finales</li>
+          <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Cierran la política</li>
+          <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Exportan la versión acordada</li>
         </ul>
       </div>
     </div>
@@ -826,14 +816,24 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   <div class="s-head"><div class="s-tag">Revisión por área — 1 de 4</div>
     <h2>Abastecimiento</h2>
     <p id="desc-abastecimiento">Coordina el proceso y configura las alertas.</p>
-    <div class="area-status" id="badge-abastecimiento">Pendiente</div>
+    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:.25rem;">
+      <div class="area-status" id="badge-abastecimiento">Pendiente</div>
+      <span id="areas-progress-abastecimiento" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
+    </div>
+    <div class="head-resp">
+      <input type="text" id="resp-name-abastecimiento" placeholder="Nombre del encargado" oninput="saveResp('abastecimiento','name',this.value)">
+      <input type="email" id="resp-email-abastecimiento" placeholder="email@empresa.com" oninput="saveResp('abastecimiento','email',this.value)">
+    </div>
   </div>
   <div class="s-body scrollable">
-    <div class="decision-section" style="margin-bottom:.875rem;">
-      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
-      <div class="resp-row">
-        <input type="text" id="resp-name-abastecimiento" placeholder="Nombre completo" oninput="saveResp('abastecimiento','name',this.value)">
-        <input type="email" id="resp-email-abastecimiento" placeholder="email@empresa.com" oninput="saveResp('abastecimiento','email',this.value)">
+    <div class="cross-area-accordion" id="cross-summary-abastecimiento-accordion">
+      <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('abastecimiento')">
+        <span class="cross-area-accordion-title">Resumen de otras áreas</span>
+        <span id="cross-summary-abastecimiento-meta" class="cross-area-accordion-meta"></span>
+        <i data-lucide="chevron-down" class="cross-area-accordion-chevron" id="cross-chevron-abastecimiento" style="width:.9rem;height:.9rem;"></i>
+      </div>
+      <div class="cross-area-accordion-body collapsed" id="cross-summary-abastecimiento-body">
+        <div class="cross-area-cards" id="cross-summary-abastecimiento-cards"></div>
       </div>
     </div>
 
@@ -860,17 +860,26 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   <div class="s-head"><div class="s-tag">Revisión por área — 2 de 4</div>
     <h2>Cumplimiento</h2>
     <p id="desc-cumplimiento">Clasifica el riesgo y da recomendación final en cada evaluación.</p>
-    <div class="area-status" id="badge-cumplimiento">Pendiente</div>
+    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:.25rem;">
+      <div class="area-status" id="badge-cumplimiento">Pendiente</div>
+      <span id="areas-progress-cumplimiento" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
+    </div>
+    <div class="head-resp">
+      <input type="text" id="resp-name-cumplimiento" placeholder="Nombre del encargado" oninput="saveResp('cumplimiento','name',this.value)">
+      <input type="email" id="resp-email-cumplimiento" placeholder="email@empresa.com" oninput="saveResp('cumplimiento','email',this.value)">
+    </div>
   </div>
   <div class="s-body scrollable">
-    <div class="decision-section" style="margin-bottom:.875rem;">
-      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
-      <div class="resp-row">
-        <input type="text" id="resp-name-cumplimiento" placeholder="Nombre completo" oninput="saveResp('cumplimiento','name',this.value)">
-        <input type="email" id="resp-email-cumplimiento" placeholder="email@empresa.com" oninput="saveResp('cumplimiento','email',this.value)">
+    <div class="cross-area-accordion" id="cross-summary-cumplimiento-accordion">
+      <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('cumplimiento')">
+        <span class="cross-area-accordion-title">Resumen de otras áreas</span>
+        <span id="cross-summary-cumplimiento-meta" class="cross-area-accordion-meta"></span>
+        <i data-lucide="chevron-down" class="cross-area-accordion-chevron" id="cross-chevron-cumplimiento" style="width:.9rem;height:.9rem;"></i>
+      </div>
+      <div class="cross-area-accordion-body collapsed" id="cross-summary-cumplimiento-body">
+        <div class="cross-area-cards" id="cross-summary-cumplimiento-cards"></div>
       </div>
     </div>
-
 
     <div class="area-cols">
       <div>
@@ -895,17 +904,26 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   <div class="s-head"><div class="s-tag">Revisión por área — 3 de 4</div>
     <h2>Finanzas</h2>
     <p id="desc-finanzas">Analiza la solidez financiera del proveedor.</p>
-    <div class="area-status" id="badge-finanzas">Pendiente</div>
+    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:.25rem;">
+      <div class="area-status" id="badge-finanzas">Pendiente</div>
+      <span id="areas-progress-finanzas" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
+    </div>
+    <div class="head-resp">
+      <input type="text" id="resp-name-finanzas" placeholder="Nombre del encargado" oninput="saveResp('finanzas','name',this.value)">
+      <input type="email" id="resp-email-finanzas" placeholder="email@empresa.com" oninput="saveResp('finanzas','email',this.value)">
+    </div>
   </div>
   <div class="s-body scrollable">
-    <div class="decision-section" style="margin-bottom:.875rem;">
-      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
-      <div class="resp-row">
-        <input type="text" id="resp-name-finanzas" placeholder="Nombre completo" oninput="saveResp('finanzas','name',this.value)">
-        <input type="email" id="resp-email-finanzas" placeholder="email@empresa.com" oninput="saveResp('finanzas','email',this.value)">
+    <div class="cross-area-accordion" id="cross-summary-finanzas-accordion">
+      <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('finanzas')">
+        <span class="cross-area-accordion-title">Resumen de otras áreas</span>
+        <span id="cross-summary-finanzas-meta" class="cross-area-accordion-meta"></span>
+        <i data-lucide="chevron-down" class="cross-area-accordion-chevron" id="cross-chevron-finanzas" style="width:.9rem;height:.9rem;"></i>
+      </div>
+      <div class="cross-area-accordion-body collapsed" id="cross-summary-finanzas-body">
+        <div class="cross-area-cards" id="cross-summary-finanzas-cards"></div>
       </div>
     </div>
-
 
     <div class="area-cols">
       <div>
@@ -930,17 +948,26 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   <div class="s-head"><div class="s-tag">Revisión por área — 4 de 4</div>
     <h2>Legal</h2>
     <p id="desc-legal">Valida la constitución legal del proveedor.</p>
-    <div class="area-status" id="badge-legal">Pendiente</div>
+    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:.25rem;">
+      <div class="area-status" id="badge-legal">Pendiente</div>
+      <span id="areas-progress-legal" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
+    </div>
+    <div class="head-resp">
+      <input type="text" id="resp-name-legal" placeholder="Nombre del encargado" oninput="saveResp('legal','name',this.value)">
+      <input type="email" id="resp-email-legal" placeholder="email@empresa.com" oninput="saveResp('legal','email',this.value)">
+    </div>
   </div>
   <div class="s-body scrollable">
-    <div class="decision-section" style="margin-bottom:.875rem;">
-      <div class="resp-label">Encargado del área <span style="color:var(--danger)">*</span></div>
-      <div class="resp-row">
-        <input type="text" id="resp-name-legal" placeholder="Nombre completo" oninput="saveResp('legal','name',this.value)">
-        <input type="email" id="resp-email-legal" placeholder="email@empresa.com" oninput="saveResp('legal','email',this.value)">
+    <div class="cross-area-accordion" id="cross-summary-legal-accordion">
+      <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('legal')">
+        <span class="cross-area-accordion-title">Resumen de otras áreas</span>
+        <span id="cross-summary-legal-meta" class="cross-area-accordion-meta"></span>
+        <i data-lucide="chevron-down" class="cross-area-accordion-chevron" id="cross-chevron-legal" style="width:.9rem;height:.9rem;"></i>
+      </div>
+      <div class="cross-area-accordion-body collapsed" id="cross-summary-legal-body">
+        <div class="cross-area-cards" id="cross-summary-legal-cards"></div>
       </div>
     </div>
-
 
     <div class="area-cols">
       <div>
@@ -1365,9 +1392,9 @@ function guardarArea(area) {
   const status = document.getElementById('save-status-'+area);
   if (status) status.style.color = 'var(--gray)';
   a.locked = true;
-  // editCount lo gestiona editarArea() al reabrir; aquí solo se confirma el guardado.
   save();
   applyAreaSaveUI(area);
+  AREAS.forEach(x => { renderCrossAreaSummary(x); updateAreasProgress(x); });
 }
 
 function editarArea(area) {
@@ -1738,6 +1765,24 @@ function renderScopeChips(containerId) {
   const stdChips = active.map(k => `<span class="recap-chip">${TYPE_LABEL[k]}</span>`).join('');
   const cpChips = activeCPs.map(p => `<span class="recap-chip" style="border-color:var(--blue);color:var(--blue)">${p.name}</span>`).join('');
   cont.innerHTML = (stdChips + cpChips) || '<span class="recap-chip muted">No asignada a ningún proceso activo</span>';
+}
+
+function toggleCrossAreaAccordion(area) {
+  const body    = document.getElementById('cross-summary-' + area + '-body');
+  const chevron = document.getElementById('cross-chevron-' + area);
+  if (!body) return;
+  const isOpen = !body.classList.contains('collapsed');
+  body.classList.toggle('collapsed', isOpen);
+  if (chevron) chevron.classList.toggle('open', !isOpen);
+}
+
+function updateAreasProgress(area) {
+  const el = document.getElementById('areas-progress-' + area);
+  if (!el) return;
+  const others = AREAS.filter(a => a !== area && isAreaRequired(a));
+  if (!others.length) { el.textContent = ''; return; }
+  const saved = others.filter(a => st.areas[a].locked).length;
+  el.textContent = `${saved} de ${others.length} otras áreas han guardado`;
 }
 
 function renderCrossAreaSummary(area) {
@@ -2311,6 +2356,8 @@ function renderAllAlerts() {
     renderReviewAlerts(a);
     renderCrossAreaSummary(a);
   });
+  renderCrossAreaSummary('abastecimiento');
+  AREAS.forEach(a => updateAreasProgress(a));
   // Actualizar resumen comprimido en slides 12/13 si están visibles
   renderCompactAreaAlerts('syncCompactAlerts');
   renderCompactAreaAlerts('reportCompactAlerts');
@@ -2362,6 +2409,15 @@ function renderAllAreasSummary(containerId) {
     </div>`;
   }).join('');
   container.innerHTML = cards || '<div style="font-size:.75rem;color:var(--gray);padding:.5rem">Sin áreas activas</div>';
+  reIcons();
+  // Actualizar meta del accordion con el contador de áreas guardadas
+  const metaEl = document.getElementById('cross-summary-' + area + '-meta');
+  if (metaEl) {
+    const others = AREAS.filter(a => a !== area && isAreaRequired(a));
+    const saved  = others.filter(a => st.areas[a].locked).length;
+    metaEl.textContent = others.length ? `${saved} de ${others.length} guardadas` : '';
+  }
+  updateAreasProgress(area);
 }
 
 function renderCompactAreaAlerts(containerId) {
@@ -2885,7 +2941,8 @@ function applyStateToUI() {
   renderRequiredAreas();
   renderAbastRecap();
   AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
-  AREAS.filter(a => a !== 'abastecimiento').forEach(a => renderCrossAreaSummary(a));
+  AREAS.forEach(a => renderCrossAreaSummary(a));
+  AREAS.forEach(a => updateAreasProgress(a));
   AREAS.forEach(a => applyAreaSaveUI(a));
   renderWorkflowReviewers();
   updateAreaTags();
