@@ -236,6 +236,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .alert-tip{display:inline-flex;align-items:center;justify-content:center;width:.7rem;height:.7rem;border-radius:50%;
   background:rgba(0,0,0,.07);color:var(--gray);font-size:.5rem;font-weight:700;cursor:default;
   position:relative;flex-shrink:0;letter-spacing:0;font-style:italic;margin-left:.35rem;vertical-align:middle;}
+.alert-tab.active .alert-tip{background:rgba(255,255,255,.2);color:rgba(255,255,255,.85);}
 .alert-tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + .4rem);left:50%;transform:translateX(-50%);
   background:#1e293b;color:#fff;font-size:.64rem;font-weight:400;padding:.4rem .55rem;border-radius:.35rem;
   width:210px;white-space:normal;line-height:1.45;z-index:200;opacity:0;pointer-events:none;transition:opacity .15s;
@@ -2100,11 +2101,11 @@ const DOC_SEGMENTS = [
 const STD_PROCESS_KEYS = ['express','completa','reforzada','internacional','subcontratacion'];
 
 const PROCESS_TEMPLATES = [
-  { id:'express',        name:'Proveedor Spot',          desc:'Evaluación express para proveedores ocasionales o de bajo monto.' },
-  { id:'completa',       name:'Proveedor General',       desc:'Revisión completa para proveedores recurrentes.' },
-  { id:'reforzada',      name:'Proveedor Crítico',       desc:'Due diligence reforzado para proveedores de alto impacto.' },
-  { id:'internacional',  name:'Proveedor Internacional', desc:'Para proveedores o servicios desde el extranjero.' },
-  { id:'subcontratacion',name:'Subcontratación',         desc:'Proveedores con trabajadores en faena propia.' },
+  { id:'express',        name:'Proveedor Spot',          desc:'Compra menor a USD 20.000. Mínima fricción para compras de bajo monto. Cubre el riesgo legal básico sin ralentizar el proceso de compra.' },
+  { id:'completa',       name:'Proveedor General',       desc:'Compra entre USD 20.000 y USD 100.000. Revisión legal y financiera estándar. Equilibra rigurosidad con agilidad para contratos de mediana envergadura.' },
+  { id:'reforzada',      name:'Proveedor Crítico',       desc:'Compra mayor a USD 100.000. Evaluación exhaustiva en todas las áreas. Para proveedores cuya falla podría comprometer la operación o reputación de la empresa.' },
+  { id:'internacional',  name:'Proveedor Internacional', desc:'Proveedor con domicilio fuera de Chile. Documentación equivalente y verificación contra listas de sanciones globales. Aplica independiente del monto.' },
+  { id:'subcontratacion',name:'Subcontratación',         desc:'Proveedor con trabajadores en tus instalaciones (Ley 20.123). Protege a tu empresa de la responsabilidad solidaria por deudas laborales y previsionales del contratista.' },
 ];
 
 function getDefaultDocConfig(processKey) {
@@ -2345,13 +2346,14 @@ function getAreaActiveDocs(area) {
     if (!v || !isAreaAssigned(k, area)) return;
     const cfg = getProcessDocConfig(k);
     const docs = Object.entries(cfg).map(([j, s]) => ({ idx:+j, name:DOCS[+j]?.name, req:s })).filter(d => d.name);
-    if (docs.length) result.push({ processKey:k, label:TYPE_LABEL[k]||k, docs });
+    const tpl = PROCESS_TEMPLATES.find(t => t.id === k);
+    if (docs.length) result.push({ processKey:k, label:TYPE_LABEL[k]||k, docs, desc: tpl?.desc||'' });
   });
   (st.customProcesses||[]).forEach((p, i) => {
     if (!p.saved || p.active===false || !isAreaAssigned('cp_'+i, area)) return;
     const cfg = p.docConfig||{};
     const docs = Object.entries(cfg).map(([j, s]) => ({ idx:+j, name:DOCS[+j]?.name, req:s })).filter(d => d.name);
-    result.push({ processKey:'cp_'+i, label:p.name, docs });
+    result.push({ processKey:'cp_'+i, label:p.name, docs, desc: p.description||'' });
   });
   return result;
 }
@@ -2452,7 +2454,8 @@ function renderAreaDocReview(area) {
     const badge = total || '—';
     const cpIdx = proc.processKey.startsWith('cp_') ? proc.processKey.slice(3) : null;
     const removeX = cpIdx !== null ? `<span onclick="event.stopPropagation();removeCustomProcess(${cpIdx})" title="Eliminar proceso" style="margin-left:.25rem;opacity:.6;font-size:.75rem;line-height:1;cursor:pointer;">×</span>` : '';
-    return `<button class="alert-tab${proc.processKey===savedKey?' active':''}" onclick="switchDocTab('${area}','${proc.processKey}')">${proc.label}<span class="alert-tab-badge">${badge}</span>${removeX}</button>`;
+    const tipHtml = proc.desc ? `<span class="alert-tip" data-tip="${proc.desc.replace(/"/g,'&quot;')}" onclick="event.stopPropagation()">i</span>` : '';
+    return `<button class="alert-tab${proc.processKey===savedKey?' active':''}" onclick="switchDocTab('${area}','${proc.processKey}')">${proc.label}${tipHtml}<span class="alert-tab-badge">${badge}</span>${removeX}</button>`;
   }).join('')}<button class="alert-tab" onclick="openNewProcessModal('${area}')" title="Crear proceso personalizado" style="padding:.25rem .6rem;font-weight:900;font-size:1rem;line-height:1;flex-shrink:0;">+</button></div>`;
 
   const panelsHtml = processes.map(proc => {
