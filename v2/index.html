@@ -1720,7 +1720,10 @@ function renderWorkflowReviewers() {
     }).join('');
 
     // Manuales: separar confirmados (chip) de pendientes (input)
-    const manualAll = assigned.filter(r => !pool.some(p => p.name===r.name && p.email===r.email));
+    // Excluir cualquiera que coincida con el pool por nombre O por email (evita duplicados)
+    const isInPool = r => pool.some(p =>
+      (p.name && r.name && p.name===r.name) || (p.email && r.email && p.email===r.email));
+    const manualAll = assigned.filter(r => !isInPool(r));
     const manualConfirmed = manualAll.filter(r => r.confirmed);
     const manualPending   = manualAll.filter(r => !r.confirmed);
     const manualChips = manualConfirmed.map((r, mi) => {
@@ -1768,15 +1771,15 @@ function renderWorkflowReviewers() {
 
 function togglePoolReviewer(group, name, email) {
   if (!st.workflowReviewers) st.workflowReviewers = {};
-  if (!st.workflowReviewers[group]) st.workflowReviewers[group] = [];
-  const arr = st.workflowReviewers[group];
-  const idx = arr.findIndex(r => r.name === name && r.email === email);
-  if (idx >= 0) arr.splice(idx, 1); else arr.push({ name, email });
+  const arr = st.workflowReviewers[group] || [];
+  const already = arr.find(r => r.name===name && r.email===email);
+  // Un solo revisor por grupo: reemplazar o deseleccionar
+  st.workflowReviewers[group] = already ? [] : [{ name, email }];
   renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
 }
 function addManualReviewer(group) {
-  if (!st.workflowReviewers[group]) st.workflowReviewers[group] = [];
-  st.workflowReviewers[group].push({ name:'', email:'' });
+  // Solo un revisor: limpiar y agregar input vacío
+  st.workflowReviewers[group] = [{ name:'', email:'' }];
   renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
 }
 function removeManualReviewer(group, pendingIdx) {
@@ -1804,9 +1807,12 @@ function saveManualReviewer(group, pendingIdx, field, val) {
 function confirmManualReviewer(group, pendingIdx) {
   const pool = getReviewerPool();
   const arr  = st.workflowReviewers[group] || [];
-  const pending = arr.filter(r => !pool.some(p => p.name===r.name && p.email===r.email) && !r.confirmed);
+  const isInPool = r => pool.some(p =>
+    (p.name && r.name && p.name===r.name) || (p.email && r.email && p.email===r.email));
+  const pending = arr.filter(r => !isInPool(r) && !r.confirmed);
   const target = pending[pendingIdx]; if (!target || (!target.name && !target.email)) return;
-  target.confirmed = true;
+  // Un solo revisor: reemplazar con el confirmado
+  st.workflowReviewers[group] = [{ name: target.name, email: target.email, confirmed: true }];
   renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
 }
 function _resetReviewerSaveBtn() {
