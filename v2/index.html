@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
 <style>
 :root {
   /* Paleta oficial Plutto 2026 */
@@ -492,6 +493,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   .btn-copy { width: 100%; text-align: center; padding: .5rem; }
   .chip-lbl { display: none; }
 }
+/* LUCIDE ICONS */
+.lucide{display:inline-block;vertical-align:middle;flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -526,7 +529,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 <div id="sent-banner">
-  ✓ Esta sesión ya fue enviada el <strong id="sent-date"></strong>. Puedes volver a enviar si necesitas actualizar el reporte.
+  <i data-lucide="check-circle" style="width:.9rem;height:.9rem;margin-right:.3rem;vertical-align:middle;"></i>Esta sesión ya fue enviada el <strong id="sent-date"></strong>. Puedes volver a enviar si necesitas actualizar el reporte.
   <button id="sent-banner-close" onclick="document.getElementById('sent-banner').style.display='none'">✕</button>
 </div>
 <div id="progress"></div>
@@ -545,7 +548,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <button class="btn-primary" onclick="startSession()">Comenzar sesión →</button>
   </div>
   <div class="session-link-box" id="session-link-box">
-    <p>Comparte este link con todas las áreas para que completen su sección:</p>
+    <p style="display:flex;align-items:center;gap:.375rem;"><i data-lucide="link" style="width:.85rem;height:.85rem;flex-shrink:0;"></i>Comparte este link con todas las áreas para que completen su sección:</p>
     <div class="session-link-row">
       <div class="session-link-url" id="session-link-url"></div>
       <button class="btn-copy" id="btn-copy" onclick="copySessionLink()">Copiar</button>
@@ -561,7 +564,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   <div class="s-body" style="display:flex;flex-direction:column;gap:1rem;overflow:hidden;">
     <!-- Card destacada — riesgo operacional -->
     <div class="card" style="display:flex;flex-direction:row;align-items:center;gap:1.5rem;padding:1.375rem 2rem;flex-shrink:0;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
-      <div style="font-size:2.25rem;flex-shrink:0;">▲</div>
+      <div style="flex-shrink:0;color:var(--accent);display:flex;"><i data-lucide="alert-triangle" style="width:2.25rem;height:2.25rem;stroke-width:1.5;"></i></div>
       <div style="flex:1;">
         <span class="law" style="background:var(--navy);color:white;">Riesgo operacional</span>
         <h3 style="font-size:1.05rem;margin:.375rem 0 .25rem;">Tu operación y reputación</h3>
@@ -571,25 +574,25 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <!-- Grid 4 cards legales — llenan ancho y alto -->
     <div class="legal-grid" style="flex:1;min-height:0;">
       <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
-        <div style="font-size:2rem;">§</div>
+        <div><i data-lucide="scale" style="width:2rem;height:2rem;stroke-width:1.5;"></i></div>
         <span class="law" style="background:var(--navy);color:white;width:fit-content;">Ley 20.393</span>
         <h3 style="font-size:1rem;margin:0;">Responsabilidad penal</h3>
         <p style="font-size:.85rem;color:var(--gray);line-height:1.7;margin:0;">Obliga a evaluar proveedores <strong>antes de contratarlos</strong>. Sin due diligence, la empresa responde penalmente por delitos del proveedor: multas, inhabilitaciones y clausura.</p>
       </div>
       <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
-        <div style="font-size:2rem;">◎</div>
+        <div><i data-lucide="search" style="width:2rem;height:2rem;stroke-width:1.5;"></i></div>
         <span class="law" style="background:var(--navy);color:white;width:fit-content;">Ley 19.913</span>
         <h3 style="font-size:1rem;margin:0;">Lavado de activos</h3>
         <p style="font-size:.85rem;color:var(--gray);line-height:1.7;margin:0;">Exige identificar <strong>beneficiarios finales</strong> y verificar que no estén en listas de sanciones (OFAC, ONU, UE) antes de contratar y durante la relación.</p>
       </div>
       <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
-        <div style="font-size:2rem;">↻</div>
+        <div><i data-lucide="refresh-cw" style="width:2rem;height:2rem;stroke-width:1.5;"></i></div>
         <span class="law" style="background:var(--navy);color:white;width:fit-content;">Ley 21.595</span>
         <h3 style="font-size:1rem;margin:0;">Monitoreo continuo</h3>
         <p style="font-size:.85rem;color:var(--gray);line-height:1.7;margin:0;">No basta con evaluar una vez: obliga a <strong>monitorear permanentemente</strong> a los proveedores activos. Si surge un problema no detectado, la empresa también responde.</p>
       </div>
       <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--accent);background:linear-gradient(135deg,#F5F4FF 0%,var(--white) 100%);">
-        <div style="font-size:2rem;">◈</div>
+        <div><i data-lucide="users" style="width:2rem;height:2rem;stroke-width:1.5;"></i></div>
         <span class="law" style="background:var(--navy);color:white;width:fit-content;">Ley 20.123</span>
         <h3 style="font-size:1rem;margin:0;">Subcontratación</h3>
         <p style="font-size:.85rem;color:var(--gray);line-height:1.7;margin:0;">La empresa mandante es <strong>solidariamente responsable</strong> de las obligaciones laborales y previsionales del contratista frente a sus trabajadores.</p>
@@ -707,7 +710,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <!-- Fase 1: Comprador del proyecto -->
       <div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem;display:flex;flex-direction:column;gap:.625rem;">
         <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem;">
-          <span style="font-size:1.5rem">◉</span>
+          <i data-lucide="building-2" style="width:1.5rem;height:1.5rem;stroke-width:1.75;flex-shrink:0;color:var(--navy);"></i>
           <div>
             <div style="font-size:.85rem;font-weight:800;color:var(--navy)">FASE 1</div>
             <div style="font-size:.7rem;color:var(--gray);font-weight:600">PANORAMA GENERAL</div>
@@ -725,7 +728,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <!-- Fase 2: Áreas revisoras -->
       <div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem;display:flex;flex-direction:column;gap:.625rem;">
         <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem;">
-          <span style="font-size:1.5rem">◎</span>
+          <i data-lucide="users" style="width:1.5rem;height:1.5rem;stroke-width:1.75;flex-shrink:0;color:var(--navy);"></i>
           <div>
             <div style="font-size:.85rem;font-weight:800;color:var(--navy)">FASE 2</div>
             <div style="font-size:.7rem;color:var(--gray);font-weight:600">REVISIÓN POR ÁREA</div>
@@ -744,7 +747,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <!-- Fase 3: Sesión sincronizada -->
       <div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem;display:flex;flex-direction:column;gap:.625rem;">
         <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem;">
-          <span style="font-size:1.5rem">◆</span>
+          <i data-lucide="check-circle" style="width:1.5rem;height:1.5rem;stroke-width:1.75;flex-shrink:0;color:var(--navy);"></i>
           <div>
             <div style="font-size:.85rem;font-weight:800;color:var(--navy)">FASE 3</div>
             <div style="font-size:.7rem;color:var(--gray);font-weight:600">ALINEACIÓN FINAL</div>
@@ -759,8 +762,8 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         </ul>
       </div>
     </div>
-    <div class="warn-box" style="margin-top:1.5rem"><strong>Importante:</strong> Cada área verá TODAS las alertas (contexto completo), pero solo podrá editar las de su especialidad. El estado se actualiza en tiempo real conforme cada persona comenta y hace cambios.</div>
-  </div>
+    <div class="warn-box" style="margin-top:1.5rem;display:flex;align-items:flex-start;gap:.5rem;"><i data-lucide="info" style="width:.9rem;height:.9rem;flex-shrink:0;margin-top:.1rem;"></i><div><strong>Importante:</strong> Cada área verá TODAS las alertas (contexto completo), pero solo podrá editar las de su especialidad. El estado se actualiza en tiempo real conforme cada persona comenta y hace cambios.</div>
+  </div></div>
 </div>
 
 <!-- ── 4: LAS 6 PREGUNTAS DEL FILTRO ── -->
@@ -814,7 +817,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         </div>
       </div>
     </div>
-    <div class="warn-box" style="margin-top:1rem"><strong>Cómo se traduce:</strong> mientras más respuestas afirmativas, más profundo el proceso — desde <strong>Proveedor Spot</strong> (todo No) hasta <strong>Proveedor Crítico</strong> (dos o más Sí o monto sobre USD 100k). Subcontratación e Internacional se activan por sus preguntas específicas.</div>
+    <div class="warn-box" style="margin-top:1rem;display:flex;align-items:flex-start;gap:.5rem;"><i data-lucide="info" style="width:.9rem;height:.9rem;flex-shrink:0;margin-top:.1rem;"></i><div><strong>Cómo se traduce:</strong> mientras más respuestas afirmativas, más profundo el proceso — desde <strong>Proveedor Spot</strong> (todo No) hasta <strong>Proveedor Crítico</strong> (dos o más Sí o monto sobre USD 100k). Subcontratación e Internacional se activan por sus preguntas específicas.</div></div>
   </div>
 </div>
 
@@ -847,7 +850,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="area-save-footer">
     <button class="btn-area-save-main" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')" style="margin-top:0;">Guardar sección de Abastecimiento</button>
-    <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">Editar</button>
+    <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
     <span class="area-save-status" id="save-status-abastecimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
   </div>
 </div>
@@ -882,7 +885,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="area-save-footer">
     <button class="btn-area-save-main" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')" style="margin-top:0;">Guardar sección de Cumplimiento</button>
-    <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">Editar</button>
+    <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
     <span class="area-save-status" id="save-status-cumplimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
   </div>
 </div>
@@ -917,7 +920,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="area-save-footer">
     <button class="btn-area-save-main" id="save-btn-finanzas" onclick="guardarArea('finanzas')" style="margin-top:0;">Guardar sección de Finanzas</button>
-    <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">Editar</button>
+    <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
     <span class="area-save-status" id="save-status-finanzas" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
   </div>
 </div>
@@ -952,7 +955,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
   <div class="area-save-footer">
     <button class="btn-area-save-main" id="save-btn-legal" onclick="guardarArea('legal')" style="margin-top:0;">Guardar sección de Legal</button>
-    <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')" style="display:none;margin-top:.5rem;width:100%;text-align:center;">Editar</button>
+    <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
     <span class="area-save-status" id="save-status-legal" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
   </div>
 </div>
@@ -1028,7 +1031,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div style="font-size:.875rem;font-weight:700;color:var(--navy);">¿Todo listo?</div>
         <div style="font-size:.8rem;color:var(--gray);">Se enviará el reporte completo al equipo Plutto.</div>
       </div>
-      <button class="btn-send" id="sendBtn" onclick="enviar()">Enviar reporte</button>
+      <button class="btn-send" id="sendBtn" onclick="enviar()"><i data-lucide="send" style="width:.9rem;height:.9rem;margin-right:.4rem;vertical-align:middle;"></i>Enviar reporte</button>
     </div>
     <div id="send-toast" style="display:none;margin-top:.75rem;padding:.625rem 1rem;background:var(--success-bg);border:1px solid var(--success);border-radius:.5rem;font-size:.8rem;color:var(--success);font-weight:600;">✅ Reporte enviado correctamente</div>
   </div>
@@ -1163,6 +1166,7 @@ const st = {
 };
 
 // ── NAVIGATION ──
+function reIcons() { if (window.lucide) window.lucide.createIcons(); }
 function go(n, dir) {
   if (n < 1 || n > TOTAL) return;
   const from = document.querySelector(`.slide[data-n="${cur}"]`);
@@ -1178,7 +1182,7 @@ function go(n, dir) {
   if (n === 10) renderAlertConsolidation();       // Slide 10 (severidad final consolidada)
   if (n === 11) renderWorkflowReviewers();        // Slide 11 (¿Quién revisa qué?)
   if (n >= TOTAL - 1) buildReport();              // Slide 12 (sync) y 13 (reporte)
-  updateNav(); save();
+  updateNav(); save(); setTimeout(reIcons, 60);
 }
 function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
 function prev() { const n = nextVisible(cur, -1); if (n) go(n, -1); }
@@ -1538,7 +1542,7 @@ function setAlertActive(area, i)           { st.areas[area].alerts[i].activa = !
 function setAlertSeverity(area, i, sev)    { st.areas[area].alerts[i].severidad = sev; renderAllAlerts(); save(); }
 function setAlertGroupComment(area, g, val){ if (!st.areas[area].alertGroupComments) st.areas[area].alertGroupComments = {}; st.areas[area].alertGroupComments[g] = val; save(); }
 
-const GROUP_ICON = { 'Tributario':'▣', 'Financiero':'◆', 'Legal y Societario':'§', 'Laboral':'◈', 'Cumplimiento':'◎' };
+const GROUP_ICON = { 'Tributario':'landmark', 'Financiero':'banknote', 'Legal y Societario':'scale', 'Laboral':'hard-hat', 'Cumplimiento':'shield-check' };
 
 // ── CONSOLIDACIÓN DE SEVERIDADES ──
 // Cada área ajusta la severidad de las alertas desde su perspectiva.
@@ -1610,7 +1614,7 @@ function renderAlertConsolidation() {
     }).join('');
     return `<div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem 1.125rem;margin-bottom:.875rem;">
       <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
-        <span style="font-size:1.1rem;">${GROUP_ICON[g]||''}</span>
+        <i data-lucide="${GROUP_ICON[g]||''}" style="width:1.1rem;height:1.1rem;stroke-width:2;vertical-align:middle;flex-shrink:0;"></i>
         <h3 style="font-size:.9rem;font-weight:800;color:var(--navy);margin:0;">${g}</h3>
       </div>
       ${rows}
@@ -1620,6 +1624,7 @@ function renderAlertConsolidation() {
   const banner = `<div class="warn-box" style="margin-bottom:.875rem;"> A partir del análisis de cada área, se determina la severidad final de cada alerta tomando la más alta. <strong>Esta es la severidad que regirá el monitoreo.</strong></div>`;
 
   cont.innerHTML = banner + (groupCards || '<div style="font-size:.85rem;color:var(--gray);text-align:center;padding:1rem;">No hay alertas activas configuradas.</div>');
+  reIcons();
 }
 
 function renderWorkflowReviewers() {
@@ -1650,7 +1655,7 @@ function renderWorkflowReviewers() {
     ).join('');
     return `<div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem 1.25rem;margin-bottom:.875rem;">
       <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.625rem;">
-        <span style="font-size:1.25rem;">${GROUP_ICON[g]||''}</span>
+        <i data-lucide="${GROUP_ICON[g]||''}" style="width:1.25rem;height:1.25rem;stroke-width:2;vertical-align:middle;flex-shrink:0;"></i>
         <h3 style="font-size:.95rem;font-weight:800;color:var(--navy);margin:0;flex:1;">${g}</h3>
         <span style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--danger);background:var(--danger-bg);border:1px solid #FCA5A5;border-radius:1rem;padding:.15rem .6rem;">${graveMap[g].length} alerta${graveMap[g].length>1?'s':''} grave${graveMap[g].length>1?'s':''}</span>
       </div>
@@ -1660,6 +1665,7 @@ function renderWorkflowReviewers() {
       <button onclick="addWorkflowReviewer('${g}')" style="display:inline-flex;align-items:center;gap:.375rem;background:transparent;border:1.5px dashed var(--gray-border);border-radius:.5rem;padding:.4rem .8rem;font-size:.78rem;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--font);">+ Agregar responsable</button>
     </div>`;
   }).join('');
+  reIcons();
 }
 
 function addWorkflowReviewer(group) {
@@ -1991,7 +1997,7 @@ function renderCustomProcesses() {
         <div id="cp-docs-${i}" style="display:none;margin-top:.5rem;padding:.625rem .75rem;background:var(--gray-light);border-radius:.5rem;">
           <div id="cp-doc-rows-${i}">${renderCPDocRows(i)}</div>
         </div>
-        <button onclick="editCustomProcess(${i})" style="font-size:.7rem;color:var(--gray);background:none;border:none;cursor:pointer;padding:.25rem 0 0;display:block;margin-top:.1rem;">Editar nombre</button>
+        <button onclick="editCustomProcess(${i})" style="font-size:.7rem;color:var(--gray);background:none;border:none;cursor:pointer;padding:.25rem 0 0;display:block;margin-top:.1rem;"><i data-lucide="pencil" style="width:.75rem;height:.75rem;margin-right:.25rem;vertical-align:middle;"></i>Editar nombre</button>
       </div>
       <button class="cp-remove" onclick="removeCustomProcess(${i})" title="Eliminar">✕</button>
     </div>`;
@@ -2896,6 +2902,7 @@ window.addEventListener('focus', () => {
 });
 
 updateNav();
+reIcons();
 </script>
 </body>
 </html>
