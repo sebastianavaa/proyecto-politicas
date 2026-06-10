@@ -542,7 +542,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--navy);margin-bottom:.375rem;">Nombre del proceso</div>
       <input type="text" id="new-process-input" placeholder="Ej: Proveedor Tecnológico"
         style="width:100%;padding:.625rem .875rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.875rem;font-family:var(--font);color:var(--text);outline:none;box-sizing:border-box;"
-        onkeydown="if(event.key==='Enter')confirmNewProcess();if(event.key==='Escape')closeNewProcessModal();">
+        onkeydown="if(event.key==='Enter')document.getElementById('new-process-desc').focus();if(event.key==='Escape')closeNewProcessModal();">
+    </div>
+    <div style="margin-bottom:.75rem;">
+      <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--navy);margin-bottom:.375rem;">¿Cuándo aplica este proceso? <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6;">(opcional)</span></div>
+      <textarea id="new-process-desc" placeholder="Ej: Para proveedores de tecnología con acceso a datos sensibles." rows="2"
+        style="width:100%;padding:.625rem .875rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.8rem;font-family:var(--font);color:var(--text);outline:none;box-sizing:border-box;resize:none;line-height:1.5;"
+        onkeydown="if(event.key==='Escape')closeNewProcessModal();"></textarea>
     </div>
     <div id="new-process-error" style="display:none;font-size:.75rem;color:var(--danger);margin-bottom:.5rem;"></div>
     <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem;">
@@ -2383,6 +2389,8 @@ function openNewProcessModal(area) {
   const input = document.getElementById('new-process-input');
   const err   = document.getElementById('new-process-error');
   input.value = '';
+  const descInput = document.getElementById('new-process-desc');
+  if (descInput) descInput.value = '';
   err.style.display = 'none';
   // Renderizar chips de plantillas
   const chipsContainer = document.querySelector('#new-process-modal [style*="flex-wrap:wrap"]');
@@ -2416,7 +2424,8 @@ function confirmNewProcess() {
   }
   const tpl = _selectedTemplate ? PROCESS_TEMPLATES.find(t => t.id === _selectedTemplate) : null;
   const docConfig = tpl ? { ...getDefaultDocConfig(tpl.id) } : {};
-  st.customProcesses.push({ name, description: tpl ? tpl.desc : '', docs:[], docConfig, saved:true, active:true });
+  const desc = (document.getElementById('new-process-desc')?.value || '').trim() || (tpl ? tpl.desc : '');
+  st.customProcesses.push({ name, description: desc, docs:[], docConfig, saved:true, active:true });
   const newIdx  = st.customProcesses.length - 1;
   const area    = _newProcessArea;
   closeNewProcessModal();
