@@ -237,6 +237,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   background:rgba(0,0,0,.07);color:var(--gray);font-size:.5rem;font-weight:700;cursor:default;
   position:relative;flex-shrink:0;letter-spacing:0;font-style:italic;margin-left:.35rem;vertical-align:middle;}
 .alert-tab.active .alert-tip{background:rgba(255,255,255,.2);color:rgba(255,255,255,.85);}
+.alert-tab .alert-tip::after{top:calc(100% + .4rem);bottom:auto;}
 .alert-tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + .4rem);left:50%;transform:translateX(-50%);
   background:#1e293b;color:#fff;font-size:.64rem;font-weight:400;padding:.4rem .55rem;border-radius:.35rem;
   width:210px;white-space:normal;line-height:1.45;z-index:200;opacity:0;pointer-events:none;transition:opacity .15s;
