@@ -20,7 +20,7 @@
       "typeVersion": 2,
       "position": [460, 300],
       "parameters": {
-        "jsCode": "// Payload v2 modular desde buildExportPayload()\nlet raw;\ntry {\n  raw = typeof $input.first().json.body === 'string'\n    ? JSON.parse($input.first().json.body)\n    : ($input.first().json.body || $input.first().json);\n} catch(e) {\n  raw = $input.first().json;\n}\n\nconst meta = raw.meta || {};\nconst m1   = raw.modulo_1_configuracion || {};\nconst m2b  = raw.modulo_2b_severidad_consolidada || {};\nconst m4   = raw.modulo_4_responsables || {};\nconst m4b  = raw.modulo_4b_flujos_revision || {};\nconst m5   = raw.modulo_5_observaciones || {};\n\n// ── Procesos ──\nconst procesosEstandar = Object.entries(m1.tiposEvaluacion || {})\n  .filter(([,v]) => v.activo).map(([,v]) => v.nombre).join(', ');\nconst procesosCustom = (m1.procesosPersonalizados || [])\n  .filter(p => p.activo).map(p => p.nombre).join(', ');\n\n// ── Alertas graves consolidadas ──\nconst alertasGraves = (m2b.alertas || []).filter(a => a.severidadFinal === 'grave');\nconst alertasGravesTotal = alertasGraves.length;\nconst alertasGravesGrupos = [...new Set(alertasGraves.map(a => a.grupo))].join(', ');\n\n// ── Revisores por grupo ──\nconst porTema = m4b.porTema || {};\nconst revisoresLinea = Object.entries(porTema).map(([g, data]) => {\n  const r = (data.revisores || [])[0];\n  const nombre = r ? (r.nombre || r.email || 'Sin asignar') : 'Sin asignar';\n  return `${g}: ${nombre}`;\n}).join(' | ');\n\n// ── Responsables por área ──\nconst AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];\nconst LABELS = { abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal' };\nconst porArea = m4.porArea || {};\nconst resps = {};\nAREAS.forEach(a => {\n  resps[`resp_${a}_nombre`] = porArea[a]?.encargado?.nombre || '';\n  resps[`resp_${a}_email`]  = porArea[a]?.encargado?.email  || '';\n  resps[`guardado_${a}`]    = porArea[a]?.guardado ? 'sí' : 'no';\n});\n\n// ── Notas por área ──\nconst notasAreas = AREAS.map(a => {\n  const n = m5.observacionesPorArea?.[a];\n  return n ? `${LABELS[a]}: ${n}` : '';\n}).filter(Boolean).join(' | ');\n\n// ── Mensaje Slack ──\nconst alertasSlack = Object.entries(porTema).map(([g, data]) => {\n  const r = (data.revisores || [])[0];\n  const revisor = r ? (r.nombre || r.email || 'Sin asignar') : 'Sin asignar';\n  const chips = (data.alertasGraves || []).join(', ');\n  return `• 🔴 *${g}* → ${revisor}\\n  _${chips}_`;\n}).join('\\n');\n\nconst respSlack = AREAS\n  .filter(a => porArea[a]?.encargado?.nombre || porArea[a]?.encargado?.email)\n  .map(a => {\n    const enc = porArea[a].encargado;\n    return `• *${LABELS[a]}:* ${enc.nombre || ''} ${enc.email ? `(${enc.email})` : ''}`.trim();\n  }).join('\\n');\n\nconst fechaFormato = meta.timestamp\n  ? new Date(meta.timestamp).toLocaleDateString('es-CL', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })\n  : '';\n\nconst slackLines = [\n  ':clipboard: *Nueva política de DD Proveedores completada*',\n  '',\n  `*Empresa:* ${meta.empresa || '(sin nombre)'}`,\n  `*Email CS:* ${meta.email || '(sin email)'}`,\n  `*Fecha:* ${fechaFormato}`,\n  `*Áreas participantes:* ${(meta.areasParticipantes || []).join(', ')}`,\n  '',\n  `*Procesos activos:* ${[procesosEstandar, procesosCustom].filter(Boolean).join(' + ') || 'Ninguno'}`,\n  '',\n  alertasGravesTotal > 0\n    ? `*Alertas graves (${alertasGravesTotal}) y revisores:*\\n${alertasSlack}`\n    : '*Alertas graves:* ninguna',\n  '',\n  respSlack ? `*Responsables por área:*\\n${respSlack}` : '',\n  m5.notasSincronizacion ? `\\n*Notas de sincronización:* _${m5.notasSincronizacion}_` : '',\n].filter(s => s !== undefined).join('\\n');\n\nreturn [{ json: {\n  // Meta\n  empresa:              meta.empresa || '',\n  email:                meta.email || '',\n  timestamp:            meta.timestamp || '',\n  session_id:           meta.sessionId || '',\n  areas_participantes:  (meta.areasParticipantes || []).join(', '),\n  // Procesos\n  procesos_estandar:    procesosEstandar,\n  procesos_custom:      procesosCustom,\n  // Alertas\n  alertas_graves_total: alertasGravesTotal,\n  alertas_graves_grupos: alertasGravesGrupos,\n  revisores_por_grupo:  revisoresLinea,\n  // Responsables\n  ...resps,\n  // Notas\n  notas_areas:          notasAreas,\n  notas_sincronizacion: m5.notasSincronizacion || '',\n  // Para Slack\n  _slack_msg: slackLines,\n}}];"
+        "jsCode": "let raw;\ntry {\n  raw = typeof $input.first().json.body === 'string'\n    ? JSON.parse($input.first().json.body)\n    : ($input.first().json.body || $input.first().json);\n} catch(e) { raw = $input.first().json; }\n\nconst meta = raw.meta  || {};\nconst m1   = raw.modulo_1_configuracion         || {};\nconst m1b  = raw.modulo_1b_documentos_por_proceso || {};\nconst m2b  = raw.modulo_2b_severidad_consolidada  || {};\nconst m4   = raw.modulo_4_responsables            || {};\nconst m4b  = raw.modulo_4b_flujos_revision        || {};\nconst m5   = raw.modulo_5_observaciones           || {};\n\n// ── Procesos estándar ──\nconst evalTypes  = m1.tiposEvaluacion || {};\nconst matriz     = m1.matrizProcesoArea || [];\nconst customProc = (m1.procesosPersonalizados || []).filter(p => p.activo);\nconst PROC_MAP   = { express:'spot', completa:'general', reforzada:'critico', internacional:'internacional', subcontratacion:'subcontratacion' };\nconst PROC_NOMBRES = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };\n\nconst procCols = {};\nObject.entries(PROC_MAP).forEach(([key, slug]) => {\n  const activo = !!evalTypes[key]?.activo;\n  procCols[`proceso_${slug}_activo`] = activo ? 'sí' : 'no';\n  const row = matriz.find(r => r.proceso === PROC_NOMBRES[key]);\n  procCols[`proceso_${slug}_areas`] = activo && row\n    ? Object.entries(row.areas).filter(([,v]) => v).map(([a]) => a).join(', ')\n    : '';\n});\nprocCols.procesos_custom_nombres = customProc.map(p => p.nombre).join(', ');\nprocCols.procesos_custom_areas   = customProc.map(p => {\n  const row = matriz.find(r => r.proceso === p.nombre);\n  return row ? Object.entries(row.areas).filter(([,v]) => v).map(([a]) => a).join(', ') : '';\n}).join(' | ');\n\n// ── Documentos por proceso ──\nconst docsPP  = m1b.porProceso || [];\nconst docCols = {};\nconst SLUG_PROC = { 'Proveedor Spot':'spot', 'Proveedor General':'general', 'Proveedor Crítico':'critico', 'Proveedor Internacional':'internacional', 'Subcontratación':'subcontratacion' };\nObject.entries(SLUG_PROC).forEach(([nombre, slug]) => {\n  const proc = docsPP.find(p => p.proceso === nombre);\n  docCols[`docs_req_${slug}`] = proc ? proc.documentos.filter(d => d.estado==='requerido').map(d => d.documento).join(', ') : '';\n  docCols[`docs_opc_${slug}`] = proc ? proc.documentos.filter(d => d.estado==='opcional').map(d => d.documento).join(', ')  : '';\n});\ndocCols.docs_custom_resumen = customProc.map(p => {\n  const req = (p.documentos||[]).filter(d => d.estado==='requerido'||d.estado==='req').map(d=>d.documento).join(', ');\n  const opc = (p.documentos||[]).filter(d => d.estado==='opcional' ||d.estado==='opc').map(d=>d.documento).join(', ');\n  return `${p.nombre}: req[${req||'ninguno'}] opc[${opc||'ninguno'}]`;\n}).join(' | ');\n\n// ── Alertas consolidadas por grupo ──\nconst alertasAll = m2b.alertas || [];\nconst porTema    = m4b.porTema || {};\nconst SEV_RANK   = { leve:0, media:1, grave:2 };\nconst SEV_ICON   = { leve:'🔵', media:'🟡', grave:'🔴' };\nconst GROUPS = [\n  ['Tributario','tributario'],\n  ['Financiero','financiero'],\n  ['Legal y Societario','legal_societario'],\n  ['Laboral','laboral'],\n  ['Cumplimiento','cumplimiento'],\n];\nconst alertCols = {};\nGROUPS.forEach(([grupo, slug]) => {\n  const activas = alertasAll.filter(a => a.grupo === grupo);\n  const maxSev  = activas.reduce((b, a) => SEV_RANK[a.severidadFinal] > SEV_RANK[b] ? a.severidadFinal : b, 'leve');\n  const rv      = (porTema[grupo]?.revisores || [])[0];\n  alertCols[`alertas_${slug}`]          = activas.map(a => `${a.alerta}(${a.severidadFinal})`).join(', ') || 'ninguna';\n  alertCols[`alertas_${slug}_severidad`]= activas.length ? maxSev : '';\n  alertCols[`alertas_${slug}_revisor`]  = rv ? (rv.nombre || rv.email || '') : '';\n});\nconst totalActivas = alertasAll.length;\nconst totalGraves  = alertasAll.filter(a => a.severidadFinal==='grave').length;\nconst totalMedias  = alertasAll.filter(a => a.severidadFinal==='media').length;\nconst totalLeves   = alertasAll.filter(a => a.severidadFinal==='leve').length;\n\n// ── Responsables ──\nconst AREAS  = ['abastecimiento','cumplimiento','finanzas','legal'];\nconst LABELS = { abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal' };\nconst porArea  = m4.porArea || {};\nconst respCols = {};\nAREAS.forEach(a => {\n  respCols[`resp_${a}_nombre`] = porArea[a]?.encargado?.nombre || '';\n  respCols[`resp_${a}_email`]  = porArea[a]?.encargado?.email  || '';\n  respCols[`guardado_${a}`]    = porArea[a]?.guardado ? 'sí' : 'no';\n});\n\n// ── Notas por área ──\nconst notasCols = {};\nAREAS.forEach(a => { notasCols[`notas_${a}`] = m5.observacionesPorArea?.[a] || ''; });\nnotasCols.notas_sincronizacion = m5.notasSincronizacion || '';\n\n// ── Slack ──\nconst fechaFormato = meta.timestamp\n  ? new Date(meta.timestamp).toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})\n  : '';\n\nconst procActivos = [\n  ...Object.entries(PROC_MAP).filter(([k]) => evalTypes[k]?.activo).map(([k]) => PROC_NOMBRES[k]),\n  ...customProc.map(p => p.nombre),\n].join(', ');\n\nconst alertasSlack = GROUPS.map(([grupo]) => {\n  const activas = alertasAll.filter(a => a.grupo === grupo);\n  if (!activas.length) return null;\n  const maxSev = activas.reduce((b,a) => SEV_RANK[a.severidadFinal]>SEV_RANK[b]?a.severidadFinal:b,'leve');\n  const rv = (porTema[grupo]?.revisores||[])[0];\n  const revisor = rv ? (rv.nombre||rv.email||'Sin asignar') : 'Sin asignar';\n  return `• ${SEV_ICON[maxSev]} *${grupo}* (${activas.length}) → ${revisor}`;\n}).filter(Boolean).join('\\n');\n\nconst respSlack = AREAS\n  .filter(a => respCols[`resp_${a}_nombre`]||respCols[`resp_${a}_email`])\n  .map(a => `• *${LABELS[a]}:* ${respCols[`resp_${a}_nombre`]} ${respCols[`resp_${a}_email`]?`(${respCols[`resp_${a}_email`]})`:''}`.trim())\n  .join('\\n');\n\nconst slackMsg = [\n  ':clipboard: *Nueva política de DD Proveedores completada*',\n  '',\n  `*Empresa:* ${meta.empresa||'(sin nombre)'}`,\n  `*Email CS:* ${meta.email||'(sin email)'}`,\n  `*Fecha:* ${fechaFormato}`,\n  `*Áreas:* ${(meta.areasParticipantes||[]).join(', ')}`,\n  '',\n  `*Procesos activos:* ${procActivos||'Ninguno'}`,\n  '',\n  totalActivas>0\n    ? `*Alertas: ${totalActivas}* (${totalGraves} 🔴 · ${totalMedias} 🟡 · ${totalLeves} 🔵)\\n${alertasSlack}`\n    : '*Alertas:* ninguna activa',\n  '',\n  respSlack?`*Responsables:*\\n${respSlack}`:'',\n  notasCols.notas_sincronizacion?`\\n*Notas sync:* _${notasCols.notas_sincronizacion}_`:'',\n].filter(s=>s!==undefined).join('\\n');\n\nreturn [{ json: {\n  // Identificación\n  empresa:            meta.empresa||'',\n  email_cs:           meta.email||'',\n  timestamp:          meta.timestamp||'',\n  session_id:         meta.sessionId||'',\n  areas_participantes:(meta.areasParticipantes||[]).join(', '),\n  // Procesos\n  ...procCols,\n  // Documentos por proceso\n  ...docCols,\n  // Alertas resumen\n  alertas_activas_total: totalActivas,\n  alertas_graves_total:  totalGraves,\n  alertas_medias_total:  totalMedias,\n  alertas_leves_total:   totalLeves,\n  // Alertas por grupo\n  ...alertCols,\n  // Responsables\n  ...respCols,\n  // Notas\n  ...notasCols,\n  // Slack\n  _slack_msg: slackMsg,\n}}];"
       }
     },
     {
@@ -31,52 +31,81 @@
       "position": [680, 300],
       "parameters": {
         "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "value": "REEMPLAZAR_CON_ID_DEL_SHEET",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "Sheet1",
-          "mode": "list"
-        },
+        "documentId": { "__rl": true, "value": "REEMPLAZAR_CON_ID_DEL_SHEET", "mode": "id" },
+        "sheetName":  { "__rl": true, "value": "Sheet1", "mode": "list" },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "empresa":                "={{ $json.empresa }}",
-            "email":                  "={{ $json.email }}",
-            "timestamp":              "={{ $json.timestamp }}",
-            "session_id":             "={{ $json.session_id }}",
-            "areas_participantes":    "={{ $json.areas_participantes }}",
-            "procesos_estandar":      "={{ $json.procesos_estandar }}",
-            "procesos_custom":        "={{ $json.procesos_custom }}",
-            "alertas_graves_total":   "={{ $json.alertas_graves_total }}",
-            "alertas_graves_grupos":  "={{ $json.alertas_graves_grupos }}",
-            "revisores_por_grupo":    "={{ $json.revisores_por_grupo }}",
-            "resp_abastecimiento_nombre": "={{ $json.resp_abastecimiento_nombre }}",
-            "resp_abastecimiento_email":  "={{ $json.resp_abastecimiento_email }}",
-            "guardado_abastecimiento":    "={{ $json.guardado_abastecimiento }}",
-            "resp_cumplimiento_nombre":   "={{ $json.resp_cumplimiento_nombre }}",
-            "resp_cumplimiento_email":    "={{ $json.resp_cumplimiento_email }}",
-            "guardado_cumplimiento":      "={{ $json.guardado_cumplimiento }}",
-            "resp_finanzas_nombre":       "={{ $json.resp_finanzas_nombre }}",
-            "resp_finanzas_email":        "={{ $json.resp_finanzas_email }}",
-            "guardado_finanzas":          "={{ $json.guardado_finanzas }}",
-            "resp_legal_nombre":          "={{ $json.resp_legal_nombre }}",
-            "resp_legal_email":           "={{ $json.resp_legal_email }}",
-            "guardado_legal":             "={{ $json.guardado_legal }}",
-            "notas_areas":            "={{ $json.notas_areas }}",
-            "notas_sincronizacion":   "={{ $json.notas_sincronizacion }}"
+            "empresa":                       "={{ $json.empresa }}",
+            "email_cs":                      "={{ $json.email_cs }}",
+            "timestamp":                     "={{ $json.timestamp }}",
+            "session_id":                    "={{ $json.session_id }}",
+            "areas_participantes":           "={{ $json.areas_participantes }}",
+            "proceso_spot_activo":           "={{ $json.proceso_spot_activo }}",
+            "proceso_spot_areas":            "={{ $json.proceso_spot_areas }}",
+            "proceso_general_activo":        "={{ $json.proceso_general_activo }}",
+            "proceso_general_areas":         "={{ $json.proceso_general_areas }}",
+            "proceso_critico_activo":        "={{ $json.proceso_critico_activo }}",
+            "proceso_critico_areas":         "={{ $json.proceso_critico_areas }}",
+            "proceso_internacional_activo":  "={{ $json.proceso_internacional_activo }}",
+            "proceso_internacional_areas":   "={{ $json.proceso_internacional_areas }}",
+            "proceso_subcontratacion_activo":"={{ $json.proceso_subcontratacion_activo }}",
+            "proceso_subcontratacion_areas": "={{ $json.proceso_subcontratacion_areas }}",
+            "procesos_custom_nombres":       "={{ $json.procesos_custom_nombres }}",
+            "procesos_custom_areas":         "={{ $json.procesos_custom_areas }}",
+            "docs_req_spot":                 "={{ $json.docs_req_spot }}",
+            "docs_opc_spot":                 "={{ $json.docs_opc_spot }}",
+            "docs_req_general":              "={{ $json.docs_req_general }}",
+            "docs_opc_general":              "={{ $json.docs_opc_general }}",
+            "docs_req_critico":              "={{ $json.docs_req_critico }}",
+            "docs_opc_critico":              "={{ $json.docs_opc_critico }}",
+            "docs_req_internacional":        "={{ $json.docs_req_internacional }}",
+            "docs_opc_internacional":        "={{ $json.docs_opc_internacional }}",
+            "docs_req_subcontratacion":      "={{ $json.docs_req_subcontratacion }}",
+            "docs_opc_subcontratacion":      "={{ $json.docs_opc_subcontratacion }}",
+            "docs_custom_resumen":           "={{ $json.docs_custom_resumen }}",
+            "alertas_activas_total":         "={{ $json.alertas_activas_total }}",
+            "alertas_graves_total":          "={{ $json.alertas_graves_total }}",
+            "alertas_medias_total":          "={{ $json.alertas_medias_total }}",
+            "alertas_leves_total":           "={{ $json.alertas_leves_total }}",
+            "alertas_tributario":            "={{ $json.alertas_tributario }}",
+            "alertas_tributario_severidad":  "={{ $json.alertas_tributario_severidad }}",
+            "alertas_tributario_revisor":    "={{ $json.alertas_tributario_revisor }}",
+            "alertas_financiero":            "={{ $json.alertas_financiero }}",
+            "alertas_financiero_severidad":  "={{ $json.alertas_financiero_severidad }}",
+            "alertas_financiero_revisor":    "={{ $json.alertas_financiero_revisor }}",
+            "alertas_legal_societario":      "={{ $json.alertas_legal_societario }}",
+            "alertas_legal_societario_severidad": "={{ $json.alertas_legal_societario_severidad }}",
+            "alertas_legal_societario_revisor":   "={{ $json.alertas_legal_societario_revisor }}",
+            "alertas_laboral":               "={{ $json.alertas_laboral }}",
+            "alertas_laboral_severidad":     "={{ $json.alertas_laboral_severidad }}",
+            "alertas_laboral_revisor":       "={{ $json.alertas_laboral_revisor }}",
+            "alertas_cumplimiento":          "={{ $json.alertas_cumplimiento }}",
+            "alertas_cumplimiento_severidad":"={{ $json.alertas_cumplimiento_severidad }}",
+            "alertas_cumplimiento_revisor":  "={{ $json.alertas_cumplimiento_revisor }}",
+            "resp_abastecimiento_nombre":    "={{ $json.resp_abastecimiento_nombre }}",
+            "resp_abastecimiento_email":     "={{ $json.resp_abastecimiento_email }}",
+            "guardado_abastecimiento":       "={{ $json.guardado_abastecimiento }}",
+            "resp_cumplimiento_nombre":      "={{ $json.resp_cumplimiento_nombre }}",
+            "resp_cumplimiento_email":       "={{ $json.resp_cumplimiento_email }}",
+            "guardado_cumplimiento":         "={{ $json.guardado_cumplimiento }}",
+            "resp_finanzas_nombre":          "={{ $json.resp_finanzas_nombre }}",
+            "resp_finanzas_email":           "={{ $json.resp_finanzas_email }}",
+            "guardado_finanzas":             "={{ $json.guardado_finanzas }}",
+            "resp_legal_nombre":             "={{ $json.resp_legal_nombre }}",
+            "resp_legal_email":              "={{ $json.resp_legal_email }}",
+            "guardado_legal":               "={{ $json.guardado_legal }}",
+            "notas_abastecimiento":          "={{ $json.notas_abastecimiento }}",
+            "notas_cumplimiento":            "={{ $json.notas_cumplimiento }}",
+            "notas_finanzas":                "={{ $json.notas_finanzas }}",
+            "notas_legal":                   "={{ $json.notas_legal }}",
+            "notas_sincronizacion":          "={{ $json.notas_sincronizacion }}"
           }
         },
         "options": {}
       },
       "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "CONECTAR_CREDENCIAL",
-          "name": "Google Sheets"
-        }
+        "googleSheetsOAuth2Api": { "id": "CONECTAR_CREDENCIAL", "name": "Google Sheets" }
       }
     },
     {
@@ -92,26 +121,15 @@
         "otherOptions": {}
       },
       "credentials": {
-        "slackApi": {
-          "id": "CONECTAR_CREDENCIAL",
-          "name": "Slack"
-        }
+        "slackApi": { "id": "CONECTAR_CREDENCIAL", "name": "Slack" }
       }
     }
   ],
   "connections": {
-    "Webhook Sesión v2": {
-      "main": [[{ "node": "Parsear Body v2", "type": "main", "index": 0 }]]
-    },
-    "Parsear Body v2": {
-      "main": [[{ "node": "Google Sheets v2", "type": "main", "index": 0 }]]
-    },
-    "Google Sheets v2": {
-      "main": [[{ "node": "Slack Sesión v2", "type": "main", "index": 0 }]]
-    }
+    "Webhook Sesión v2":  { "main": [[{ "node": "Parsear Body v2",   "type": "main", "index": 0 }]] },
+    "Parsear Body v2":    { "main": [[{ "node": "Google Sheets v2",  "type": "main", "index": 0 }]] },
+    "Google Sheets v2":   { "main": [[{ "node": "Slack Sesión v2",   "type": "main", "index": 0 }]] }
   },
   "active": true,
-  "settings": {
-    "executionOrder": "v1"
-  }
+  "settings": { "executionOrder": "v1" }
 }

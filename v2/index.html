@@ -2958,6 +2958,20 @@ function buildExportPayload() {
       })),
     },
 
+    // ── MÓDULO 1b — Documentos requeridos/opcionales por proceso (config global) ──
+    modulo_1b_documentos_por_proceso: {
+      slide: 'Documentos por proceso',
+      porProceso: procesos.map(proc => {
+        const cfg = getProcessDocConfig(proc.key);
+        const docs = DOCS.map((d, j) => {
+          const estado = cfg[j] || null;
+          if (!estado) return null;
+          return { documento: d.name, estado: estado === 'req' ? 'requerido' : 'opcional' };
+        }).filter(Boolean);
+        return { proceso: proc.nombre, tipo: proc.tipo, documentos: docs };
+      }),
+    },
+
     // ── MÓDULO 2 — Alertas (Slides: cada área) ──
     modulo_2_alertas: {
       slide: 'Configuración de alertas por área',
