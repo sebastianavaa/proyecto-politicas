@@ -2456,7 +2456,8 @@ function renderAreaDocReview(area) {
     const badge = total || '—';
     const cpIdx = proc.processKey.startsWith('cp_') ? proc.processKey.slice(3) : null;
     const removeX = cpIdx !== null ? `<span onclick="event.stopPropagation();removeCustomProcess(${cpIdx})" title="Eliminar proceso" style="margin-left:.25rem;opacity:.6;font-size:.75rem;line-height:1;cursor:pointer;">×</span>` : '';
-    const tipHtml = proc.desc ? `<span class="alert-tip" data-tip="${proc.desc.replace(/"/g,'&quot;')}" onclick="event.stopPropagation()" onmouseenter="showTip(this)" onmouseleave="hideTip()"><i data-lucide="info"></i></span>` : '';
+    const tipAttrs = cpIdx !== null ? `data-cp-idx="${cpIdx}"` : '';
+    const tipHtml = proc.desc ? `<span class="alert-tip" data-tip="${proc.desc.replace(/"/g,'&quot;')}" ${tipAttrs} onclick="event.stopPropagation()" onmouseenter="showTip(this)" onmouseleave="hideTip()"><i data-lucide="info"></i></span>` : '';
     return `<button class="alert-tab${proc.processKey===savedKey?' active':''}" onclick="switchDocTab('${area}','${proc.processKey}')">${proc.label}${tipHtml}${removeX}</button>`;
   }).join('')}<button class="alert-tab" onclick="openNewProcessModal('${area}')" title="Crear proceso personalizado" style="padding:.25rem .6rem;font-weight:900;font-size:1rem;line-height:1;flex-shrink:0;">+</button></div>`;
 
@@ -3340,7 +3341,19 @@ reIcons();
 function showTip(el) {
   const tip = document.getElementById('_gtip');
   if (!tip || !el.dataset.tip) return;
-  tip.textContent = el.dataset.tip;
+  tip.innerHTML = '';
+  tip.appendChild(document.createTextNode(el.dataset.tip));
+  const cpIdx = el.dataset.cpIdx;
+  if (cpIdx !== undefined && cpIdx !== '') {
+    const btn = document.createElement('button');
+    btn.title = 'Editar descripción';
+    btn.style.cssText = 'background:none;border:none;cursor:pointer;color:rgba(255,255,255,.65);padding:0;margin-left:.45rem;vertical-align:middle;display:inline-flex;align-items:center;';
+    btn.innerHTML = '<i data-lucide="pencil" style="width:.65rem;height:.65rem;pointer-events:none;"></i>';
+    btn.onclick = () => { editCustomProcess(+cpIdx); hideTip(); };
+    tip.appendChild(btn);
+    if (window.lucide) window.lucide.createIcons({ nodes: [btn] });
+  }
+  tip.style.pointerEvents = cpIdx !== undefined && cpIdx !== '' ? 'auto' : 'none';
   tip.style.display = 'block';
   const r = el.getBoundingClientRect();
   const tw = 210, th = tip.offsetHeight || 60;
@@ -3354,6 +3367,6 @@ function showTip(el) {
 }
 function hideTip() { const t = document.getElementById('_gtip'); if (t) t.style.display = 'none'; }
 </script>
-<div id="_gtip"></div>
+<div id="_gtip" onmouseleave="hideTip()"></div>
 </body>
 </html>
