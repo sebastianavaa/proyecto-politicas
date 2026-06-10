@@ -1910,10 +1910,11 @@ const DOC_SEGMENTS = [
 const STD_PROCESS_KEYS = ['express','completa','reforzada','internacional','subcontratacion'];
 
 const PROCESS_TEMPLATES = [
-  { id:'basico',   name:'Básico',          desc:'Proveedores de bajo riesgo o servicios menores.',       docConfig:{0:'req',1:'req',4:'req',9:'opc'} },
-  { id:'estandar', name:'Estándar',        desc:'Proveedores recurrentes con riesgo medio.',             docConfig:{0:'req',1:'req',2:'req',4:'req',5:'req',6:'req',7:'req',8:'req',9:'req',12:'req',3:'opc',11:'opc'} },
-  { id:'subcontr', name:'Subcontratación', desc:'Proveedores con trabajadores en faena.',               docConfig:{0:'req',1:'req',4:'req',7:'req',13:'req',14:'req',15:'req',9:'opc'} },
-  { id:'intl',     name:'Internacional',   desc:'Proveedores o servicios desde el extranjero.',         docConfig:{0:'req',1:'req',2:'req',3:'req',4:'req',5:'req',6:'req',7:'req',8:'req',9:'req',10:'req',11:'opc',12:'opc'} },
+  { id:'express',        name:'Proveedor Spot',          desc:'Evaluación express para proveedores ocasionales o de bajo monto.' },
+  { id:'completa',       name:'Proveedor General',       desc:'Revisión completa para proveedores recurrentes.' },
+  { id:'reforzada',      name:'Proveedor Crítico',       desc:'Due diligence reforzado para proveedores de alto impacto.' },
+  { id:'internacional',  name:'Proveedor Internacional', desc:'Para proveedores o servicios desde el extranjero.' },
+  { id:'subcontratacion',name:'Subcontratación',         desc:'Proveedores con trabajadores en faena propia.' },
 ];
 
 function getDefaultDocConfig(processKey) {
@@ -2224,7 +2225,7 @@ function confirmNewProcess() {
     err.textContent = 'Ya existe un proceso con ese nombre.'; err.style.display = 'block'; return;
   }
   const tpl = _selectedTemplate ? PROCESS_TEMPLATES.find(t => t.id === _selectedTemplate) : null;
-  const docConfig = tpl ? { ...tpl.docConfig } : {};
+  const docConfig = tpl ? { ...getDefaultDocConfig(tpl.id) } : {};
   st.customProcesses.push({ name, description: tpl ? tpl.desc : '', docs:[], docConfig, saved:true, active:true });
   const newIdx  = st.customProcesses.length - 1;
   const area    = _newProcessArea;
