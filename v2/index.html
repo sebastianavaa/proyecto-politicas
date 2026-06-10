@@ -1543,7 +1543,10 @@ function setAlertActive(area, i) {
   st.areas[area].alerts[i].activa = !st.areas[area].alerts[i].activa;
   // Toggle clase en el elemento existente para que la transición CSS se ejecute
   const cfg = document.getElementById('acfg-' + area + '-' + i);
-  if (cfg) cfg.classList.toggle('on', st.areas[area].alerts[i].activa);
+  if (cfg) {
+    cfg.classList.toggle('on',  st.areas[area].alerts[i].activa);
+    cfg.classList.toggle('off', !st.areas[area].alerts[i].activa);
+  }
   _updateAlertTabBadges(area);
   // Actualizar solo los sumarios, sin reconstruir las filas de alertas
   renderCrossAreaSummary(area);
