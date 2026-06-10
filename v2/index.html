@@ -1696,6 +1696,7 @@ function renderWorkflowReviewers() {
   }
 
   const rows = groups.map((g, gi) => {
+    const esc = (s) => (s||'').replace(/'/g,"\\'");
     const assigned = st.workflowReviewers[g] || [];
     const assignedKeys = new Set(assigned.map(r => r.name+'|'+r.email));
     const hasReviewer  = assigned.some(r => r.name || r.email);
@@ -1713,7 +1714,6 @@ function renderWorkflowReviewers() {
       const lbl = r.name || r.email;
       const onSt  = 'background:var(--navy);color:white;border-color:var(--navy);';
       const offSt = 'background:var(--white);color:var(--gray);border-color:var(--gray-border);';
-      const esc = (s) => s.replace(/'/g,"\\'");
       return `<button onclick="togglePoolReviewer('${esc(g)}','${esc(r.name)}','${esc(r.email)}')"
         title="${r.email||''}"
         style="font-size:.75rem;font-weight:600;padding:.25rem .65rem;border-radius:.4rem;border:1.5px solid;cursor:pointer;transition:all .15s;font-family:var(--font);${on?onSt:offSt}">${lbl}</button>`;
