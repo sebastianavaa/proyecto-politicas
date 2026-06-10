@@ -521,14 +521,24 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 <body>
 <!-- MODAL: crear proceso personalizado -->
 <div id="new-process-modal" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(20,20,79,.45);backdrop-filter:blur(2px);align-items:center;justify-content:center;">
-  <div style="background:var(--white);border-radius:1rem;padding:1.5rem;width:90%;max-width:420px;box-shadow:0 12px 40px rgba(0,0,0,.3);">
-    <h3 style="font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:.375rem;">Crear proceso personalizado</h3>
-    <p style="font-size:.8rem;color:var(--gray);line-height:1.5;margin-bottom:.875rem;">Una vez creado podrás agregar documentos desde el tab del proceso en cada área.</p>
-    <input type="text" id="new-process-input" placeholder="Nombre del proceso *"
-      style="width:100%;padding:.625rem .875rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.875rem;font-family:var(--font);color:var(--text);outline:none;"
-      onkeydown="if(event.key==='Enter')confirmNewProcess();if(event.key==='Escape')closeNewProcessModal();">
-    <div id="new-process-error" style="display:none;font-size:.75rem;color:var(--danger);margin-top:.5rem;"></div>
-    <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.25rem;">
+  <div style="background:var(--white);border-radius:1rem;padding:1.5rem;width:90%;max-width:460px;box-shadow:0 12px 40px rgba(0,0,0,.3);">
+    <h3 style="font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:1rem;">Crear proceso personalizado</h3>
+    <div style="margin-bottom:1rem;">
+      <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--navy);margin-bottom:.5rem;">Partir desde una plantilla</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.375rem;margin-bottom:.5rem;">
+        <button id="tpl-btn-none" onclick="selectProcessTemplate(null)"
+          style="font-size:.75rem;font-weight:700;padding:.3rem .7rem;border-radius:.4rem;border:1.5px solid var(--accent);background:var(--accent);color:white;cursor:pointer;font-family:var(--font);transition:all .15s;">Desde cero</button>
+      </div>
+      <div id="tpl-desc" style="font-size:.75rem;color:var(--gray);min-height:1.1rem;"></div>
+    </div>
+    <div style="margin-bottom:.75rem;">
+      <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--navy);margin-bottom:.375rem;">Nombre del proceso</div>
+      <input type="text" id="new-process-input" placeholder="Ej: Proveedor Tecnológico"
+        style="width:100%;padding:.625rem .875rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.875rem;font-family:var(--font);color:var(--text);outline:none;box-sizing:border-box;"
+        onkeydown="if(event.key==='Enter')confirmNewProcess();if(event.key==='Escape')closeNewProcessModal();">
+    </div>
+    <div id="new-process-error" style="display:none;font-size:.75rem;color:var(--danger);margin-bottom:.5rem;"></div>
+    <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem;">
       <button onclick="closeNewProcessModal()" style="background:transparent;border:1.5px solid var(--gray-border);color:var(--gray);padding:.5rem 1rem;border-radius:.5rem;font-size:.825rem;font-weight:700;cursor:pointer;font-family:var(--font);">Cancelar</button>
       <button onclick="confirmNewProcess()" style="background:var(--blue);color:white;border:none;padding:.5rem 1.25rem;border-radius:.5rem;font-size:.825rem;font-weight:800;cursor:pointer;font-family:var(--font);">Crear proceso</button>
     </div>
@@ -1899,6 +1909,13 @@ const DOC_SEGMENTS = [
 
 const STD_PROCESS_KEYS = ['express','completa','reforzada','internacional','subcontratacion'];
 
+const PROCESS_TEMPLATES = [
+  { id:'basico',   name:'Básico',          desc:'Proveedores de bajo riesgo o servicios menores.',       docConfig:{0:'req',1:'req',4:'req',9:'opc'} },
+  { id:'estandar', name:'Estándar',        desc:'Proveedores recurrentes con riesgo medio.',             docConfig:{0:'req',1:'req',2:'req',4:'req',5:'req',6:'req',7:'req',8:'req',9:'req',12:'req',3:'opc',11:'opc'} },
+  { id:'subcontr', name:'Subcontratación', desc:'Proveedores con trabajadores en faena.',               docConfig:{0:'req',1:'req',4:'req',7:'req',13:'req',14:'req',15:'req',9:'opc'} },
+  { id:'intl',     name:'Internacional',   desc:'Proveedores o servicios desde el extranjero.',         docConfig:{0:'req',1:'req',2:'req',3:'req',4:'req',5:'req',6:'req',7:'req',8:'req',9:'req',10:'req',11:'opc',12:'opc'} },
+];
+
 function getDefaultDocConfig(processKey) {
   const cfg = {};
   DOCS.forEach((doc, j) => {
@@ -2151,18 +2168,50 @@ function getAreaActiveDocs(area) {
 const _activeDocTab = {};
 let _newProcessArea = null;
 
+let _selectedTemplate = null;
+
+function selectProcessTemplate(id) {
+  _selectedTemplate = id;
+  const tpl = id ? PROCESS_TEMPLATES.find(t => t.id === id) : null;
+  // Actualizar estilos de chips
+  const noneBtn = document.getElementById('tpl-btn-none');
+  const activeStyle = 'background:var(--accent);color:white;border-color:var(--accent);';
+  const inactiveStyle = 'background:transparent;color:var(--gray);border-color:var(--gray-border);';
+  if (noneBtn) noneBtn.style.cssText = noneBtn.style.cssText.replace(/background:[^;]+;color:[^;]+;border-color:[^;]+;/, id === null ? activeStyle : inactiveStyle);
+  PROCESS_TEMPLATES.forEach(t => {
+    const btn = document.getElementById('tpl-btn-' + t.id);
+    if (btn) btn.style.cssText = btn.style.cssText.replace(/background:[^;]+;color:[^;]+;border-color:[^;]+;/, id === t.id ? activeStyle : inactiveStyle);
+  });
+  const descEl = document.getElementById('tpl-desc');
+  if (descEl) descEl.textContent = tpl ? tpl.desc : '';
+}
+
 function openNewProcessModal(area) {
   _newProcessArea = area;
+  _selectedTemplate = null;
   const input = document.getElementById('new-process-input');
   const err   = document.getElementById('new-process-error');
   input.value = '';
   err.style.display = 'none';
+  // Renderizar chips de plantillas
+  const chipsContainer = document.querySelector('#new-process-modal [style*="flex-wrap:wrap"]');
+  if (chipsContainer) {
+    const tplChips = PROCESS_TEMPLATES.map(t =>
+      `<button id="tpl-btn-${t.id}" onclick="selectProcessTemplate('${t.id}')"
+        style="font-size:.75rem;font-weight:700;padding:.3rem .7rem;border-radius:.4rem;border:1.5px solid var(--gray-border);background:transparent;color:var(--gray);cursor:pointer;font-family:var(--font);transition:all .15s;">${t.name}</button>`
+    ).join('');
+    chipsContainer.innerHTML =
+      `<button id="tpl-btn-none" onclick="selectProcessTemplate(null)"
+        style="font-size:.75rem;font-weight:700;padding:.3rem .7rem;border-radius:.4rem;border:1.5px solid var(--accent);background:var(--accent);color:white;cursor:pointer;font-family:var(--font);transition:all .15s;">Desde cero</button>` + tplChips;
+  }
+  document.getElementById('tpl-desc').textContent = '';
   document.getElementById('new-process-modal').style.display = 'flex';
   setTimeout(() => input.focus(), 50);
 }
 function closeNewProcessModal() {
   document.getElementById('new-process-modal').style.display = 'none';
   _newProcessArea = null;
+  _selectedTemplate = null;
 }
 function confirmNewProcess() {
   const name = document.getElementById('new-process-input').value.trim();
@@ -2174,7 +2223,9 @@ function confirmNewProcess() {
   if (st.customProcesses.some(p => p.name.trim().toLowerCase() === name.toLowerCase())) {
     err.textContent = 'Ya existe un proceso con ese nombre.'; err.style.display = 'block'; return;
   }
-  st.customProcesses.push({ name, description:'', docs:[], docConfig:{}, saved:true, active:true });
+  const tpl = _selectedTemplate ? PROCESS_TEMPLATES.find(t => t.id === _selectedTemplate) : null;
+  const docConfig = tpl ? { ...tpl.docConfig } : {};
+  st.customProcesses.push({ name, description: tpl ? tpl.desc : '', docs:[], docConfig, saved:true, active:true });
   const newIdx  = st.customProcesses.length - 1;
   const area    = _newProcessArea;
   closeNewProcessModal();
@@ -2235,8 +2286,8 @@ function renderAreaDocReview(area) {
         ${addTag}
         <span style="flex:1;font-size:.75rem;color:var(--text);">${name}</span>
         <div style="display:flex;gap:.2rem;align-items:center;">
-          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','ok')"  style="${btnBase}${s==='ok' ?okSel :off}" title="Confirmo">✓</button>
-          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','obs')" style="${btnBase}${s==='obs'?obsSel:off}" title="Con observación">⚠</button>
+          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','ok')"  style="${btnBase}${s==='ok' ?okSel :off}" title="Marcar como OK">OK</button>
+          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','obs')" style="${btnBase}${s==='obs'?obsSel:off}" title="Marcar con observación">Obs.</button>
           <button onclick="removeAreaCustomDoc('${area}','${pk}',${ci})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .2rem;line-height:1;" title="Quitar de este proceso">×</button>
         </div>
       </div>`;
