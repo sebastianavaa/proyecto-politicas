@@ -233,6 +233,14 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .alert-cfg:last-of-type{border-bottom:none;}
 .alert-cfg.off{opacity:.45;}
 .alert-cfg-top{display:flex;align-items:center;gap:.75rem;}
+.alert-tip{display:inline-flex;align-items:center;justify-content:center;width:.9rem;height:.9rem;border-radius:50%;
+  background:rgba(0,0,0,.07);color:var(--gray);font-size:.55rem;font-weight:700;cursor:default;
+  position:relative;flex-shrink:0;letter-spacing:0;font-style:italic;}
+.alert-tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + .4rem);left:50%;transform:translateX(-50%);
+  background:#1e293b;color:#fff;font-size:.64rem;font-weight:400;padding:.4rem .55rem;border-radius:.35rem;
+  width:210px;white-space:normal;line-height:1.45;z-index:200;opacity:0;pointer-events:none;transition:opacity .15s;
+  box-shadow:0 4px 12px rgba(0,0,0,.25);}
+.alert-tip:hover::after{opacity:1;}
 .alert-cfg .a-label{flex:1;font-size:.76rem;color:var(--text);}
 .alert-cfg .a-toggle{cursor:pointer;}
 .alert-cfg.on .a-toggle{background:var(--success);}
@@ -1066,29 +1074,29 @@ const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => 
 const SEV_ORDER = ['leve','media','grave'];
 const SEV_LABEL = { leve:'Leve', media:'Media', grave:'Grave' };
 const ALERTS = [
-  { label:'Entidad en nómina difícil de fiscalización',            group:'Tributario',         icon:'▣', area:'finanzas',        sev:'leve'  },
-  { label:'Inició actividades hace menos de 6 meses',              group:'Tributario',         icon:'▣', area:'finanzas',        sev:'media' },
-  { label:'No ha iniciado actividades',                            group:'Tributario',         icon:'▣', area:'finanzas',        sev:'grave' },
-  { label:'Sociedad disuelta',                                     group:'Tributario',         icon:'▣', area:'finanzas',        sev:'grave' },
-  { label:'Término de giro',                                       group:'Tributario',         icon:'▣', area:'finanzas',        sev:'grave' },
-  { label:'Cuenta con publicaciones concursales',                  group:'Financiero',         icon:'◆', area:'finanzas',        sev:'grave' },
-  { label:'Cuenta con morosidades en boletines',                   group:'Financiero',         icon:'◆', area:'finanzas',        sev:'media' },
-  { label:'Puntaje riesgoso en Equifax',                           group:'Financiero',         icon:'◆', area:'finanzas',        sev:'grave' },
-  { label:'Puntaje de riesgo moderado en Equifax',                 group:'Financiero',         icon:'◆', area:'finanzas',        sev:'media' },
-  { label:'Demandas con procedimientos concursales',               group:'Legal y Societario', icon:'§', area:'legal',           sev:'grave' },
-  { label:'Tiene demandas penales',                                group:'Legal y Societario', icon:'§', area:'legal',           sev:'grave' },
-  { label:'Demandas laborales en el último año',                   group:'Legal y Societario', icon:'§', area:'legal',           sev:'media' },
-  { label:'Aparición en causas legales',                           group:'Legal y Societario', icon:'§', area:'legal',           sev:'leve'  },
-  { label:'Multas Dirección del Trabajo',                          group:'Laboral',            icon:'◈', area:'cumplimiento',    sev:'media' },
-  { label:'Registra sanciones de la SNIFA',                        group:'Laboral',            icon:'◈', area:'cumplimiento',    sev:'media' },
-  { label:'Hallazgos listas OFAC, Interpol u otras',               group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'grave' },
-  { label:'Hallazgos listas Warning',                              group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'grave' },
-  { label:'Hallazgos listas Sanciones',                            group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'media' },
-  { label:'Hallazgos posible Persona Políticamente Expuesta (PEP)',group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'media' },
-  { label:'Cuenta con hits de cumplimiento',                       group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'leve'  },
-  { label:'Hallazgos EAP',                                         group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'leve'  },
-  { label:'Hallazgos posible Relacionado a PEP',                   group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'leve'  },
-  { label:'Tiene hallazgos de Adverse Media',                      group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'leve'  },
+  { label:'Entidad en nómina difícil de fiscalización',            group:'Tributario',         icon:'▣', area:'finanzas',        sev:'leve',  desc:'El SII ha clasificado a este proveedor como contribuyente de difícil fiscalización (NDF). Puede indicar domicilio no verificable, incumplimientos o irregularidades tributarias.' },
+  { label:'Inició actividades hace menos de 6 meses',              group:'Tributario',         icon:'▣', area:'finanzas',        sev:'media', desc:'El proveedor tiene muy poco historial tributario. Empresas muy recientes ofrecen menos trayectoria verificable y mayor incertidumbre operacional.' },
+  { label:'No ha iniciado actividades',                            group:'Tributario',         icon:'▣', area:'finanzas',        sev:'grave', desc:'El SII no registra inicio de actividades para este RUT. El proveedor no estaría habilitado legalmente para operar ni emitir facturas.' },
+  { label:'Sociedad disuelta',                                     group:'Tributario',         icon:'▣', area:'finanzas',        sev:'grave', desc:'La sociedad fue formalmente disuelta. No puede suscribir contratos ni operar legalmente.' },
+  { label:'Término de giro',                                       group:'Tributario',         icon:'▣', area:'finanzas',        sev:'grave', desc:'El proveedor declaró término de giro ante el SII, lo que implica el cese definitivo de sus actividades comerciales.' },
+  { label:'Cuenta con publicaciones concursales',                  group:'Financiero',         icon:'◆', area:'finanzas',        sev:'grave', desc:'El proveedor tiene procedimientos de quiebra o reestructuración publicados en el Boletín Concursal. Indica grave riesgo de insolvencia.' },
+  { label:'Cuenta con morosidades en boletines',                   group:'Financiero',         icon:'◆', area:'finanzas',        sev:'media', desc:'El proveedor registra deudas impagas en boletines comerciales o financieros. Refleja un historial crediticio deteriorado.' },
+  { label:'Puntaje riesgoso en Equifax',                           group:'Financiero',         icon:'◆', area:'finanzas',        sev:'grave', desc:'El score de riesgo crediticio de Equifax es alto. Indica alta probabilidad de incumplimiento de obligaciones financieras.' },
+  { label:'Puntaje de riesgo moderado en Equifax',                 group:'Financiero',         icon:'◆', area:'finanzas',        sev:'media', desc:'El score de riesgo crediticio de Equifax es moderado. Requiere evaluación adicional de la situación financiera del proveedor.' },
+  { label:'Demandas con procedimientos concursales',               group:'Legal y Societario', icon:'§', area:'legal',           sev:'grave', desc:'Existen demandas judiciales que involucran procesos de quiebra o liquidación contra el proveedor. Riesgo legal y financiero significativo.' },
+  { label:'Tiene demandas penales',                                group:'Legal y Societario', icon:'§', area:'legal',           sev:'grave', desc:'El proveedor o sus representantes legales tienen causas penales activas en el Poder Judicial.' },
+  { label:'Demandas laborales en el último año',                   group:'Legal y Societario', icon:'§', area:'legal',           sev:'media', desc:'El proveedor registra causas laborales recientes en tribunales. Puede indicar conflictos activos con sus trabajadores.' },
+  { label:'Aparición en causas legales',                           group:'Legal y Societario', icon:'§', area:'legal',           sev:'leve',  desc:'El proveedor aparece mencionado en alguna causa judicial. Requiere verificar el contexto y la relevancia para la relación comercial.' },
+  { label:'Multas Dirección del Trabajo',                          group:'Laboral',            icon:'◈', area:'cumplimiento',    sev:'media', desc:'El proveedor ha recibido multas de la Dirección del Trabajo (DT) por incumplimiento de normativa laboral o previsional.' },
+  { label:'Registra sanciones de la SNIFA',                        group:'Laboral',            icon:'◈', area:'cumplimiento',    sev:'media', desc:'La Superintendencia del Medio Ambiente registra procedimientos sancionatorios ambientales contra el proveedor (en curso, suspendidos o sancionados).' },
+  { label:'Hallazgos listas OFAC, Interpol u otras',               group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'grave', desc:'El proveedor aparece en listas internacionales de sanciones administradas por OFAC (EE.UU.), Interpol u organismos equivalentes. Indica riesgo regulatorio grave.' },
+  { label:'Hallazgos listas Warning',                              group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'grave', desc:'El proveedor registra coincidencias en listas de alerta de cumplimiento normativo. Requiere revisión manual urgente antes de continuar la relación comercial.' },
+  { label:'Hallazgos listas Sanciones',                            group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'media', desc:'El proveedor aparece en listas de sanciones económicas o comerciales, nacionales o internacionales.' },
+  { label:'Hallazgos posible Persona Políticamente Expuesta (PEP)',group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'media', desc:'Existe una posible vinculación con una PEP: persona que ocupa o ha ocupado un cargo público prominente (ejecutivo, legislativo, judicial). Requiere debida diligencia reforzada.' },
+  { label:'Cuenta con hits de cumplimiento',                       group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'leve',  desc:'El proveedor registra coincidencias menores en verificaciones de cumplimiento normativo. Revisar para descartar falsos positivos.' },
+  { label:'Hallazgos EAP',                                         group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'leve',  desc:'Entidad Asociada a PEP (EAP): el proveedor está directamente vinculado a una Persona Políticamente Expuesta, sin ser PEP en sí mismo.' },
+  { label:'Hallazgos posible Relacionado a PEP',                   group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'leve',  desc:'Se detectó una posible relación indirecta con una Persona Políticamente Expuesta, como un vínculo societario o familiar.' },
+  { label:'Tiene hallazgos de Adverse Media',                      group:'Cumplimiento',       icon:'◎', area:'cumplimiento',    sev:'leve',  desc:'El proveedor aparece en noticias o publicaciones con connotación negativa. La prensa adversa puede indicar riesgos reputacionales o legales no formalizados.' },
 ];
 function defaultAlerts() { return ALERTS.map(a => ({ activa:true, severidad:a.sev, comentario:'' })); }
 
@@ -1911,7 +1919,7 @@ function buildAlertTabsHTML(containerId, area, placeholder) {
       return `<div class="alert-cfg ${a.activa?'on':'off'}" id="acfg-${area}-${i}">
         <div class="alert-cfg-top">
           <div class="a-toggle" onclick="setAlertActive('${area}',${i})"></div>
-          <span class="a-label">${meta.label}</span>
+          <span class="a-label">${meta.label}${meta.desc ? `<span class="alert-tip" data-tip="${meta.desc.replace(/"/g,'&quot;')}">i</span>` : ''}</span>
           <span class="sev-sel">${sevBtns}</span>
         </div>
       </div>`;
