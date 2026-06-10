@@ -20,7 +20,7 @@
       "typeVersion": 2,
       "position": [460, 300],
       "parameters": {
-        "jsCode": "const raw = JSON.parse($input.first().json.body);\n\nconst evalTypes = raw.evalTypes || {};\nconst areas = raw.areas || {};\nconst alerts = raw.alerts || [];\n\nconst evalActivas = Object.entries(evalTypes)\n  .filter(([,v]) => v)\n  .map(([k]) => ({ express:'Exprés', completa:'Completa', subcontratacion:'Subcontratación', reforzada:'Reforzada', internacional:'Internacional' }[k]))\n  .join(', ');\n\nconst areasList = ['solicitante','abastecimiento','cumplimiento','finanzas','legal','subcontratacion'];\nconst labels = { solicitante:'Solicitante', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal', subcontratacion:'Subcontratación' };\nconst icons = { aprobado:'✅', rechazado:'❌', observacion:'✏️' };\n\nconst resumenSlack = areasList.map(a => {\n  const d = areas[a]?.decision;\n  const icon = icons[d] || '⏳';\n  const note = areas[a]?.notes ? ` — _\"${areas[a].notes.substring(0, 60)}${areas[a].notes.length > 60 ? '…' : ''}\"_` : '';\n  const extras = areas[a]?.extraDocs?.length ? ` (+${areas[a].extraDocs.length} doc adicional)` : '';\n  return `• ${icon} *${labels[a]}*: ${d || 'Pendiente'}${note}${extras}`;\n}).join('\\n');\n\nconst sevIcon = { leve:'🔵', media:'🟡', grave:'🔴' };\nconst alertasActivas = alerts.filter(a => a.activa);\nconst alertasSlack = alertasActivas.map(a => `• ${sevIcon[a.severidad] || ''} *${a.alerta}* (${a.severidad})${a.comentario ? ` — _${a.comentario}_` : ''}`).join('\\n') || '_Sin alertas activas_';\nconst alertasResumen = alerts.map(a => `${a.alerta} [${a.activa ? a.severidad : 'off'}]${a.comentario ? ` (${a.comentario})` : ''}`).join(' | ');\n\nreturn [{ json: {\n  client:    raw.client,\n  email:     raw.email,\n  timestamp: raw.timestamp,\n  eval_activas: evalActivas || 'Ninguna',\n\n  eval_express:         evalTypes.express         ?? false,\n  eval_completa:        evalTypes.completa        ?? false,\n  eval_subcontratacion: evalTypes.subcontratacion ?? false,\n  eval_reforzada:       evalTypes.reforzada       ?? false,\n  eval_internacional:   evalTypes.internacional   ?? false,\n\n  dec_solicitante:     areas.solicitante?.decision     ?? null,\n  notes_solicitante:   areas.solicitante?.notes        ?? '',\n  extras_solicitante:  (areas.solicitante?.extraDocs   || []).join(', '),\n\n  dec_abastecimiento:  areas.abastecimiento?.decision  ?? null,\n  notes_abastecimiento:areas.abastecimiento?.notes     ?? '',\n  extras_abastecimiento:(areas.abastecimiento?.extraDocs|| []).join(', '),\n\n  dec_cumplimiento:    areas.cumplimiento?.decision    ?? null,\n  notes_cumplimiento:  areas.cumplimiento?.notes       ?? '',\n  extras_cumplimiento: (areas.cumplimiento?.extraDocs  || []).join(', '),\n\n  dec_finanzas:        areas.finanzas?.decision        ?? null,\n  notes_finanzas:      areas.finanzas?.notes           ?? '',\n  extras_finanzas:     (areas.finanzas?.extraDocs      || []).join(', '),\n\n  dec_legal:           areas.legal?.decision           ?? null,\n  notes_legal:         areas.legal?.notes              ?? '',\n  extras_legal:        (areas.legal?.extraDocs         || []).join(', '),\n\n  dec_subcontratacion: areas.subcontratacion?.decision ?? null,\n  notes_subcontratacion:areas.subcontratacion?.notes  ?? '',\n  extras_subcontratacion:(areas.subcontratacion?.extraDocs|| []).join(', '),\n\n  alerts_active: raw.alertsActive ?? alertasActivas.length,\n  alerts_resumen: alertasResumen,\n  _resumen_slack: resumenSlack,\n  _alertas_slack: alertasSlack,\n}}];"
+        "jsCode": "// Payload v2 modular desde buildExportPayload()\nlet raw;\ntry {\n  raw = typeof $input.first().json.body === 'string'\n    ? JSON.parse($input.first().json.body)\n    : ($input.first().json.body || $input.first().json);\n} catch(e) {\n  raw = $input.first().json;\n}\n\nconst meta = raw.meta || {};\nconst m1   = raw.modulo_1_configuracion || {};\nconst m2b  = raw.modulo_2b_severidad_consolidada || {};\nconst m4   = raw.modulo_4_responsables || {};\nconst m4b  = raw.modulo_4b_flujos_revision || {};\nconst m5   = raw.modulo_5_observaciones || {};\n\n// ── Procesos ──\nconst procesosEstandar = Object.entries(m1.tiposEvaluacion || {})\n  .filter(([,v]) => v.activo).map(([,v]) => v.nombre).join(', ');\nconst procesosCustom = (m1.procesosPersonalizados || [])\n  .filter(p => p.activo).map(p => p.nombre).join(', ');\n\n// ── Alertas graves consolidadas ──\nconst alertasGraves = (m2b.alertas || []).filter(a => a.severidadFinal === 'grave');\nconst alertasGravesTotal = alertasGraves.length;\nconst alertasGravesGrupos = [...new Set(alertasGraves.map(a => a.grupo))].join(', ');\n\n// ── Revisores por grupo ──\nconst porTema = m4b.porTema || {};\nconst revisoresLinea = Object.entries(porTema).map(([g, data]) => {\n  const r = (data.revisores || [])[0];\n  const nombre = r ? (r.nombre || r.email || 'Sin asignar') : 'Sin asignar';\n  return `${g}: ${nombre}`;\n}).join(' | ');\n\n// ── Responsables por área ──\nconst AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];\nconst LABELS = { abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal' };\nconst porArea = m4.porArea || {};\nconst resps = {};\nAREAS.forEach(a => {\n  resps[`resp_${a}_nombre`] = porArea[a]?.encargado?.nombre || '';\n  resps[`resp_${a}_email`]  = porArea[a]?.encargado?.email  || '';\n  resps[`guardado_${a}`]    = porArea[a]?.guardado ? 'sí' : 'no';\n});\n\n// ── Notas por área ──\nconst notasAreas = AREAS.map(a => {\n  const n = m5.observacionesPorArea?.[a];\n  return n ? `${LABELS[a]}: ${n}` : '';\n}).filter(Boolean).join(' | ');\n\n// ── Mensaje Slack ──\nconst alertasSlack = Object.entries(porTema).map(([g, data]) => {\n  const r = (data.revisores || [])[0];\n  const revisor = r ? (r.nombre || r.email || 'Sin asignar') : 'Sin asignar';\n  const chips = (data.alertasGraves || []).join(', ');\n  return `• 🔴 *${g}* → ${revisor}\\n  _${chips}_`;\n}).join('\\n');\n\nconst respSlack = AREAS\n  .filter(a => porArea[a]?.encargado?.nombre || porArea[a]?.encargado?.email)\n  .map(a => {\n    const enc = porArea[a].encargado;\n    return `• *${LABELS[a]}:* ${enc.nombre || ''} ${enc.email ? `(${enc.email})` : ''}`.trim();\n  }).join('\\n');\n\nconst fechaFormato = meta.timestamp\n  ? new Date(meta.timestamp).toLocaleDateString('es-CL', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })\n  : '';\n\nconst slackLines = [\n  ':clipboard: *Nueva política de DD Proveedores completada*',\n  '',\n  `*Empresa:* ${meta.empresa || '(sin nombre)'}`,\n  `*Email CS:* ${meta.email || '(sin email)'}`,\n  `*Fecha:* ${fechaFormato}`,\n  `*Áreas participantes:* ${(meta.areasParticipantes || []).join(', ')}`,\n  '',\n  `*Procesos activos:* ${[procesosEstandar, procesosCustom].filter(Boolean).join(' + ') || 'Ninguno'}`,\n  '',\n  alertasGravesTotal > 0\n    ? `*Alertas graves (${alertasGravesTotal}) y revisores:*\\n${alertasSlack}`\n    : '*Alertas graves:* ninguna',\n  '',\n  respSlack ? `*Responsables por área:*\\n${respSlack}` : '',\n  m5.notasSincronizacion ? `\\n*Notas de sincronización:* _${m5.notasSincronizacion}_` : '',\n].filter(s => s !== undefined).join('\\n');\n\nreturn [{ json: {\n  // Meta\n  empresa:              meta.empresa || '',\n  email:                meta.email || '',\n  timestamp:            meta.timestamp || '',\n  session_id:           meta.sessionId || '',\n  areas_participantes:  (meta.areasParticipantes || []).join(', '),\n  // Procesos\n  procesos_estandar:    procesosEstandar,\n  procesos_custom:      procesosCustom,\n  // Alertas\n  alertas_graves_total: alertasGravesTotal,\n  alertas_graves_grupos: alertasGravesGrupos,\n  revisores_por_grupo:  revisoresLinea,\n  // Responsables\n  ...resps,\n  // Notas\n  notas_areas:          notasAreas,\n  notas_sincronizacion: m5.notasSincronizacion || '',\n  // Para Slack\n  _slack_msg: slackLines,\n}}];"
       }
     },
     {
@@ -44,35 +44,30 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "client":                 "={{ $json.client }}",
+            "empresa":                "={{ $json.empresa }}",
             "email":                  "={{ $json.email }}",
             "timestamp":              "={{ $json.timestamp }}",
-            "eval_activas":           "={{ $json.eval_activas }}",
-            "eval_express":           "={{ $json.eval_express }}",
-            "eval_completa":          "={{ $json.eval_completa }}",
-            "eval_subcontratacion":   "={{ $json.eval_subcontratacion }}",
-            "eval_reforzada":         "={{ $json.eval_reforzada }}",
-            "eval_internacional":     "={{ $json.eval_internacional }}",
-            "dec_solicitante":        "={{ $json.dec_solicitante }}",
-            "notes_solicitante":      "={{ $json.notes_solicitante }}",
-            "extras_solicitante":     "={{ $json.extras_solicitante }}",
-            "dec_abastecimiento":     "={{ $json.dec_abastecimiento }}",
-            "notes_abastecimiento":   "={{ $json.notes_abastecimiento }}",
-            "extras_abastecimiento":  "={{ $json.extras_abastecimiento }}",
-            "dec_cumplimiento":       "={{ $json.dec_cumplimiento }}",
-            "notes_cumplimiento":     "={{ $json.notes_cumplimiento }}",
-            "extras_cumplimiento":    "={{ $json.extras_cumplimiento }}",
-            "dec_finanzas":           "={{ $json.dec_finanzas }}",
-            "notes_finanzas":         "={{ $json.notes_finanzas }}",
-            "extras_finanzas":        "={{ $json.extras_finanzas }}",
-            "dec_legal":              "={{ $json.dec_legal }}",
-            "notes_legal":            "={{ $json.notes_legal }}",
-            "extras_legal":           "={{ $json.extras_legal }}",
-            "dec_subcontratacion":    "={{ $json.dec_subcontratacion }}",
-            "notes_subcontratacion":  "={{ $json.notes_subcontratacion }}",
-            "extras_subcontratacion": "={{ $json.extras_subcontratacion }}",
-            "alerts_active":          "={{ $json.alerts_active }}",
-            "alerts_resumen":         "={{ $json.alerts_resumen }}"
+            "session_id":             "={{ $json.session_id }}",
+            "areas_participantes":    "={{ $json.areas_participantes }}",
+            "procesos_estandar":      "={{ $json.procesos_estandar }}",
+            "procesos_custom":        "={{ $json.procesos_custom }}",
+            "alertas_graves_total":   "={{ $json.alertas_graves_total }}",
+            "alertas_graves_grupos":  "={{ $json.alertas_graves_grupos }}",
+            "revisores_por_grupo":    "={{ $json.revisores_por_grupo }}",
+            "resp_abastecimiento_nombre": "={{ $json.resp_abastecimiento_nombre }}",
+            "resp_abastecimiento_email":  "={{ $json.resp_abastecimiento_email }}",
+            "guardado_abastecimiento":    "={{ $json.guardado_abastecimiento }}",
+            "resp_cumplimiento_nombre":   "={{ $json.resp_cumplimiento_nombre }}",
+            "resp_cumplimiento_email":    "={{ $json.resp_cumplimiento_email }}",
+            "guardado_cumplimiento":      "={{ $json.guardado_cumplimiento }}",
+            "resp_finanzas_nombre":       "={{ $json.resp_finanzas_nombre }}",
+            "resp_finanzas_email":        "={{ $json.resp_finanzas_email }}",
+            "guardado_finanzas":          "={{ $json.guardado_finanzas }}",
+            "resp_legal_nombre":          "={{ $json.resp_legal_nombre }}",
+            "resp_legal_email":           "={{ $json.resp_legal_email }}",
+            "guardado_legal":             "={{ $json.guardado_legal }}",
+            "notas_areas":            "={{ $json.notas_areas }}",
+            "notas_sincronizacion":   "={{ $json.notas_sincronizacion }}"
           }
         },
         "options": {}
@@ -93,7 +88,7 @@
       "parameters": {
         "operation": "post",
         "channel": "REEMPLAZAR_CON_CANAL",
-        "text": "=:clipboard: *Nueva sesión de política DD completada*\n\n*Empresa:* {{ $json.client }}\n*Email:* {{ $json.email }}\n*Fecha:* {{ $json.timestamp }}\n\n*Evaluaciones activadas:* {{ $json.eval_activas }}\n*Alertas activas:* {{ $json.alerts_active }} / 23\n\n*Decisiones por área:*\n{{ $json._resumen_slack }}\n\n*Alertas configuradas:*\n{{ $json._alertas_slack }}",
+        "text": "={{ $json._slack_msg }}",
         "otherOptions": {}
       },
       "credentials": {
