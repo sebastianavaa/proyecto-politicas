@@ -2910,7 +2910,7 @@ function saveRemote() {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify(st)
     }).then(() => { _savePending = false; }).catch(() => { _savePending = false; });
-  }, 1000);
+  }, 300);
 }
 
 let _pollInterval = null;
@@ -2928,7 +2928,7 @@ function startPolling() {
 
       // No sincronizar si hay cambios locales pendientes de envío al servidor
       // No sincronizar si hay cambios locales pendientes o recientes (< 3s)
-      if (_savePending || (Date.now() - _lastLocalChange) < 3000) return;
+      if (_savePending || (Date.now() - _lastLocalChange) < 1200) return;
 
       // 1. Sincronizar qué áreas participan por proceso (definido por Owner)
       if (data.state.processAreas) {
