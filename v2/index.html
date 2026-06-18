@@ -604,6 +604,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <input type="email" id="emailInput" class="txt-input" placeholder="tu@empresa.com" style="width:100%;" onkeydown="if(event.key==='Enter')startSession()"/>
     </div>
     <button class="btn-primary" style="width:100%;" onclick="startSession()">Comenzar sesión →</button>
+    <button onclick="newSession()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:.8rem;cursor:pointer;padding:.375rem 0;font-family:var(--font);text-decoration:underline;text-underline-offset:3px;">Limpiar datos guardados y empezar de nuevo</button>
   </div>
   <div class="session-link-box" id="session-link-box">
     <p style="display:flex;align-items:center;gap:.375rem;"><i data-lucide="link" style="width:.85rem;height:.85rem;flex-shrink:0;"></i>Comparte este link con todas las áreas para que completen su sección:</p>
@@ -659,11 +660,11 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   </div>
 </div>
 
-<!-- ── 5: OWNER DEL PROYECTO ── -->
+<!-- ── 5: COORDINADOR DE LA SESIÓN ── -->
 <div class="slide slide-std" data-n="5">
   <div class="s-head"><div class="s-tag">Configuración inicial</div>
-    <h2>Owner del proyecto</h2>
-    <p>Activa los procesos que aplican a tu empresa y selecciona qué áreas revisarán a los proveedores.</p>
+    <h2>Coordinador de la sesión</h2>
+    <p>Quien lidera esta política configura los procesos activos y las áreas que participarán. Puede ser de cualquier área de tu empresa.</p>
     <div class="area-status" id="badge-owner">Pendiente</div>
   </div>
   <div class="s-body scrollable">
@@ -854,7 +855,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 <div class="slide slide-std" data-n="6">
   <div class="s-head"><div class="s-tag">Revisión por área — 1 de 4</div>
     <h2>Abastecimiento</h2>
-    <p id="desc-abastecimiento">Coordina el proceso y configura las alertas.</p>
+    <p id="desc-abastecimiento">Revisa el proceso de evaluación desde el área de Abastecimiento.</p>
     <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:.25rem;">
       <div class="area-status" id="badge-abastecimiento">Pendiente</div>
       <span id="areas-progress-abastecimiento" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
@@ -886,6 +887,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div id="abast-alerts"></div>
       </div>
     </div>
+    <div id="area-reviewers-abastecimiento"></div>
   </div>
   <div class="area-save-footer">
     <button class="btn-area-save-main" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')" style="margin-top:0;">Guardar sección de Abastecimiento</button>
@@ -930,6 +932,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div id="alerts-cumplimiento"></div>
       </div>
     </div>
+    <div id="area-reviewers-cumplimiento"></div>
   </div>
   <div class="area-save-footer">
     <button class="btn-area-save-main" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')" style="margin-top:0;">Guardar sección de Cumplimiento</button>
@@ -974,6 +977,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div id="alerts-finanzas"></div>
       </div>
     </div>
+    <div id="area-reviewers-finanzas"></div>
   </div>
   <div class="area-save-footer">
     <button class="btn-area-save-main" id="save-btn-finanzas" onclick="guardarArea('finanzas')" style="margin-top:0;">Guardar sección de Finanzas</button>
@@ -1018,6 +1022,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         <div id="alerts-legal"></div>
       </div>
     </div>
+    <div id="area-reviewers-legal"></div>
   </div>
   <div class="area-save-footer">
     <button class="btn-area-save-main" id="save-btn-legal" onclick="guardarArea('legal')" style="margin-top:0;">Guardar sección de Legal</button>
@@ -1087,9 +1092,16 @@ const AREA_LABELS = { solicitante:'Comprador del proyecto', abastecimiento:'Abas
 const AREA_SLIDE = { owner:5, abastecimiento:6, cumplimiento:7, finanzas:8, legal:9 };
 const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => [v, k]));
 
+// Grupos de alertas que "pertenecen" a cada área (solo esa área asigna revisores para ellos).
+// Abastecimiento no tiene grupos propios — su slide muestra docs + resumen cruzado + VB.
+const AREA_GROUPS = {
+  abastecimiento: [],
+  cumplimiento:   ['Laboral', 'Cumplimiento'],
+  finanzas:       ['Tributario', 'Financiero'],
+  legal:          ['Legal y Societario']
+};
+
 // Metadata de las 23 alertas: etiqueta, grupo, área revisora dueña y severidad recomendada por Plutto.
-// La severidad y el on/off se CONFIGURAN en Abastecimiento (hub central).
-// Cada revisor ve solo las alertas de su área (severidad en lectura) y puede comentarlas.
 const SEV_ORDER = ['leve','media','grave'];
 const SEV_LABEL = { leve:'Leve', media:'Media', grave:'Grave' };
 const ALERTS = [
@@ -1156,6 +1168,7 @@ function isAreaRequired(area) {
 }
 
 function isSlideVisible(n) {
+  if (n === 10) return false; // revisores integrados en cada área — slide separado eliminado
   const entry = Object.entries(AREA_SLIDE).find(([,s]) => s === n);
   if (!entry) return true;
   const [area] = entry;
@@ -1212,7 +1225,8 @@ function go(n, dir) {
   to.style.opacity = '0'; to.classList.add('active');
   requestAnimationFrame(() => requestAnimationFrame(() => { to.style.transform = ''; to.style.opacity = ''; }));
   cur = n;
-  if (n === 10) renderWorkflowReviewers();        // Slide 10 (¿Quién revisa qué?)
+  const _slideArea = SLIDE_AREA[n];
+  if (_slideArea && _slideArea !== 'owner') renderAreaReviewers(_slideArea); // revisores inline
   if (n >= TOTAL) buildReport();                   // Slide 11 (reporte final)
   updateNav(); save(); setTimeout(reIcons, 60);
 }
@@ -1796,18 +1810,114 @@ function renderWorkflowReviewers() {
   reIcons();
 }
 
+function renderAreaReviewers(area) {
+  const cont = document.getElementById('area-reviewers-' + area);
+  if (!cont) return;
+  const myGroups = AREA_GROUPS[area] || [];
+  if (!myGroups.length) { cont.innerHTML = ''; return; }
+  if (!st.workflowReviewers) st.workflowReviewers = {};
+  const graveMap = graveAlertsByGroup();
+  const pool = getReviewerPool();
+  const locked = st.areas[area].locked;
+  const inp = 'padding:.3rem .55rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.75rem;font-family:var(--font);box-sizing:border-box;background:white;min-width:0;';
+
+  const rows = myGroups.map((g, gi) => {
+    const esc = s => (s||'').replace(/'/g,"\\'");
+    const graveAlerts = graveMap[g] || [];
+    const assigned = st.workflowReviewers[g] || [];
+    const assignedKeys = new Set(assigned.map(r => r.name+'|'+r.email));
+    const hasReviewer = assigned.some(r => r.name || r.email);
+    const border = gi > 0 ? 'border-top:1px solid var(--gray-border);' : '';
+
+    const alertChips = graveAlerts.length
+      ? graveAlerts.map(l => `<span style="background:#FEE2E2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .35rem;font-size:.6rem;font-weight:600;white-space:nowrap;">${l}</span>`).join('')
+      : `<span style="font-size:.68rem;color:var(--gray);font-style:italic;">Sin alertas graves activas</span>`;
+
+    if (locked) {
+      const reviewerDisplay = hasReviewer
+        ? assigned.filter(r => r.name || r.email).map(r => `<span style="background:var(--navy);color:white;border-radius:.4rem;padding:.18rem .5rem;font-size:.72rem;font-weight:600;">${r.name||r.email}</span>`).join('')
+        : `<span style="font-size:.7rem;color:var(--gray);font-style:italic;">Sin asignar</span>`;
+      return `<div style="padding:.45rem 0;${border}display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:.35rem;min-width:9rem;">
+          <i data-lucide="${GROUP_ICON[g]||''}" style="width:.8rem;height:.8rem;stroke-width:2;flex-shrink:0;color:var(--navy);"></i>
+          <span style="font-size:.77rem;font-weight:700;color:var(--navy);">${g}</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:.25rem;align-items:center;flex:1;">${reviewerDisplay}</div>
+      </div>`;
+    }
+
+    const poolChips = pool.map(r => {
+      const key = r.name+'|'+r.email;
+      const on  = assignedKeys.has(key);
+      const lbl = r.name || r.email;
+      const st2 = on ? 'background:var(--navy);color:white;border-color:var(--navy);' : 'background:var(--white);color:var(--gray);border-color:var(--gray-border);';
+      return `<button onclick="togglePoolReviewer('${esc(g)}','${esc(r.name)}','${esc(r.email)}')" title="${r.email||''}"
+        style="font-size:.7rem;font-weight:600;padding:.18rem .5rem;border-radius:.4rem;border:1.5px solid;cursor:pointer;transition:all .15s;font-family:var(--font);${st2}">${lbl}</button>`;
+    }).join('');
+
+    const isInPool = r => pool.some(p =>
+      (p.name && r.name && p.name===r.name) || (p.email && r.email && p.email===r.email));
+    const manualAll = assigned.filter(r => !isInPool(r));
+    const manualConfirmed = manualAll.filter(r => r.confirmed);
+    const manualPending   = manualAll.filter(r => !r.confirmed);
+    const manualChips = manualConfirmed.map(r =>
+      `<span style="display:inline-flex;align-items:center;gap:.25rem;background:var(--navy);color:white;border:1.5px solid var(--navy);border-radius:.4rem;padding:.18rem .5rem;font-size:.7rem;font-weight:600;font-family:var(--font);">
+        ${r.name||r.email}<button onclick="removeConfirmedManual('${esc(g)}','${esc(r.name)}','${esc(r.email)}')" style="background:transparent;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:.75rem;padding:0;line-height:1;margin-left:.1rem;">×</button>
+      </span>`).join('');
+    const manualInputs = manualPending.map((r, mi) =>
+      `<div style="display:flex;gap:.25rem;align-items:center;margin-top:.2rem;">
+        <input type="text" value="${(r.name||'').replace(/"/g,'&quot;')}" placeholder="Nombre o área"
+          style="${inp}flex:1;" oninput="saveManualReviewer('${esc(g)}',${mi},'name',this.value)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();confirmManualReviewer('${esc(g)}',${mi});}">
+        <input type="email" value="${(r.email||'').replace(/"/g,'&quot;')}" placeholder="email (opc.)"
+          style="${inp}flex:1;" oninput="saveManualReviewer('${esc(g)}',${mi},'email',this.value)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();confirmManualReviewer('${esc(g)}',${mi});}">
+        <button onclick="confirmManualReviewer('${esc(g)}',${mi})" style="background:var(--navy);border:none;color:white;cursor:pointer;font-size:.68rem;font-weight:700;padding:.25rem .45rem;border-radius:.375rem;font-family:var(--font);flex-shrink:0;">✓</button>
+        <button onclick="removeManualReviewer('${esc(g)}',${mi})" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:.9rem;padding:.1rem .2rem;line-height:1;flex-shrink:0;">×</button>
+      </div>`
+    ).join('');
+    const noPool = !pool.length ? `<span style="font-size:.68rem;color:var(--gray);font-style:italic;">Completa los encargados de cada área para ver sugerencias.</span>` : '';
+    const reqBadge = !hasReviewer ? `<span style="font-size:.6rem;font-weight:700;background:#FEF2F2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .3rem;flex-shrink:0;">Pendiente</span>` : '';
+
+    return `<div style="padding:.45rem 0;${border}">
+      <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.3rem;">
+        <i data-lucide="${GROUP_ICON[g]||''}" style="width:.8rem;height:.8rem;stroke-width:2;flex-shrink:0;color:var(--navy);"></i>
+        <span style="font-size:.77rem;font-weight:700;color:var(--navy);">${g}</span>
+        ${reqBadge}
+        <div style="display:flex;flex-wrap:wrap;gap:.15rem;flex:1;">${alertChips}</div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:.25rem;align-items:center;">
+        ${noPool}${poolChips}${manualChips}
+        <button onclick="addManualReviewer('${esc(g)}')" style="background:transparent;border:1.5px dashed var(--gray-border);border-radius:.375rem;padding:.15rem .4rem;font-size:.65rem;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--font);white-space:nowrap;">+ otro</button>
+      </div>
+      ${manualInputs}
+    </div>`;
+  }).join('');
+
+  cont.innerHTML = rows
+    ? `<div style="margin-top:1rem;background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:.625rem 1rem;">
+        <div style="font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.1rem;display:flex;align-items:center;gap:.35rem;">
+          <i data-lucide="user-check" style="width:.7rem;height:.7rem;stroke-width:2.5;"></i>Quién revisa si hay una alerta grave
+        </div>${rows}</div>`
+    : '';
+  reIcons();
+}
+
+function renderAllAreaReviewers() {
+  AREAS.forEach(a => renderAreaReviewers(a));
+}
+
 function togglePoolReviewer(group, name, email) {
   if (!st.workflowReviewers) st.workflowReviewers = {};
   const arr = st.workflowReviewers[group] || [];
   const already = arr.find(r => r.name===name && r.email===email);
   // Un solo revisor por grupo: reemplazar o deseleccionar
   st.workflowReviewers[group] = already ? [] : [{ name, email }];
-  renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
+  renderWorkflowReviewers(); renderAllAreaReviewers(); save(); _resetReviewerSaveBtn();
 }
 function addManualReviewer(group) {
-  // Solo un revisor: limpiar y agregar input vacío
   st.workflowReviewers[group] = [{ name:'', email:'' }];
-  renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
+  renderWorkflowReviewers(); renderAllAreaReviewers(); save(); _resetReviewerSaveBtn();
 }
 function removeManualReviewer(group, pendingIdx) {
   const pool = getReviewerPool();
@@ -1815,13 +1925,13 @@ function removeManualReviewer(group, pendingIdx) {
   const target = pending[pendingIdx]; if (!target) return;
   const pos = st.workflowReviewers[group].findIndex(r => r === target);
   if (pos >= 0) st.workflowReviewers[group].splice(pos, 1);
-  renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
+  renderWorkflowReviewers(); renderAllAreaReviewers(); save(); _resetReviewerSaveBtn();
 }
 function removeConfirmedManual(group, name, email) {
   const arr = st.workflowReviewers[group]; if (!arr) return;
   const pos = arr.findIndex(r => r.name===name && r.email===email && r.confirmed);
   if (pos >= 0) arr.splice(pos, 1);
-  renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
+  renderWorkflowReviewers(); renderAllAreaReviewers(); save(); _resetReviewerSaveBtn();
 }
 function saveManualReviewer(group, pendingIdx, field, val) {
   const pool = getReviewerPool();
@@ -1843,12 +1953,11 @@ function confirmManualReviewer(group, pendingIdx) {
 
   const poolMatch = isInPool(target);
   if (poolMatch) {
-    // Ya está en el pool — seleccionar ese chip en vez de duplicar
     st.workflowReviewers[group] = [{ name: poolMatch.name, email: poolMatch.email }];
   } else {
     st.workflowReviewers[group] = [{ name: target.name, email: target.email, confirmed: true }];
   }
-  renderWorkflowReviewers(); save(); _resetReviewerSaveBtn();
+  renderWorkflowReviewers(); renderAllAreaReviewers(); save(); _resetReviewerSaveBtn();
 }
 function _resetReviewerSaveBtn() {
   if (st.reviewersLocked) return;
@@ -2713,6 +2822,7 @@ function renderAllAlerts() {
   });
   renderCrossAreaSummary('abastecimiento');
   AREAS.forEach(a => updateAreasProgress(a));
+  renderAllAreaReviewers();
   // Actualizar resumen comprimido en slides 12/13 si están visibles
   renderCompactAreaAlerts('syncCompactAlerts');
   renderCompactAreaAlerts('reportCompactAlerts');
@@ -3347,6 +3457,7 @@ function applyStateToUI() {
   AREAS.forEach(a => applyAreaSaveUI(a));
   applyReviewersSaveUI();
   renderWorkflowReviewers();
+  renderAllAreaReviewers();
   updateAreaTags();
   const syncNotesEl = document.getElementById('syncNotes');
   if (syncNotesEl) syncNotesEl.value = st.syncNotes || '';
@@ -3356,12 +3467,23 @@ function applyStateToUI() {
 function load() {
   try {
     const urlId = new URLSearchParams(window.location.search).get('s');
-    if (urlId) { st.sessionId = urlId; history.replaceState({}, '', '?s=' + urlId); }
-    const key = st.sessionId ? 'dd_v2_' + st.sessionId : 'dd_v2';
-    const raw = localStorage.getItem(key);
-    if (raw) mergeState(JSON.parse(raw));
+    if (urlId) {
+      st.sessionId = urlId;
+      history.replaceState({}, '', '?s=' + urlId);
+      const raw = localStorage.getItem('dd_v2_' + urlId);
+      if (raw) mergeState(JSON.parse(raw));
+    }
+    // Sin ?s= en el URL → no cargar localStorage, form en blanco
     applyStateToUI();
   } catch(e) {}
+}
+
+function newSession() {
+  if (!confirm('¿Comenzar una sesión nueva? Se limpiará la información guardada localmente en este navegador.')) return;
+  // Limpiar todas las claves dd_v2_* del localStorage
+  Object.keys(localStorage).filter(k => k.startsWith('dd_v2')).forEach(k => localStorage.removeItem(k));
+  history.replaceState({}, '', window.location.pathname);
+  location.reload();
 }
 
 function showSentBanner(iso) {
