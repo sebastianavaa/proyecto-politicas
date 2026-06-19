@@ -1535,7 +1535,7 @@ function setDecision(area, decision, btn) {
 }
 
 function saveNotes(area, val) { st.areas[area].notes = val; save(); }
-function saveResp(area, field, val) { st.areas[area].responsible[field] = val; save(); }
+function saveResp(area, field, val) { st.areas[area].responsible[field] = val; renderAllAreaReviewers(); save(); }
 
 // ── EXTRA DOCS ──
 function addExtra(area) {
