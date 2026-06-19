@@ -1212,7 +1212,7 @@ function next() {
       const missing = [];
       if (!a.responsible?.name?.trim()) missing.push('nombre del encargado');
       const emailVal = a.responsible?.email?.trim() || '';
-      if (emailVal && !emailVal.includes('@')) missing.push('email inválido');
+      if (!emailVal || !emailVal.includes('@')) missing.push('email del encargado');
       msg.innerHTML = missing.length
         ? `Para guardar necesitas completar: <strong style="color:var(--danger)">${missing.join(', ')}</strong>.`
         : `La sección de <strong>${AREA_LABELS[areaKey]}</strong> no fue guardada. ¿Continúas sin guardar?`;
