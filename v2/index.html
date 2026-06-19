@@ -1211,8 +1211,13 @@ function prev() { nubCancel(); const n = nextVisible(cur, -1); if (n) go(n, -1);
 
 function nubSaveAndGo() {
   if (!_nubArea || !_nubDest) return;
-  guardarArea(_nubArea);
-  if (st.areas[_nubArea].locked) { nubCancel(); go(_nubDest, 1); }
+  const errors = guardarArea(_nubArea);
+  if (errors && errors.length > 0) {
+    const msg = document.getElementById('next-unsaved-msg');
+    if (msg) msg.innerHTML = `Para guardar necesitas completar: <strong style="color:var(--danger)">${errors.join(', ')}</strong>.`;
+    return;
+  }
+  nubCancel(); go(_nubDest, 1);
 }
 function nubSkip() { const d = _nubDest; nubCancel(); if (d) go(d, 1); }
 function nubCancel() {
@@ -1425,23 +1430,25 @@ function guardarArea(area) {
     nameEl?.classList.add('err');
   } else nameEl?.classList.remove('err');
 
-  if (!a.responsible?.email?.trim() || !a.responsible.email.includes('@')) {
-    errors.push('email del encargado');
+  const emailVal = a.responsible?.email?.trim() || '';
+  if (emailVal && !emailVal.includes('@')) {
+    errors.push('email inválido');
     emailEl?.classList.add('err');
   } else emailEl?.classList.remove('err');
 
   if (errors.length > 0) {
     const status = document.getElementById('save-status-'+area);
-    if (status) { status.textContent = '⚠ Completa: ' + errors.join(', '); status.style.color='var(--danger)'; }
-    return;
+    if (status) { status.textContent = '⚠ Falta: ' + errors.join(', '); status.style.color='var(--danger)'; }
+    return errors;
   }
 
   const status = document.getElementById('save-status-'+area);
-  if (status) status.style.color = 'var(--gray)';
+  if (status) { status.textContent = ''; status.style.color = 'var(--gray)'; }
   a.locked = true;
   save();
   applyAreaSaveUI(area);
   AREAS.forEach(x => { updateAreasProgress(x); });
+  return [];
 }
 
 function editarArea(area) {
