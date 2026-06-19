@@ -858,6 +858,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div>
         <div class="col-title">Configuración de alertas — severidad y monitoreo</div>
         <div id="abast-alerts"></div>
+        <div id="suggested-alerts-abastecimiento"></div>
         <div id="area-reviewers-abastecimiento"></div>
       </div>
     </div>
@@ -894,6 +895,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div>
         <div class="col-title">Alertas — revisa la severidad</div>
         <div id="alerts-cumplimiento"></div>
+        <div id="suggested-alerts-cumplimiento"></div>
         <div id="area-reviewers-cumplimiento"></div>
       </div>
     </div>
@@ -930,6 +932,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div>
         <div class="col-title">Alertas — revisa la severidad</div>
         <div id="alerts-finanzas"></div>
+        <div id="suggested-alerts-finanzas"></div>
         <div id="area-reviewers-finanzas"></div>
       </div>
     </div>
@@ -966,6 +969,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div>
         <div class="col-title">Alertas — revisa la severidad</div>
         <div id="alerts-legal"></div>
+        <div id="suggested-alerts-legal"></div>
         <div id="area-reviewers-legal"></div>
       </div>
     </div>
@@ -1157,10 +1161,10 @@ const st = {
     subcontratacion:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true }
   },
   areas:{
-    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{}},
-    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{}},
-    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{}},
-    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{}}
+    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},suggestedAlerts:[]},
+    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},suggestedAlerts:[]},
+    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},suggestedAlerts:[]},
+    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},suggestedAlerts:[]}
   },
   customProcesses: [],
   customCatalogDocs: [],
@@ -2080,13 +2084,70 @@ function switchAlertTab(containerId, group) {
 function renderAbastAlerts() {
   const cont = document.getElementById('abast-alerts'); if (!cont) return;
   cont.innerHTML = buildAlertTabsHTML('abast-alerts', 'abastecimiento', 'Comentario sobre esta alerta (opcional)…');
+  renderSuggestedAlerts('abastecimiento');
   reIcons();
 }
 
 function renderReviewAlerts(area) {
   const cont = document.getElementById('alerts-'+area); if (!cont) return;
   cont.innerHTML = buildAlertTabsHTML('alerts-'+area, area, 'Comentario del área…');
+  renderSuggestedAlerts(area);
   reIcons();
+}
+
+function renderSuggestedAlerts(area) {
+  const cont = document.getElementById('suggested-alerts-' + area);
+  if (!cont) return;
+  if (!st.areas[area].suggestedAlerts) st.areas[area].suggestedAlerts = [];
+  const list = st.areas[area].suggestedAlerts;
+  const locked = st.areas[area].locked;
+
+  const chips = list.map((s, i) => `
+    <span style="display:inline-flex;align-items:center;gap:.3rem;background:var(--blue-light);color:var(--navy);border-radius:.4rem;padding:.2rem .55rem;font-size:.75rem;font-weight:600;margin:.2rem .2rem 0 0;">
+      ${s}
+      ${locked ? '' : `<button onclick="removeSuggestedAlert('${area}',${i})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.8rem;padding:0;line-height:1;">×</button>`}
+    </span>`).join('');
+
+  const inputRow = locked ? '' : `
+    <div style="display:flex;gap:.5rem;margin-top:.625rem;">
+      <input id="suggest-alert-input-${area}" type="text" placeholder="Describir la alerta que quieren revisar…"
+        style="flex:1;padding:.4rem .7rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.8rem;font-family:var(--font);background:var(--white);color:var(--text);outline:none;"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();addSuggestedAlert('${area}');}">
+      <button onclick="addSuggestedAlert('${area}')"
+        style="padding:.4rem .9rem;background:var(--accent);color:white;border:none;border-radius:.5rem;font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;">
+        + Agregar
+      </button>
+    </div>`;
+
+  cont.innerHTML = `
+    <div style="margin-top:.75rem;background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem .875rem;">
+      <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.375rem;display:flex;align-items:center;gap:.35rem;">
+        <i data-lucide="lightbulb" style="width:.75rem;height:.75rem;stroke-width:2.5;"></i>
+        Alertas adicionales — sugerencias del área
+      </div>
+      <p style="font-size:.72rem;color:var(--gray);margin:0 0 .5rem;line-height:1.4;">¿Hay algo más que quieran monitorear? Plutto lo evaluará para incorporarlo.</p>
+      <div>${chips || '<span style="font-size:.73rem;color:var(--gray);font-style:italic;">Sin sugerencias aún.</span>'}</div>
+      ${inputRow}
+    </div>`;
+  reIcons();
+}
+
+function addSuggestedAlert(area) {
+  const inp = document.getElementById('suggest-alert-input-' + area);
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val) return;
+  if (!st.areas[area].suggestedAlerts) st.areas[area].suggestedAlerts = [];
+  st.areas[area].suggestedAlerts.push(val);
+  inp.value = '';
+  save();
+  renderSuggestedAlerts(area);
+}
+
+function removeSuggestedAlert(area, idx) {
+  st.areas[area].suggestedAlerts.splice(idx, 1);
+  save();
+  renderSuggestedAlerts(area);
 }
 
 function renderAbastRecap() {
@@ -3077,6 +3138,7 @@ function buildExportPayload() {
         return [a, {
           alertas: ALERTS.map((m,i) => ({ alerta:m.label, grupo:m.group, activa: al[i]?.activa ?? false, severidad: al[i]?.severidad ?? m.sev })),
           comentariosPorGrupo: Object.fromEntries(groups.map(g => [g, st.areas[a].alertGroupComments?.[g] || ''])),
+          alertasSugeridas: st.areas[a].suggestedAlerts || [],
         }];
       })),
     },
