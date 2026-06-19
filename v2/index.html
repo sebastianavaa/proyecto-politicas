@@ -1161,16 +1161,18 @@ const st = {
     subcontratacion:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true }
   },
   areas:{
-    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},suggestedAlerts:[]},
-    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},suggestedAlerts:[]},
-    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},suggestedAlerts:[]},
-    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},suggestedAlerts:[]}
+    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},customDocsFirma:{},suggestedAlerts:[]},
+    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},customDocsFirma:{},suggestedAlerts:[]},
+    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},customDocsFirma:{},suggestedAlerts:[]},
+    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},customDocsFirma:{},suggestedAlerts:[]}
   },
   customProcesses: [],
   customCatalogDocs: [],
   workflowReviewers: {},
   reviewersLocked: false,
   processDocConfig: {},
+  processDocFirma: {},
+  processDocExcluded: {},
   sentAt:'',
   syncNotes:'',
 };
@@ -2286,6 +2288,30 @@ function renderStdDocRows(processKey) {
     </div>`).join('');
 }
 
+function toggleStdDocFirma(processKey, j) {
+  if (!st.processDocFirma) st.processDocFirma = {};
+  if (!st.processDocFirma[processKey]) st.processDocFirma[processKey] = {};
+  st.processDocFirma[processKey][j] = !st.processDocFirma[processKey][j];
+  AREAS.forEach(a => renderAreaDocReview(a));
+  save();
+}
+
+function toggleCustomDocFirma(area, processKey, name) {
+  if (!st.areas[area].customDocsFirma) st.areas[area].customDocsFirma = {};
+  if (!st.areas[area].customDocsFirma[processKey]) st.areas[area].customDocsFirma[processKey] = {};
+  st.areas[area].customDocsFirma[processKey][name] = !st.areas[area].customDocsFirma[processKey][name];
+  renderAreaDocReview(area);
+  save();
+}
+
+function excludeStdDoc(processKey, j) {
+  if (!st.processDocExcluded) st.processDocExcluded = {};
+  if (!st.processDocExcluded[processKey]) st.processDocExcluded[processKey] = [];
+  if (!st.processDocExcluded[processKey].includes(j)) st.processDocExcluded[processKey].push(j);
+  AREAS.forEach(a => renderAreaDocReview(a));
+  save();
+}
+
 function setStdDoc(processKey, j, state) {
   if (!st.processDocConfig) st.processDocConfig = {};
   if (!st.processDocConfig[processKey]) {
@@ -2504,7 +2530,8 @@ function getAreaActiveDocs(area) {
   Object.entries(st.evalTypes).forEach(([k, v]) => {
     if (!v || !isAreaAssigned(k, area)) return;
     const cfg = getProcessDocConfig(k);
-    const docs = Object.entries(cfg).map(([j, s]) => ({ idx:+j, name:DOCS[+j]?.name, req:s })).filter(d => d.name);
+    const excluded = new Set(st.processDocExcluded?.[k] || []);
+    const docs = Object.entries(cfg).map(([j, s]) => ({ idx:+j, name:DOCS[+j]?.name, req:s })).filter(d => d.name && !excluded.has(d.idx));
     const tpl = PROCESS_TEMPLATES.find(t => t.id === k);
     const desc = (st.processDescriptions?.[k]) || tpl?.desc || '';
     if (docs.length) result.push({ processKey:k, label:TYPE_LABEL[k]||k, docs, desc });
@@ -2632,12 +2659,19 @@ function renderAreaDocReview(area) {
       const callFn = cpIdx !== null
         ? `setCPDoc(${cpIdx},${d.idx},`
         : `setStdDoc('${pk}',${d.idx},`;
+      const firmaKey = cpIdx !== null ? `cp_${cpIdx}` : pk;
+      const firmaOn = !!(st.processDocFirma?.[firmaKey]?.[d.idx]);
+      const firmaSel = 'background:#EDE9FE;color:var(--accent);border-color:#C4B5FD;';
+      const deleteBtn = cpIdx !== null
+        ? `<button onclick="setCPDoc(${cpIdx},${d.idx},null)" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .15rem;line-height:1;" title="Quitar doc">×</button>`
+        : `<button onclick="excludeStdDoc('${pk}',${d.idx})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .15rem;line-height:1;" title="Eliminar de este proceso">×</button>`;
       return `<div style="display:flex;align-items:center;gap:.4rem;padding:.25rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
         <span style="flex:1;font-size:.75rem;color:var(--text);">${d.name}</span>
         <div style="display:flex;gap:.2rem;align-items:center;">
           <button onclick="${callFn}${s==='req'?null:"'req'"})" style="${btnB}${s==='req'?reqSel:btnOff}">Req</button>
           <button onclick="${callFn}${s==='opc'?null:"'opc'"})" style="${btnB}${s==='opc'?opcSel:btnOff}">Opc</button>
-          ${cpIdx !== null ? `<button onclick="setCPDoc(${cpIdx},${d.idx},null)" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .2rem;line-height:1;" title="Quitar doc">×</button>` : ''}
+          <button onclick="toggleStdDocFirma('${firmaKey}',${d.idx})" style="${btnB}${firmaOn?firmaSel:btnOff}" title="Requiere firma">Firma</button>
+          ${deleteBtn}
         </div>
       </div>`;
     }).join('');
@@ -2647,12 +2681,15 @@ function renderAreaDocReview(area) {
       const s  = procReview[rk] || null;
       const reqSel2 = 'background:#DCFCE7;color:#166534;border-color:#86EFAC;';
       const opcSel2 = 'background:#FFFBEB;color:#D97706;border-color:#FCD34D;';
+      const firmaSel2 = 'background:#EDE9FE;color:var(--accent);border-color:#C4B5FD;';
+      const firmaOn2 = !!(st.areas[area].customDocsFirma?.[pk]?.[name]);
       return `<div style="display:flex;align-items:center;gap:.4rem;padding:.2rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
         ${addTag}
         <span style="flex:1;font-size:.75rem;color:var(--text);">${name}</span>
         <div style="display:flex;gap:.2rem;align-items:center;">
           <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','req')" style="${btnBase}${s==='req'?reqSel2:off}">Req</button>
           <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','opc')" style="${btnBase}${s==='opc'?opcSel2:off}">Opc</button>
+          <button onclick="toggleCustomDocFirma('${area}','${pk}','${name.replace(/'/g,"\\'")}')" style="${btnBase}${firmaOn2?firmaSel2:off}" title="Requiere firma">Firma</button>
           <button onclick="removeAreaCustomDoc('${area}','${pk}',${ci})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .2rem;line-height:1;" title="Quitar de este proceso">×</button>
         </div>
       </div>`;
@@ -3382,6 +3419,8 @@ function mergeState(d) {
   if (d.syncNotes) st.syncNotes = d.syncNotes;
   if (Array.isArray(d.customProcesses)) st.customProcesses = d.customProcesses;
   if (d.processDocConfig) { if (!st.processDocConfig) st.processDocConfig = {}; Object.assign(st.processDocConfig, d.processDocConfig); }
+  if (d.processDocFirma) { if (!st.processDocFirma) st.processDocFirma = {}; Object.assign(st.processDocFirma, d.processDocFirma); }
+  if (d.processDocExcluded) { if (!st.processDocExcluded) st.processDocExcluded = {}; Object.assign(st.processDocExcluded, d.processDocExcluded); }
   if (d.processDescriptions) st.processDescriptions = d.processDescriptions;
   if (d.processAreas) {
     if (!st.processAreas) st.processAreas = {};
