@@ -2312,6 +2312,12 @@ function excludeStdDoc(processKey, j) {
   save();
 }
 
+function restoreExcludedDocs(processKey) {
+  if (st.processDocExcluded) delete st.processDocExcluded[processKey];
+  AREAS.forEach(a => renderAreaDocReview(a));
+  save();
+}
+
 function setStdDoc(processKey, j, state) {
   if (!st.processDocConfig) st.processDocConfig = {};
   if (!st.processDocConfig[processKey]) {
@@ -2534,7 +2540,7 @@ function getAreaActiveDocs(area) {
     const docs = Object.entries(cfg).map(([j, s]) => ({ idx:+j, name:DOCS[+j]?.name, req:s })).filter(d => d.name && !excluded.has(d.idx));
     const tpl = PROCESS_TEMPLATES.find(t => t.id === k);
     const desc = (st.processDescriptions?.[k]) || tpl?.desc || '';
-    if (docs.length) result.push({ processKey:k, label:TYPE_LABEL[k]||k, docs, desc });
+    result.push({ processKey:k, label:TYPE_LABEL[k]||k, docs, desc });
   });
   (st.customProcesses||[]).forEach((p, i) => {
     if (!p.saved || p.active===false || !isAreaAssigned('cp_'+i, area)) return;
@@ -2645,8 +2651,13 @@ function renderAreaDocReview(area) {
     const pk          = proc.processKey;
     const procReview  = review[pk] || {};
     const allDocs     = [...proc.docs.filter(d => d.req==='req'), ...proc.docs.filter(d => d.req==='opc')];
+    const allExcluded = (st.processDocExcluded?.[pk] || []).length > 0 && allDocs.length === 0;
     const noDocsMsg   = allDocs.length === 0
-      ? `<div style="font-size:.75rem;color:var(--gray);padding:.25rem 0;font-style:italic;">Sin documentos configurados — agrégalos en la slide de configuración.</div>`
+      ? `<div style="font-size:.75rem;color:var(--gray);padding:.35rem 0;font-style:italic;">
+          ${allExcluded
+            ? `Todos los documentos fueron eliminados. <button onclick="restoreExcludedDocs('${pk}')" style="font-size:.75rem;color:var(--accent);background:none;border:none;cursor:pointer;font-family:var(--font);font-weight:700;padding:0;text-decoration:underline;">Restaurar</button>`
+            : 'Sin documentos configurados — agrégalos en la slide de configuración.'}
+         </div>`
       : '';
     const addTag = `<span style="font-size:.6rem;font-weight:700;background:#EFF6FF;color:var(--blue);border:1px solid #BFDBFE;border-radius:.2rem;padding:.05rem .3rem;flex-shrink:0;">Add</span>`;
     const cpIdx = pk.startsWith('cp_') ? +pk.slice(3) : null;
