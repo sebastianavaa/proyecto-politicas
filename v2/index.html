@@ -2301,6 +2301,7 @@ function setStdDoc(processKey, j, state) {
   if (rows) rows.innerHTML = renderStdDocRows(processKey);
   const summary = document.getElementById('std-doc-summary-' + processKey);
   if (summary) summary.innerHTML = renderStdDocSummaryHTML(processKey);
+  AREAS.forEach(a => renderAreaDocReview(a));
   save();
 }
 
@@ -2631,20 +2632,17 @@ function renderAreaDocReview(area) {
     const btnOff = 'background:transparent;color:var(--gray);border-color:var(--gray-border);';
     const btnB   = 'font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:.25rem;border:1px solid;cursor:pointer;transition:all .15s;';
     const rows = allDocs.map(d => {
-      if (cpIdx !== null) {
-        const s = d.req;
-        return `<div style="display:flex;align-items:center;gap:.4rem;padding:.25rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
-          <span style="flex:1;font-size:.75rem;color:var(--text);">${d.name}</span>
-          <div style="display:flex;gap:.2rem;align-items:center;">
-            <button onclick="setCPDoc(${cpIdx},${d.idx},${s==='req'?null:"'req'"})" style="${btnB}${s==='req'?reqSel:btnOff}">Req</button>
-            <button onclick="setCPDoc(${cpIdx},${d.idx},${s==='opc'?null:"'opc'"})" style="${btnB}${s==='opc'?opcSel:btnOff}">Opc</button>
-            <button onclick="setCPDoc(${cpIdx},${d.idx},null)" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .2rem;line-height:1;" title="Quitar doc">×</button>
-          </div>
-        </div>`;
-      }
-      return `<div style="display:flex;align-items:center;gap:.4rem;padding:.3rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
-        ${d.req === 'req' ? reqTag : opcTag}
+      const s = d.req;
+      const callFn = cpIdx !== null
+        ? `setCPDoc(${cpIdx},${d.idx},`
+        : `setStdDoc('${pk}',${d.idx},`;
+      return `<div style="display:flex;align-items:center;gap:.4rem;padding:.25rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
         <span style="flex:1;font-size:.75rem;color:var(--text);">${d.name}</span>
+        <div style="display:flex;gap:.2rem;align-items:center;">
+          <button onclick="${callFn}${s==='req'?null:"'req'"})" style="${btnB}${s==='req'?reqSel:btnOff}">Req</button>
+          <button onclick="${callFn}${s==='opc'?null:"'opc'"})" style="${btnB}${s==='opc'?opcSel:btnOff}">Opc</button>
+          ${cpIdx !== null ? `<button onclick="setCPDoc(${cpIdx},${d.idx},null)" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .2rem;line-height:1;" title="Quitar doc">×</button>` : ''}
+        </div>
       </div>`;
     }).join('');
     const customDocsList = (st.areas[area].customDocs?.[pk] || []);
