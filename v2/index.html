@@ -1440,8 +1440,8 @@ function guardarArea(area) {
   } else nameEl?.classList.remove('err');
 
   const emailVal = a.responsible?.email?.trim() || '';
-  if (emailVal && !emailVal.includes('@')) {
-    errors.push('email inválido');
+  if (!emailVal || !emailVal.includes('@')) {
+    errors.push('email del encargado');
     emailEl?.classList.add('err');
   } else emailEl?.classList.remove('err');
 
