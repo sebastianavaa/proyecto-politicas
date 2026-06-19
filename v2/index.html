@@ -383,31 +383,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   font-size:1rem;cursor:pointer;margin-left:.75rem;line-height:1;}
 #sent-banner-close:hover{color:white;}
 
-/* CROSS-AREA SUMMARY (resumen dinámico de otras áreas) */
-.cross-area-summary{background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem;margin-bottom:.875rem;}
-.cross-area-summary-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;}
-.cross-area-cards{display:flex;flex-wrap:wrap;gap:.5rem;}
-.cross-area-card{background:var(--white);border:1px solid var(--gray-border);border-radius:.625rem;padding:.625rem .75rem;width:220px;flex-shrink:0;}
-.cross-area-card-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;}
-.cross-area-card-name{font-size:.76rem;font-weight:700;color:var(--navy);flex:1;}
-.cross-area-badge{display:inline-flex;align-items:center;gap:.25rem;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:.15rem .45rem;border-radius:.25rem;width:fit-content;}
-.cross-area-badge.aprobado{background:var(--success-bg);color:var(--success);}
-.cross-area-badge.rechazado{background:var(--danger-bg);color:var(--danger);}
-.cross-area-badge.observacion{background:var(--warn-bg);color:var(--warn-tx);}
-.cross-area-badge.pendiente{background:var(--gray-light);color:var(--gray);}
-.cross-area-notes{font-size:.7rem;color:var(--gray);line-height:1.4;margin-top:.375rem;font-style:italic;}
-.cross-area-alert-groups{display:flex;flex-direction:column;gap:.25rem;margin-bottom:.5rem;}
-.cross-area-group-row{display:flex;align-items:center;gap:.5rem;}
-.cross-area-group-label{font-size:.65rem;color:var(--gray);width:5.5rem;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.cross-area-group-bar{flex:1;height:.35rem;background:var(--gray-border);border-radius:.25rem;overflow:hidden;}
-.cross-area-group-fill{height:100%;background:var(--accent);border-radius:.25rem;transition:width .3s;}
-.cross-area-group-count{font-size:.68rem;font-weight:700;color:var(--navy);width:2rem;text-align:right;flex-shrink:0;}
-.cross-area-sev-bar{display:flex;gap:.375rem;align-items:center;margin-top:.375rem;flex-wrap:wrap;}
-.cross-area-sev-pill{font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:.25rem;}
-.cross-area-sev-pill.leve{background:var(--success-bg);color:var(--success);}
-.cross-area-sev-pill.media{background:var(--warn-bg);color:var(--warn-tx);}
-.cross-area-sev-pill.grave{background:var(--danger-bg);color:var(--danger);}
-
 /* ── MOBILE ── */
 @media (max-width: 640px) {
   html, body { height: 100dvh; }
@@ -455,10 +430,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   .alert-cfg-top { flex-wrap: wrap; gap: .4rem; }
   .sev-sel { flex-shrink: 0; }
   .sev-opt { padding: .12rem .35rem; font-size: .6rem; }
-
-  /* Cross-area cards — ancho completo */
-  .cross-area-card { width: 100%; }
-  .cross-area-cards { flex-direction: column; }
 
   /* Report areas — una columna */
   .report-areas { grid-template-columns: 1fr; }
@@ -534,16 +505,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   margin-top:.3rem;display:none;}
 .area-save-hint.visible{display:block;}
 
-/* Cross-area summary — accordion colapsable */
-.cross-area-accordion{background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;margin-bottom:.875rem;overflow:hidden;}
-.cross-area-accordion-trigger{display:flex;align-items:center;justify-content:space-between;padding:.625rem 1rem;cursor:pointer;user-select:none;gap:.5rem;}
-.cross-area-accordion-trigger:hover{background:var(--gray-light);}
-.cross-area-accordion-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);}
-.cross-area-accordion-meta{font-size:.7rem;color:var(--gray);margin-right:.25rem;}
-.cross-area-accordion-chevron{color:var(--gray);transition:transform .2s;flex-shrink:0;}
-.cross-area-accordion-chevron.open{transform:rotate(180deg);}
-.cross-area-accordion-body{padding:.5rem 1rem .75rem;}
-.cross-area-accordion-body.collapsed{display:none;}
 </style>
 </head>
 <body>
@@ -885,16 +846,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
   </div>
   <div class="s-body scrollable">
-    <div class="cross-area-accordion" id="cross-summary-abastecimiento-accordion">
-      <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('abastecimiento')">
-        <span class="cross-area-accordion-title">Resumen de otras áreas</span>
-        <span id="cross-summary-abastecimiento-meta" class="cross-area-accordion-meta"></span>
-        <i data-lucide="chevron-down" class="cross-area-accordion-chevron" id="cross-chevron-abastecimiento" style="width:.9rem;height:.9rem;"></i>
-      </div>
-      <div class="cross-area-accordion-body collapsed" id="cross-summary-abastecimiento-body">
-        <div class="cross-area-cards" id="cross-summary-abastecimiento-cards"></div>
-      </div>
-    </div>
 
     <div class="area-cols">
       <div>
@@ -931,16 +882,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
   </div>
   <div class="s-body scrollable">
-    <div class="cross-area-accordion" id="cross-summary-cumplimiento-accordion">
-      <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('cumplimiento')">
-        <span class="cross-area-accordion-title">Resumen de otras áreas</span>
-        <span id="cross-summary-cumplimiento-meta" class="cross-area-accordion-meta"></span>
-        <i data-lucide="chevron-down" class="cross-area-accordion-chevron" id="cross-chevron-cumplimiento" style="width:.9rem;height:.9rem;"></i>
-      </div>
-      <div class="cross-area-accordion-body collapsed" id="cross-summary-cumplimiento-body">
-        <div class="cross-area-cards" id="cross-summary-cumplimiento-cards"></div>
-      </div>
-    </div>
 
     <div class="area-cols">
       <div>
@@ -977,16 +918,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
   </div>
   <div class="s-body scrollable">
-    <div class="cross-area-accordion" id="cross-summary-finanzas-accordion">
-      <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('finanzas')">
-        <span class="cross-area-accordion-title">Resumen de otras áreas</span>
-        <span id="cross-summary-finanzas-meta" class="cross-area-accordion-meta"></span>
-        <i data-lucide="chevron-down" class="cross-area-accordion-chevron" id="cross-chevron-finanzas" style="width:.9rem;height:.9rem;"></i>
-      </div>
-      <div class="cross-area-accordion-body collapsed" id="cross-summary-finanzas-body">
-        <div class="cross-area-cards" id="cross-summary-finanzas-cards"></div>
-      </div>
-    </div>
 
     <div class="area-cols">
       <div>
@@ -1023,16 +954,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
   </div>
   <div class="s-body scrollable">
-    <div class="cross-area-accordion" id="cross-summary-legal-accordion">
-      <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('legal')">
-        <span class="cross-area-accordion-title">Resumen de otras áreas</span>
-        <span id="cross-summary-legal-meta" class="cross-area-accordion-meta"></span>
-        <i data-lucide="chevron-down" class="cross-area-accordion-chevron" id="cross-chevron-legal" style="width:.9rem;height:.9rem;"></i>
-      </div>
-      <div class="cross-area-accordion-body collapsed" id="cross-summary-legal-body">
-        <div class="cross-area-cards" id="cross-summary-legal-cards"></div>
-      </div>
-    </div>
 
     <div class="area-cols">
       <div>
@@ -1512,7 +1433,7 @@ function guardarArea(area) {
   a.locked = true;
   save();
   applyAreaSaveUI(area);
-  AREAS.forEach(x => { renderCrossAreaSummary(x); updateAreasProgress(x); });
+  AREAS.forEach(x => { updateAreasProgress(x); });
 }
 
 function editarArea(area) {
@@ -1659,7 +1580,6 @@ function setAlertActive(area, i) {
   }
   _updateAlertTabBadges(area);
   // Actualizar solo los sumarios, sin reconstruir las filas de alertas
-  renderCrossAreaSummary(area);
   renderCompactAreaAlerts('syncCompactAlerts');
   renderCompactAreaAlerts('reportCompactAlerts');
   renderAllAreasSummary('syncAllAreaCards');
@@ -2189,15 +2109,6 @@ function renderScopeChips(containerId) {
   cont.innerHTML = (stdChips + cpChips) || '<span class="recap-chip muted">No asignada a ningún proceso activo</span>';
 }
 
-function toggleCrossAreaAccordion(area) {
-  const body    = document.getElementById('cross-summary-' + area + '-body');
-  const chevron = document.getElementById('cross-chevron-' + area);
-  if (!body) return;
-  const isOpen = !body.classList.contains('collapsed');
-  body.classList.toggle('collapsed', isOpen);
-  if (chevron) chevron.classList.toggle('open', !isOpen);
-}
-
 function updateAreasProgress(area) {
   const el = document.getElementById('areas-progress-' + area);
   if (!el) return;
@@ -2205,77 +2116,6 @@ function updateAreasProgress(area) {
   if (!others.length) { el.textContent = ''; return; }
   const saved = others.filter(a => st.areas[a].locked).length;
   el.textContent = `${saved} de ${others.length} otras áreas han guardado`;
-}
-
-function renderCrossAreaSummary(area) {
-  const container = document.getElementById('cross-summary-' + area + '-cards');
-  if (!container) return;
-
-  const AREA_ALERT_DOMAIN = {}; // sin filtro — cada área configura todas las alertas
-
-  const cards = AREAS.filter(a => a !== area && isAreaRequired(a)).map(a => {
-    const d = st.areas[a];
-    const estado = d.locked ? 'aprobado' : 'pendiente';
-    const estadoLabel = d.locked ? 'Completado' : 'Pendiente';
-
-    if (!d.locked) {
-      return `<div class="cross-area-card">
-        <div class="cross-area-card-header">
-          <span class="cross-area-card-name">${AREA_LABELS[a]}</span>
-          <div class="cross-area-badge pendiente">Pendiente</div>
-        </div>
-        <div style="font-size:.72rem;color:var(--gray);padding:.25rem 0;">Sin guardar — los datos aparecerán cuando el área guarde su sección.</div>
-      </div>`;
-    }
-
-    // Alertas del dominio de esta área
-    const domainFilter = AREA_ALERT_DOMAIN[a] || (() => true);
-    const aAlerts = st.areas[a].alerts;
-    const domainAlerts = ALERTS.map((meta,i) => ({meta,i})).filter(({meta}) => domainFilter(meta));
-    const activeInDomain = domainAlerts.filter(({i}) => aAlerts[i].activa);
-    const total = domainAlerts.length;
-    const activeTotal = activeInDomain.length;
-
-    // Severidades (solo de alertas activas del dominio)
-    const sevCount = { leve:0, media:0, grave:0 };
-    activeInDomain.forEach(({i}) => sevCount[aAlerts[i].severidad]++);
-    const sevPills = activeTotal ? ['grave','media','leve'].filter(s => sevCount[s] > 0).map(s => {
-      const pct = Math.round(sevCount[s]/activeTotal*100);
-      return `<span class="cross-area-sev-pill ${s}">${pct}% ${s}</span>`;
-    }).join('') : '';
-
-    // Alertas activas por grupo del dominio
-    const groups = [...new Set(domainAlerts.map(({meta}) => meta.group))];
-    const groupRows = groups.map(g => {
-      const gAlerts = domainAlerts.filter(({meta}) => meta.group === g);
-      const gActive = gAlerts.filter(({i}) => aAlerts[i].activa).length;
-      const gTotal = gAlerts.length;
-      const pct = gTotal ? Math.round(gActive/gTotal*100) : 0;
-      const iconName2 = GROUP_ICON[g] || '';
-      const iconHtml2 = iconName2 ? `<i data-lucide="${iconName2}" style="width:.65rem;height:.65rem;margin-right:.2rem;vertical-align:middle;flex-shrink:0;"></i>` : '';
-      return `<div class="cross-area-group-row">
-        <span class="cross-area-group-label">${iconHtml2}${g}</span>
-        <div class="cross-area-group-bar"><div class="cross-area-group-fill" style="width:${pct}%"></div></div>
-        <span class="cross-area-group-count">${gActive}/${gTotal}</span>
-      </div>`;
-    }).join('');
-
-    const notesPreview = d.notes ? '"' + d.notes.substring(0,70) + (d.notes.length>70?'…':'"') : '';
-    const responsible = d.responsible?.name ? `<div style="font-size:.68rem;color:var(--gray);margin-top:.25rem;">${d.responsible.name}</div>` : '';
-
-    return `<div class="cross-area-card">
-      <div class="cross-area-card-header">
-        <span class="cross-area-card-name">${AREA_LABELS[a]}</span>
-        <div class="cross-area-badge ${estado}">${estadoLabel}</div>
-      </div>
-      ${groupRows ? `<div class="cross-area-alert-groups">${groupRows}</div>` : ''}
-      ${sevPills ? `<div class="cross-area-sev-bar">${sevPills}</div>` : ''}
-      ${notesPreview ? `<div class="cross-area-notes">${notesPreview}</div>` : ''}
-      ${responsible}
-    </div>`;
-  }).join('');
-
-  container.innerHTML = cards || '<div style="font-size:.75rem;color:var(--gray);padding:.5rem">Sin áreas activas</div>';
 }
 
 // ── PROCESOS PERSONALIZADOS ──
@@ -2878,9 +2718,7 @@ function renderAllAlerts() {
   ['cumplimiento','finanzas','legal'].forEach(a => {
     renderScopeChips('scope-procs-' + a);
     renderReviewAlerts(a);
-    renderCrossAreaSummary(a);
   });
-  renderCrossAreaSummary('abastecimiento');
   AREAS.forEach(a => updateAreasProgress(a));
   renderAllAreaReviewers();
   // Actualizar resumen comprimido en slides 12/13 si están visibles
@@ -3419,8 +3257,6 @@ function startPolling() {
         ['cumplimiento','finanzas','legal'].forEach(a => renderScopeChips('scope-procs-' + a));
       }
 
-      // 6. Re-renderizar resúmenes cruzados
-      if (currentArea && AREAS.includes(currentArea)) renderCrossAreaSummary(currentArea);
     } catch(e) {}
   }, 4000);
 }
@@ -3512,7 +3348,6 @@ function applyStateToUI() {
   renderRequiredAreas();
   renderAbastRecap();
   AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
-  AREAS.forEach(a => renderCrossAreaSummary(a));
   AREAS.forEach(a => updateAreasProgress(a));
   AREAS.forEach(a => applyAreaSaveUI(a));
   applyReviewersSaveUI();
