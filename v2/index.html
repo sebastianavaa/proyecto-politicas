@@ -506,14 +506,38 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 /* LUCIDE ICONS */
 .lucide{display:inline-block;vertical-align:middle;flex-shrink:0;}
 
-/* Inputs de responsable en el header del área */
-.head-resp{display:flex;gap:.5rem;margin-top:.625rem;flex-wrap:wrap;}
-.head-resp input{flex:1;min-width:140px;padding:.4rem .75rem;border:1.5px solid rgba(255,255,255,.22);border-radius:.5rem;
-  background:rgba(255,255,255,.1);color:white;font-size:.8rem;font-family:var(--font);outline:none;transition:border .2s;}
-.head-resp input::placeholder{color:rgba(255,255,255,.4);}
-.head-resp input:focus{border-color:rgba(255,255,255,.6);}
-.head-resp input.err{border-color:var(--danger);}
-.head-resp input:disabled{opacity:.55;cursor:not-allowed;}
+/* Responsable del área — card en el body (blanca, fácil de ver) */
+.area-resp-card{background:var(--white);border:1.5px solid var(--blue-light);border-radius:.75rem;
+  padding:.625rem .875rem;margin-bottom:.75rem;flex-shrink:0;}
+.area-resp-card.saved{border-color:var(--success-bg);background:var(--success-bg);}
+.area-resp-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--navy);margin-bottom:.35rem;display:flex;align-items:center;gap:.3rem;}
+.area-resp-row{display:flex;gap:.5rem;flex-wrap:wrap;}
+.area-resp-card input{flex:1;min-width:140px;padding:.4rem .75rem;border:1.5px solid var(--gray-border);
+  border-radius:.5rem;background:var(--bg);color:var(--text);font-size:.82rem;font-family:var(--font);
+  outline:none;transition:border .2s;}
+.area-resp-card input:focus{border-color:var(--accent);}
+.area-resp-card input.err{border-color:var(--danger);}
+.area-resp-card input:disabled{opacity:.6;cursor:not-allowed;background:#f5f5f8;}
+
+/* Barra de confirmación al presionar Siguiente sin guardar */
+#next-unsaved-bar{position:fixed;bottom:0;left:0;right:0;z-index:600;
+  background:var(--navy);color:white;padding:.75rem 2rem;
+  display:none;align-items:center;gap:1rem;flex-wrap:wrap;
+  box-shadow:0 -4px 20px rgba(0,0,0,.25);border-top:2px solid var(--blue);}
+#next-unsaved-bar p{flex:1;font-size:.85rem;font-weight:600;margin:0;}
+.nub-btn{padding:.45rem 1.1rem;border-radius:.5rem;border:none;font-size:.8rem;font-weight:700;
+  cursor:pointer;font-family:var(--font);transition:all .15s;}
+.nub-save{background:var(--accent);color:white;}
+.nub-save:hover{background:var(--accent-dark);}
+.nub-skip{background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);}
+.nub-skip:hover{background:rgba(255,255,255,.2);}
+.nub-cancel{background:transparent;color:rgba(255,255,255,.5);text-decoration:underline;font-size:.75rem;}
+
+/* Hint en el footer cuando hay cambios sin guardar */
+.area-save-hint{font-size:.72rem;color:var(--blue);font-weight:600;text-align:center;
+  margin-top:.3rem;display:none;}
+.area-save-hint.visible{display:block;}
 
 /* Cross-area summary — accordion colapsable */
 .cross-area-accordion{background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;margin-bottom:.875rem;overflow:hidden;}
@@ -860,12 +884,15 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="area-status" id="badge-abastecimiento">Pendiente</div>
       <span id="areas-progress-abastecimiento" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
     </div>
-    <div class="head-resp">
-      <input type="text" id="resp-name-abastecimiento" placeholder="Nombre del encargado" oninput="saveResp('abastecimiento','name',this.value)">
-      <input type="email" id="resp-email-abastecimiento" placeholder="email@empresa.com" oninput="saveResp('abastecimiento','email',this.value)">
-    </div>
   </div>
   <div class="s-body scrollable">
+    <div class="area-resp-card" id="resp-card-abastecimiento">
+      <div class="area-resp-label"><i data-lucide="user" style="width:.7rem;height:.7rem;stroke-width:2.5;"></i>¿Quién revisa esta sección?</div>
+      <div class="area-resp-row">
+        <input type="text" id="resp-name-abastecimiento" placeholder="Nombre del encargado" oninput="saveResp('abastecimiento','name',this.value)">
+        <input type="email" id="resp-email-abastecimiento" placeholder="email@empresa.com" oninput="saveResp('abastecimiento','email',this.value)">
+      </div>
+    </div>
     <div class="cross-area-accordion" id="cross-summary-abastecimiento-accordion">
       <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('abastecimiento')">
         <span class="cross-area-accordion-title">Resumen de otras áreas</span>
@@ -893,6 +920,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <button class="btn-area-save-main" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')" style="margin-top:0;">Guardar sección de Abastecimiento</button>
     <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
     <span class="area-save-status" id="save-status-abastecimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
+    <div class="area-save-hint" id="save-hint-abastecimiento">Completa tu nombre y correo, luego guarda para avanzar</div>
   </div>
 </div>
 
@@ -905,12 +933,15 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="area-status" id="badge-cumplimiento">Pendiente</div>
       <span id="areas-progress-cumplimiento" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
     </div>
-    <div class="head-resp">
-      <input type="text" id="resp-name-cumplimiento" placeholder="Nombre del encargado" oninput="saveResp('cumplimiento','name',this.value)">
-      <input type="email" id="resp-email-cumplimiento" placeholder="email@empresa.com" oninput="saveResp('cumplimiento','email',this.value)">
-    </div>
   </div>
   <div class="s-body scrollable">
+    <div class="area-resp-card" id="resp-card-cumplimiento">
+      <div class="area-resp-label"><i data-lucide="user" style="width:.7rem;height:.7rem;stroke-width:2.5;"></i>¿Quién revisa esta sección?</div>
+      <div class="area-resp-row">
+        <input type="text" id="resp-name-cumplimiento" placeholder="Nombre del encargado" oninput="saveResp('cumplimiento','name',this.value)">
+        <input type="email" id="resp-email-cumplimiento" placeholder="email@empresa.com" oninput="saveResp('cumplimiento','email',this.value)">
+      </div>
+    </div>
     <div class="cross-area-accordion" id="cross-summary-cumplimiento-accordion">
       <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('cumplimiento')">
         <span class="cross-area-accordion-title">Resumen de otras áreas</span>
@@ -938,6 +969,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <button class="btn-area-save-main" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')" style="margin-top:0;">Guardar sección de Cumplimiento</button>
     <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
     <span class="area-save-status" id="save-status-cumplimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
+    <div class="area-save-hint" id="save-hint-cumplimiento">Completa tu nombre y correo, luego guarda para avanzar</div>
   </div>
 </div>
 
@@ -950,12 +982,15 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="area-status" id="badge-finanzas">Pendiente</div>
       <span id="areas-progress-finanzas" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
     </div>
-    <div class="head-resp">
-      <input type="text" id="resp-name-finanzas" placeholder="Nombre del encargado" oninput="saveResp('finanzas','name',this.value)">
-      <input type="email" id="resp-email-finanzas" placeholder="email@empresa.com" oninput="saveResp('finanzas','email',this.value)">
-    </div>
   </div>
   <div class="s-body scrollable">
+    <div class="area-resp-card" id="resp-card-finanzas">
+      <div class="area-resp-label"><i data-lucide="user" style="width:.7rem;height:.7rem;stroke-width:2.5;"></i>¿Quién revisa esta sección?</div>
+      <div class="area-resp-row">
+        <input type="text" id="resp-name-finanzas" placeholder="Nombre del encargado" oninput="saveResp('finanzas','name',this.value)">
+        <input type="email" id="resp-email-finanzas" placeholder="email@empresa.com" oninput="saveResp('finanzas','email',this.value)">
+      </div>
+    </div>
     <div class="cross-area-accordion" id="cross-summary-finanzas-accordion">
       <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('finanzas')">
         <span class="cross-area-accordion-title">Resumen de otras áreas</span>
@@ -983,6 +1018,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <button class="btn-area-save-main" id="save-btn-finanzas" onclick="guardarArea('finanzas')" style="margin-top:0;">Guardar sección de Finanzas</button>
     <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
     <span class="area-save-status" id="save-status-finanzas" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
+    <div class="area-save-hint" id="save-hint-finanzas">Completa tu nombre y correo, luego guarda para avanzar</div>
   </div>
 </div>
 
@@ -995,12 +1031,15 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="area-status" id="badge-legal">Pendiente</div>
       <span id="areas-progress-legal" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
     </div>
-    <div class="head-resp">
-      <input type="text" id="resp-name-legal" placeholder="Nombre del encargado" oninput="saveResp('legal','name',this.value)">
-      <input type="email" id="resp-email-legal" placeholder="email@empresa.com" oninput="saveResp('legal','email',this.value)">
-    </div>
   </div>
   <div class="s-body scrollable">
+    <div class="area-resp-card" id="resp-card-legal">
+      <div class="area-resp-label"><i data-lucide="user" style="width:.7rem;height:.7rem;stroke-width:2.5;"></i>¿Quién revisa esta sección?</div>
+      <div class="area-resp-row">
+        <input type="text" id="resp-name-legal" placeholder="Nombre del encargado" oninput="saveResp('legal','name',this.value)">
+        <input type="email" id="resp-email-legal" placeholder="email@empresa.com" oninput="saveResp('legal','email',this.value)">
+      </div>
+    </div>
     <div class="cross-area-accordion" id="cross-summary-legal-accordion">
       <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('legal')">
         <span class="cross-area-accordion-title">Resumen de otras áreas</span>
@@ -1028,6 +1067,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <button class="btn-area-save-main" id="save-btn-legal" onclick="guardarArea('legal')" style="margin-top:0;">Guardar sección de Legal</button>
     <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
     <span class="area-save-status" id="save-status-legal" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
+    <div class="area-save-hint" id="save-hint-legal">Completa tu nombre y correo, luego guarda para avanzar</div>
   </div>
 </div>
 
@@ -1075,6 +1115,14 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 </div>
 
 </div><!-- /app -->
+
+<!-- Barra de confirmación al intentar avanzar sin guardar -->
+<div id="next-unsaved-bar">
+  <p id="next-unsaved-msg">Esta sección no fue guardada.</p>
+  <button class="nub-btn nub-save" onclick="nubSaveAndGo()">Guardar y continuar</button>
+  <button class="nub-btn nub-skip" onclick="nubSkip()">Continuar sin guardar</button>
+  <button class="nub-btn nub-cancel" onclick="nubCancel()">Volver</button>
+</div>
 
 <div id="nav">
   <button class="nav-btn" id="prevBtn" onclick="prev()" disabled>←</button>
@@ -1225,13 +1273,41 @@ function go(n, dir) {
   to.style.opacity = '0'; to.classList.add('active');
   requestAnimationFrame(() => requestAnimationFrame(() => { to.style.transform = ''; to.style.opacity = ''; }));
   cur = n;
+  document.getElementById('next-unsaved-bar').style.display = 'none';
   const _slideArea = SLIDE_AREA[n];
   if (_slideArea && _slideArea !== 'owner') renderAreaReviewers(_slideArea); // revisores inline
   if (n >= TOTAL) buildReport();                   // Slide 11 (reporte final)
   updateNav(); save(); setTimeout(reIcons, 60);
 }
-function next() { const n = nextVisible(cur,  1); if (n) go(n,  1); }
-function prev() { const n = nextVisible(cur, -1); if (n) go(n, -1); }
+let _nubDest = null;
+let _nubArea = null;
+
+function next() {
+  const n = nextVisible(cur, 1); if (!n) return;
+  const areaKey = SLIDE_AREA[cur];
+  if (areaKey && AREAS.includes(areaKey) && !st.areas[areaKey]?.locked) {
+    _nubDest = n; _nubArea = areaKey;
+    const bar = document.getElementById('next-unsaved-bar');
+    const msg = document.getElementById('next-unsaved-msg');
+    if (msg) msg.textContent = `La sección de ${AREA_LABELS[areaKey]} no fue guardada. ¿Qué hacemos?`;
+    if (bar) bar.style.display = 'flex';
+    return;
+  }
+  go(n, 1);
+}
+function prev() { nubCancel(); const n = nextVisible(cur, -1); if (n) go(n, -1); }
+
+function nubSaveAndGo() {
+  if (!_nubArea || !_nubDest) return;
+  guardarArea(_nubArea);
+  if (st.areas[_nubArea].locked) { nubCancel(); go(_nubDest, 1); }
+}
+function nubSkip() { const d = _nubDest; nubCancel(); if (d) go(d, 1); }
+function nubCancel() {
+  _nubDest = null; _nubArea = null;
+  const bar = document.getElementById('next-unsaved-bar');
+  if (bar) bar.style.display = 'none';
+}
 
 function visibleSlides() {
   const v = [];
@@ -1471,12 +1547,16 @@ function applyAreaSaveUI(area) {
   const edited  = st.areas[area].editCount > 0;
   const now     = new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
   if (!saveBtn || !editBtn) return;
+  const hint = document.getElementById('save-hint-' + area);
+  const card = document.getElementById('resp-card-' + area);
   if (locked) {
     saveBtn.textContent = edited ? '✓ Guardado — editado' : '✓ Sección guardada';
     saveBtn.className = 'btn-area-save-main saved';
     saveBtn.disabled = true;
     editBtn.style.display = 'block';
     if (status) status.textContent = 'Guardado a las ' + now;
+    if (hint) hint.classList.remove('visible');
+    if (card) card.classList.add('saved');
     setAreaEditable(area, false);
   } else {
     saveBtn.textContent = edited ? 'Guardar cambios de ' + AREA_LABELS[area] : 'Guardar sección de ' + AREA_LABELS[area];
@@ -1484,6 +1564,8 @@ function applyAreaSaveUI(area) {
     saveBtn.disabled = false;
     editBtn.style.display = 'none';
     if (status) status.textContent = edited ? '⚠ Cambios sin guardar' : '';
+    if (hint) hint.classList.add('visible');
+    if (card) card.classList.remove('saved');
     setAreaEditable(area, true);
   }
 }
