@@ -1201,7 +1201,16 @@ function next() {
     _nubDest = n; _nubArea = areaKey;
     const bar = document.getElementById('next-unsaved-bar');
     const msg = document.getElementById('next-unsaved-msg');
-    if (msg) msg.textContent = `La sección de ${AREA_LABELS[areaKey]} no fue guardada. Si continúas sin guardar, los cambios no quedarán registrados.`;
+    if (msg) {
+      const a = st.areas[areaKey];
+      const missing = [];
+      if (!a.responsible?.name?.trim()) missing.push('nombre del encargado');
+      const emailVal = a.responsible?.email?.trim() || '';
+      if (emailVal && !emailVal.includes('@')) missing.push('email inválido');
+      msg.innerHTML = missing.length
+        ? `Para guardar necesitas completar: <strong style="color:var(--danger)">${missing.join(', ')}</strong>.`
+        : `La sección de <strong>${AREA_LABELS[areaKey]}</strong> no fue guardada. ¿Continúas sin guardar?`;
+    }
     if (bar) bar.style.display = 'flex';
     return;
   }
