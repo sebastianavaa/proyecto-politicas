@@ -1094,22 +1094,22 @@ function defaultAlerts() { return ALERTS.map(a => ({ activa:true, severidad:a.se
 
 // Matriz de documentos por tipo de evaluación (para el recap de Abastecimiento).
 const DOCS = [
-  { name:'Declaración jurada del proveedor', req:['express','completa','reforzada','internacional','subcontratacion'] },
-  { name:'Declaración vínculo PEP',          req:['express','completa','reforzada','internacional','subcontratacion'] },
-  { name:'Declaración Conflicto de Interés', req:['completa','reforzada'] },
-  { name:'Constitución de la Sociedad',      req:['reforzada'], opc:['completa'] },
-  { name:'E-RUT',                            req:['express','completa','reforzada','subcontratacion'] },
-  { name:'Certificado de Vigencia de Sociedad', req:['completa','reforzada'] },
-  { name:'DNI del Representante Legal',       req:['completa','reforzada'] },
-  { name:'Carpeta tributaria SII',           req:['completa','reforzada','subcontratacion'] },
-  { name:'Certificado de Vigencia de Poderes', req:['completa','reforzada'] },
-  { name:'Certificado cuenta bancaria',      req:['completa','reforzada'], opc:['express','subcontratacion'] },
-  { name:'Estado Financiero',                req:['internacional'], opc:['reforzada'] },
-  { name:'Deuda Fiscal TGR',                 req:['reforzada'], opc:['completa'] },
-  { name:'DICOM',                            req:['completa','reforzada'] },
-  { name:'Cumplimiento Laboral (F30)',        req:['subcontratacion'] },
-  { name:'Deuda Previsional (F30-1)',         req:['subcontratacion'] },
-  { name:'Nómina de trabajadores',           req:['subcontratacion'] },
+  { name:'Declaración jurada del proveedor',        req:['express','completa','reforzada','internacional','subcontratacion'] },
+  { name:'Declaración vínculo PEP',                 req:['express','completa','reforzada','internacional','subcontratacion'] },
+  { name:'Declaración Conflicto de Interés',        req:['completa','reforzada','subcontratacion'] },
+  { name:'Constitución de la Sociedad',             req:['reforzada'], opc:['completa','subcontratacion'] },
+  { name:'E-RUT',                                   req:['express','completa','reforzada','subcontratacion'] },
+  { name:'Certificado de Vigencia de Sociedad',     req:['completa','reforzada'] },
+  { name:'DNI del Representante Legal',             req:['completa','reforzada'] },
+  { name:'Carpeta tributaria SII',                  req:['completa','reforzada','subcontratacion'] },
+  { name:'Certificado de Vigencia de Poderes RRLL', req:['completa','reforzada'] },
+  { name:'Certificado cuenta bancaria',             req:['completa','reforzada'], opc:['express','subcontratacion'] },
+  { name:'Estado Financiero',                       req:['internacional'], opc:['reforzada'] },
+  { name:'Deuda Fiscal TGR',                        req:['reforzada'], opc:['completa','subcontratacion'] },
+  { name:'DICOM',                                   req:['completa','reforzada','subcontratacion'] },
+  { name:'Cumplimiento Laboral (F30)',               req:['subcontratacion'] },
+  { name:'Deuda Previsional (F30-1)',                opc:['subcontratacion'] },
+  { name:'Reporte Accidentabilidad',                req:['subcontratacion'] },
 ];
 
 function isAreaAssigned(processKey, area) {
