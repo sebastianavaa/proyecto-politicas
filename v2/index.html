@@ -1126,7 +1126,7 @@ const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => 
 // Grupos de alertas que "pertenecen" a cada área (solo esa área asigna revisores para ellos).
 // Abastecimiento no tiene grupos propios — su slide muestra docs + resumen cruzado + VB.
 const AREA_GROUPS = {
-  abastecimiento: [],
+  abastecimiento: ['Proceso de compra'],
   cumplimiento:   ['Laboral', 'Cumplimiento'],
   finanzas:       ['Tributario', 'Financiero'],
   legal:          ['Legal y Societario']
@@ -1683,7 +1683,7 @@ function _updateAlertTabBadges(area) {
 function setAlertSeverity(area, i, sev)    { st.areas[area].alerts[i].severidad = sev; renderAllAlerts(); save(); }
 function setAlertGroupComment(area, g, val){ if (!st.areas[area].alertGroupComments) st.areas[area].alertGroupComments = {}; st.areas[area].alertGroupComments[g] = val; save(); }
 
-const GROUP_ICON = { 'Tributario':'landmark', 'Financiero':'banknote', 'Legal y Societario':'scale', 'Laboral':'hard-hat', 'Cumplimiento':'shield-check' };
+const GROUP_ICON = { 'Proceso de compra':'shopping-bag', 'Tributario':'landmark', 'Financiero':'banknote', 'Legal y Societario':'scale', 'Laboral':'hard-hat', 'Cumplimiento':'shield-check' };
 
 // ── CONSOLIDACIÓN DE SEVERIDADES ──
 // Cada área ajusta la severidad de las alertas desde su perspectiva.
