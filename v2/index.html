@@ -636,7 +636,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:1.75rem;border-color:var(--gray-border);">
         <div><i data-lucide="users" style="width:2rem;height:2rem;stroke-width:1.5;"></i></div>
         <span class="law" style="background:var(--gray-light);color:var(--accent);width:fit-content;">Ley 20.123</span>
-        <h3 style="font-size:1rem;margin:0;">Subcontratación</h3>
+        <h3 style="font-size:1rem;margin:0;">Proveedor Subcontratista</h3>
         <p style="font-size:.85rem;color:var(--gray);line-height:1.7;margin:0;">La empresa mandante es <strong>solidariamente responsable</strong> de las obligaciones laborales y previsionales del contratista frente a sus trabajadores.</p>
       </div>
     </div>
@@ -696,7 +696,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div class="eval-toggle on" id="et-subcontratacion" style="margin-top:.2rem;flex-shrink:0;"></div>
           <div class="eval-info" style="flex:1;min-width:0;">
             <div class="eval-subtitle">Proveedor con trabajadores en tus instalaciones (Ley 20.123)</div>
-            <h4>Subcontratación</h4>
+            <h4>Proveedor Subcontratista</h4>
             <p style="font-size:.775rem;color:var(--gray);margin:.2rem 0 0;line-height:1.5;">Protege a tu empresa de la responsabilidad solidaria por deudas laborales y previsionales del contratista.</p>
           </div>
         </div>
@@ -830,7 +830,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
         </div>
       </div>
     </div>
-    <div class="warn-box" style="margin-top:1rem;display:flex;align-items:flex-start;gap:.5rem;"><i data-lucide="info" style="width:.9rem;height:.9rem;flex-shrink:0;margin-top:.1rem;"></i><div><strong>Cómo se traduce:</strong> mientras más respuestas afirmativas, más profundo el proceso — desde <strong>Proveedor Spot</strong> (todo No) hasta <strong>Proveedor Crítico</strong> (dos o más Sí o monto sobre USD 100k). Subcontratación e Internacional se activan por sus preguntas específicas.</div></div>
+    <div class="warn-box" style="margin-top:1rem;display:flex;align-items:flex-start;gap:.5rem;"><i data-lucide="info" style="width:.9rem;height:.9rem;flex-shrink:0;margin-top:.1rem;"></i><div><strong>Cómo se traduce:</strong> mientras más respuestas afirmativas, más profundo el proceso — desde <strong>Proveedor Spot</strong> (todo No) hasta <strong>Proveedor Crítico</strong> (dos o más Sí o monto sobre USD 100k). Proveedor Subcontratista e Internacional se activan por sus preguntas específicas.</div></div>
   </div>
 </div>
 
@@ -1396,7 +1396,7 @@ function toggleProcessArea(processKey, area) {
 function renderProcessAreaMatrix() {
   const cont = document.getElementById('process-area-matrix');
   if (!cont) return;
-  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Proveedor Subcontratista' };
   const AREA_SHORT = { abastecimiento:'Abastec.', cumplimiento:'Cumpli.', finanzas:'Finanzas', legal:'Legal' };
   const activeStd = Object.entries(st.evalTypes).filter(([,v]) => v).map(([k]) => k);
   const activeCPs = (st.customProcesses || []).filter(p => p.saved && p.active !== false);
@@ -2090,7 +2090,7 @@ function renderReviewAlerts(area) {
 }
 
 function renderAbastRecap() {
-  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Proveedor Subcontratista' };
   const active = Object.entries(st.evalTypes).filter(([k, v]) => v && isAreaAssigned(k, 'abastecimiento')).map(([k]) => k);
   const activeCPs = (st.customProcesses || []).filter((p, i) => p.saved && p.active !== false && isAreaAssigned('cp_' + i, 'abastecimiento'));
   const et = document.getElementById('abast-evaltypes');
@@ -2125,7 +2125,7 @@ function renderScopeChips(containerId) {
   const cont = document.getElementById(containerId); if (!cont) return;
   // Extraer el área del id: 'scope-procs-{area}'
   const area = containerId.replace('scope-procs-', '');
-  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Proveedor Subcontratista' };
   const active = Object.entries(st.evalTypes).filter(([k, v]) => v && isAreaAssigned(k, area)).map(([k]) => k);
   const activeCPs = (st.customProcesses || []).filter((p, i) => p.saved && p.active !== false && isAreaAssigned('cp_' + i, area));
   const stdChips = active.map(k => `<span class="recap-chip">${TYPE_LABEL[k]}</span>`).join('');
@@ -2158,7 +2158,7 @@ const PROCESS_TEMPLATES = [
   { id:'completa',       name:'Proveedor General',       desc:'Compra entre USD 20.000 y USD 100.000. Revisión legal y financiera estándar. Equilibra rigurosidad con agilidad para contratos de mediana envergadura.' },
   { id:'reforzada',      name:'Proveedor Crítico',       desc:'Compra mayor a USD 100.000. Evaluación exhaustiva en todas las áreas. Para proveedores cuya falla podría comprometer la operación o reputación de la empresa.' },
   { id:'internacional',  name:'Proveedor Internacional', desc:'Proveedor con domicilio fuera de Chile. Documentación equivalente y verificación contra listas de sanciones globales. Aplica independiente del monto.' },
-  { id:'subcontratacion',name:'Subcontratación',         desc:'Proveedor con trabajadores en tus instalaciones (Ley 20.123). Protege a tu empresa de la responsabilidad solidaria por deudas laborales y previsionales del contratista.' },
+  { id:'subcontratacion',name:'Proveedor Subcontratista',         desc:'Proveedor con trabajadores en tus instalaciones (Ley 20.123). Protege a tu empresa de la responsabilidad solidaria por deudas laborales y previsionales del contratista.' },
 ];
 
 function getDefaultDocConfig(processKey) {
@@ -2429,7 +2429,7 @@ function toggleCPDocs(event, i, btn) {
 // ── DOC REVIEW POR ÁREA ──
 
 function getAreaActiveDocs(area) {
-  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Proveedor Subcontratista' };
   const result = [];
   Object.entries(st.evalTypes).forEach(([k, v]) => {
     if (!v || !isAreaAssigned(k, area)) return;
@@ -2650,7 +2650,7 @@ function getAllCatalogDocs() {
 }
 
 function processLabel(pk) {
-  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Proveedor Subcontratista' };
   if (TYPE_LABEL[pk]) return TYPE_LABEL[pk];
   if (pk.startsWith('cp_')) return st.customProcesses?.[+pk.slice(3)]?.name || pk;
   return pk;
@@ -2913,7 +2913,7 @@ function renderSyncAreaComments() {
 
 // ── REPORT ──
 function buildReport() {
-  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Proveedor Subcontratista' };
   const activeAreas = AREAS.filter(a => isAreaRequired(a));
   const activeTypes = Object.entries(st.evalTypes).filter(([,v])=>v).map(([k])=>TYPE_LABEL[k]);
   const customProcs = (st.customProcesses||[]).filter(p=>p.saved&&p.active!==false).map(p=>p.name);
@@ -3017,7 +3017,7 @@ function buildReport() {
 
 // ── EXPORT PAYLOAD (segmentado por módulos/slides — consumido por n8n) ──
 function buildExportPayload() {
-  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Subcontratación' };
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Proveedor Subcontratista' };
   const ESTADO_DOC = { ok:'confirmado', obs:'con_observacion', no:'no_aplica' };
   const activeAreas = AREAS.filter(a => isAreaRequired(a));
   const groups = [...new Set(ALERTS.map(a => a.group))];
