@@ -486,19 +486,22 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .head-resp input.err{border-color:var(--danger);}
 .head-resp input:disabled{opacity:.6;cursor:not-allowed;}
 
-/* Barra de confirmación al presionar Siguiente sin guardar */
-#next-unsaved-bar{position:fixed;bottom:0;left:0;right:0;z-index:600;
-  background:var(--navy);color:white;padding:.75rem 2rem;
-  display:none;align-items:center;gap:1rem;flex-wrap:wrap;
-  box-shadow:0 -4px 20px rgba(0,0,0,.25);border-top:2px solid var(--blue);}
-#next-unsaved-bar p{flex:1;font-size:.85rem;font-weight:600;margin:0;}
-.nub-btn{padding:.45rem 1.1rem;border-radius:.5rem;border:none;font-size:.8rem;font-weight:700;
-  cursor:pointer;font-family:var(--font);transition:all .15s;}
+/* Modal de confirmación al presionar Siguiente sin guardar */
+#next-unsaved-bar{position:fixed;inset:0;z-index:700;
+  background:rgba(20,20,79,.5);backdrop-filter:blur(3px);
+  display:none;align-items:center;justify-content:center;}
+#nub-card{background:var(--white);border-radius:1.25rem;padding:2rem;width:90%;max-width:420px;
+  box-shadow:0 16px 48px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:1.25rem;}
+#nub-card h3{font-size:1.05rem;font-weight:800;color:var(--navy);margin:0;}
+#next-unsaved-bar p{font-size:.88rem;color:var(--gray);margin:0;line-height:1.5;}
+#nub-actions{display:flex;flex-direction:column;gap:.625rem;}
+.nub-btn{width:100%;padding:.65rem 1rem;border-radius:.625rem;border:none;font-size:.85rem;font-weight:700;
+  cursor:pointer;font-family:var(--font);transition:all .15s;text-align:center;}
 .nub-save{background:var(--accent);color:white;}
-.nub-save:hover{background:var(--accent-dark);}
-.nub-skip{background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);}
-.nub-skip:hover{background:rgba(255,255,255,.2);}
-.nub-cancel{background:transparent;color:rgba(255,255,255,.5);text-decoration:underline;font-size:.75rem;}
+.nub-save:hover{filter:brightness(1.08);}
+.nub-skip{background:var(--gray-light);color:var(--navy);}
+.nub-skip:hover{background:var(--gray-border);}
+.nub-cancel{background:transparent;color:var(--gray);font-size:.8rem;font-weight:600;text-decoration:underline;}
 
 /* Hint en el footer cuando hay cambios sin guardar */
 .area-save-hint{font-size:.72rem;color:var(--blue);font-weight:600;text-align:center;
@@ -1021,11 +1024,16 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 </div><!-- /app -->
 
 <!-- Barra de confirmación al intentar avanzar sin guardar -->
-<div id="next-unsaved-bar">
-  <p id="next-unsaved-msg">Esta sección no fue guardada.</p>
-  <button class="nub-btn nub-save" onclick="nubSaveAndGo()">Guardar y continuar</button>
-  <button class="nub-btn nub-skip" onclick="nubSkip()">Continuar sin guardar</button>
-  <button class="nub-btn nub-cancel" onclick="nubCancel()">Volver</button>
+<div id="next-unsaved-bar" onclick="if(event.target===this)nubCancel()">
+  <div id="nub-card">
+    <h3>¿Guardar antes de continuar?</h3>
+    <p id="next-unsaved-msg">Esta sección no fue guardada. Si continúas sin guardar, los cambios no quedarán registrados.</p>
+    <div id="nub-actions">
+      <button class="nub-btn nub-save" onclick="nubSaveAndGo()">Guardar y continuar</button>
+      <button class="nub-btn nub-skip" onclick="nubSkip()">Continuar sin guardar</button>
+      <button class="nub-btn nub-cancel" onclick="nubCancel()">Volver</button>
+    </div>
+  </div>
 </div>
 
 <div id="nav">
@@ -1193,7 +1201,7 @@ function next() {
     _nubDest = n; _nubArea = areaKey;
     const bar = document.getElementById('next-unsaved-bar');
     const msg = document.getElementById('next-unsaved-msg');
-    if (msg) msg.textContent = `La sección de ${AREA_LABELS[areaKey]} no fue guardada. ¿Qué hacemos?`;
+    if (msg) msg.textContent = `La sección de ${AREA_LABELS[areaKey]} no fue guardada. Si continúas sin guardar, los cambios no quedarán registrados.`;
     if (bar) bar.style.display = 'flex';
     return;
   }
