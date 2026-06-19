@@ -1719,9 +1719,9 @@ function getReviewerPool() {
   const pool = [];
   AREAS.forEach(a => {
     const r = st.areas[a].responsible;
-    if (r?.name || r?.email) {
-      const key = (r.name + '|' + r.email).toLowerCase().trim();
-      if (!seen.has(key)) { seen.add(key); pool.push({ name: r.name||'', email: r.email||'' }); }
+    if (r?.name?.trim()) {
+      const key = r.name.trim().toLowerCase();
+      if (!seen.has(key)) { seen.add(key); pool.push({ name: r.name.trim(), email: r.email||'' }); }
     }
   });
   return pool;
