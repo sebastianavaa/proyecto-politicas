@@ -506,19 +506,14 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 /* LUCIDE ICONS */
 .lucide{display:inline-block;vertical-align:middle;flex-shrink:0;}
 
-/* Responsable del área — card en el body (blanca, fácil de ver) */
-.area-resp-card{background:var(--white);border:1.5px solid var(--blue-light);border-radius:.75rem;
-  padding:.625rem .875rem;margin-bottom:.75rem;flex-shrink:0;}
-.area-resp-card.saved{border-color:var(--success-bg);background:var(--success-bg);}
-.area-resp-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
-  color:var(--navy);margin-bottom:.35rem;display:flex;align-items:center;gap:.3rem;}
-.area-resp-row{display:flex;gap:.5rem;flex-wrap:wrap;}
-.area-resp-card input{flex:1;min-width:140px;padding:.4rem .75rem;border:1.5px solid var(--gray-border);
-  border-radius:.5rem;background:var(--bg);color:var(--text);font-size:.82rem;font-family:var(--font);
-  outline:none;transition:border .2s;}
-.area-resp-card input:focus{border-color:var(--accent);}
-.area-resp-card input.err{border-color:var(--danger);}
-.area-resp-card input:disabled{opacity:.6;cursor:not-allowed;background:#f5f5f8;}
+/* Inputs de responsable en el header del área */
+.head-resp{display:flex;gap:.5rem;margin-top:.625rem;flex-wrap:wrap;}
+.head-resp input{flex:1;min-width:140px;padding:.4rem .75rem;border:1.5px solid rgba(255,255,255,.35);border-radius:.5rem;
+  background:rgba(255,255,255,.92);color:var(--navy);font-size:.8rem;font-family:var(--font);outline:none;transition:border .2s;}
+.head-resp input::placeholder{color:var(--gray);}
+.head-resp input:focus{border-color:white;box-shadow:0 0 0 2px rgba(255,255,255,.3);}
+.head-resp input.err{border-color:var(--danger);}
+.head-resp input:disabled{opacity:.6;cursor:not-allowed;}
 
 /* Barra de confirmación al presionar Siguiente sin guardar */
 #next-unsaved-bar{position:fixed;bottom:0;left:0;right:0;z-index:600;
@@ -884,15 +879,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="area-status" id="badge-abastecimiento">Pendiente</div>
       <span id="areas-progress-abastecimiento" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
     </div>
+    <div class="head-resp">
+      <input type="text" id="resp-name-abastecimiento" placeholder="Nombre del encargado" oninput="saveResp('abastecimiento','name',this.value)">
+      <input type="email" id="resp-email-abastecimiento" placeholder="email@empresa.com" oninput="saveResp('abastecimiento','email',this.value)">
+    </div>
   </div>
   <div class="s-body scrollable">
-    <div class="area-resp-card" id="resp-card-abastecimiento">
-      <div class="area-resp-label"><i data-lucide="user" style="width:.7rem;height:.7rem;stroke-width:2.5;"></i>¿Quién revisa esta sección?</div>
-      <div class="area-resp-row">
-        <input type="text" id="resp-name-abastecimiento" placeholder="Nombre del encargado" oninput="saveResp('abastecimiento','name',this.value)">
-        <input type="email" id="resp-email-abastecimiento" placeholder="email@empresa.com" oninput="saveResp('abastecimiento','email',this.value)">
-      </div>
-    </div>
     <div class="cross-area-accordion" id="cross-summary-abastecimiento-accordion">
       <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('abastecimiento')">
         <span class="cross-area-accordion-title">Resumen de otras áreas</span>
@@ -933,15 +925,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="area-status" id="badge-cumplimiento">Pendiente</div>
       <span id="areas-progress-cumplimiento" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
     </div>
+    <div class="head-resp">
+      <input type="text" id="resp-name-cumplimiento" placeholder="Nombre del encargado" oninput="saveResp('cumplimiento','name',this.value)">
+      <input type="email" id="resp-email-cumplimiento" placeholder="email@empresa.com" oninput="saveResp('cumplimiento','email',this.value)">
+    </div>
   </div>
   <div class="s-body scrollable">
-    <div class="area-resp-card" id="resp-card-cumplimiento">
-      <div class="area-resp-label"><i data-lucide="user" style="width:.7rem;height:.7rem;stroke-width:2.5;"></i>¿Quién revisa esta sección?</div>
-      <div class="area-resp-row">
-        <input type="text" id="resp-name-cumplimiento" placeholder="Nombre del encargado" oninput="saveResp('cumplimiento','name',this.value)">
-        <input type="email" id="resp-email-cumplimiento" placeholder="email@empresa.com" oninput="saveResp('cumplimiento','email',this.value)">
-      </div>
-    </div>
     <div class="cross-area-accordion" id="cross-summary-cumplimiento-accordion">
       <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('cumplimiento')">
         <span class="cross-area-accordion-title">Resumen de otras áreas</span>
@@ -982,15 +971,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="area-status" id="badge-finanzas">Pendiente</div>
       <span id="areas-progress-finanzas" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
     </div>
+    <div class="head-resp">
+      <input type="text" id="resp-name-finanzas" placeholder="Nombre del encargado" oninput="saveResp('finanzas','name',this.value)">
+      <input type="email" id="resp-email-finanzas" placeholder="email@empresa.com" oninput="saveResp('finanzas','email',this.value)">
+    </div>
   </div>
   <div class="s-body scrollable">
-    <div class="area-resp-card" id="resp-card-finanzas">
-      <div class="area-resp-label"><i data-lucide="user" style="width:.7rem;height:.7rem;stroke-width:2.5;"></i>¿Quién revisa esta sección?</div>
-      <div class="area-resp-row">
-        <input type="text" id="resp-name-finanzas" placeholder="Nombre del encargado" oninput="saveResp('finanzas','name',this.value)">
-        <input type="email" id="resp-email-finanzas" placeholder="email@empresa.com" oninput="saveResp('finanzas','email',this.value)">
-      </div>
-    </div>
     <div class="cross-area-accordion" id="cross-summary-finanzas-accordion">
       <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('finanzas')">
         <span class="cross-area-accordion-title">Resumen de otras áreas</span>
@@ -1031,15 +1017,12 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div class="area-status" id="badge-legal">Pendiente</div>
       <span id="areas-progress-legal" style="font-size:.7rem;color:rgba(255,255,255,.45);"></span>
     </div>
+    <div class="head-resp">
+      <input type="text" id="resp-name-legal" placeholder="Nombre del encargado" oninput="saveResp('legal','name',this.value)">
+      <input type="email" id="resp-email-legal" placeholder="email@empresa.com" oninput="saveResp('legal','email',this.value)">
+    </div>
   </div>
   <div class="s-body scrollable">
-    <div class="area-resp-card" id="resp-card-legal">
-      <div class="area-resp-label"><i data-lucide="user" style="width:.7rem;height:.7rem;stroke-width:2.5;"></i>¿Quién revisa esta sección?</div>
-      <div class="area-resp-row">
-        <input type="text" id="resp-name-legal" placeholder="Nombre del encargado" oninput="saveResp('legal','name',this.value)">
-        <input type="email" id="resp-email-legal" placeholder="email@empresa.com" oninput="saveResp('legal','email',this.value)">
-      </div>
-    </div>
     <div class="cross-area-accordion" id="cross-summary-legal-accordion">
       <div class="cross-area-accordion-trigger" onclick="toggleCrossAreaAccordion('legal')">
         <span class="cross-area-accordion-title">Resumen de otras áreas</span>
@@ -1548,7 +1531,6 @@ function applyAreaSaveUI(area) {
   const now     = new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
   if (!saveBtn || !editBtn) return;
   const hint = document.getElementById('save-hint-' + area);
-  const card = document.getElementById('resp-card-' + area);
   if (locked) {
     saveBtn.textContent = edited ? '✓ Guardado — editado' : '✓ Sección guardada';
     saveBtn.className = 'btn-area-save-main saved';
@@ -1556,7 +1538,6 @@ function applyAreaSaveUI(area) {
     editBtn.style.display = 'block';
     if (status) status.textContent = 'Guardado a las ' + now;
     if (hint) hint.classList.remove('visible');
-    if (card) card.classList.add('saved');
     setAreaEditable(area, false);
   } else {
     saveBtn.textContent = edited ? 'Guardar cambios de ' + AREA_LABELS[area] : 'Guardar sección de ' + AREA_LABELS[area];
@@ -1565,7 +1546,6 @@ function applyAreaSaveUI(area) {
     editBtn.style.display = 'none';
     if (status) status.textContent = edited ? '⚠ Cambios sin guardar' : '';
     if (hint) hint.classList.add('visible');
-    if (card) card.classList.remove('saved');
     setAreaEditable(area, true);
   }
 }
