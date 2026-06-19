@@ -2668,8 +2668,8 @@ function renderAreaDocReview(area) {
       return `<div style="display:flex;align-items:center;gap:.4rem;padding:.25rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
         <span style="flex:1;font-size:.75rem;color:var(--text);">${d.name}</span>
         <div style="display:flex;gap:.2rem;align-items:center;">
-          <button onclick="${callFn}${s==='req'?null:"'req'"})" style="${btnB}${s==='req'?reqSel:btnOff}">Req</button>
-          <button onclick="${callFn}${s==='opc'?null:"'opc'"})" style="${btnB}${s==='opc'?opcSel:btnOff}">Opc</button>
+          <button onclick="${s==='req'?'':callFn+"'req'"+')'}" style="${btnB}${s==='req'?reqSel:btnOff}">Req</button>
+          <button onclick="${s==='opc'?'':callFn+"'opc'"+')'}" style="${btnB}${s==='opc'?opcSel:btnOff}">Opc</button>
           <button onclick="toggleStdDocFirma('${firmaKey}',${d.idx})" style="${btnB}${firmaOn?firmaSel:btnOff}" title="Requiere firma">Firma</button>
           ${deleteBtn}
         </div>
@@ -2687,8 +2687,8 @@ function renderAreaDocReview(area) {
         ${addTag}
         <span style="flex:1;font-size:.75rem;color:var(--text);">${name}</span>
         <div style="display:flex;gap:.2rem;align-items:center;">
-          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','req')" style="${btnBase}${s==='req'?reqSel2:off}">Req</button>
-          <button onclick="setDocReview('${area}','${pk}','${rk.replace(/'/g,"\\'")}','opc')" style="${btnBase}${s==='opc'?opcSel2:off}">Opc</button>
+          <button onclick="${s==='req'?'':("setDocReview('"+area+"','"+pk+"','"+rk.replace(/'/g,"\\'")+"','req')")}" style="${btnBase}${s==='req'?reqSel2:off}">Req</button>
+          <button onclick="${s==='opc'?'':("setDocReview('"+area+"','"+pk+"','"+rk.replace(/'/g,"\\'")+"','opc')")}" style="${btnBase}${s==='opc'?opcSel2:off}">Opc</button>
           <button onclick="toggleCustomDocFirma('${area}','${pk}','${name.replace(/'/g,"\\'")}')" style="${btnBase}${firmaOn2?firmaSel2:off}" title="Requiere firma">Firma</button>
           <button onclick="removeAreaCustomDoc('${area}','${pk}',${ci})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .2rem;line-height:1;" title="Quitar de este proceso">×</button>
         </div>
