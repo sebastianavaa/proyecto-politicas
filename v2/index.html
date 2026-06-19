@@ -2062,8 +2062,17 @@ function buildAlertTabsHTML(containerId, area, placeholder) {
         </div>
       </div>`;
     }).join('');
+    const suggested = (st.areas[area].suggestedAlerts || []).map((s,i) => ({...s,i})).filter(s => s.group === g);
+    const suggestedRows = suggested.map(s => `
+      <div class="alert-cfg on" style="border-left:3px solid var(--accent);padding-left:.5rem;">
+        <div class="alert-cfg-top">
+          <span style="font-size:.6rem;font-weight:800;background:#EDE9FE;color:var(--accent);border-radius:.25rem;padding:.1rem .35rem;flex-shrink:0;letter-spacing:.05em;">NUEVA</span>
+          <span class="a-label" style="flex:1;">${s.label}</span>
+          <button onclick="removeSuggestedAlert('${area}',${s.i})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:1rem;padding:0 .25rem;line-height:1;flex-shrink:0;" title="Eliminar">×</button>
+        </div>
+      </div>`).join('');
     return `<div class="alert-tab-panel${g===savedGroup?' active':''}" data-group="${g}">
-      ${rows}
+      ${rows}${suggestedRows}
     </div>`;
   }).join('');
   const bannerHtml = `<div style="margin-top:.75rem;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:.5rem;padding:.5rem .75rem;">
@@ -2099,82 +2108,55 @@ function renderSuggestedAlerts(area) {
   const cont = document.getElementById('suggested-alerts-' + area);
   if (!cont) return;
   if (!st.areas[area].suggestedAlerts) st.areas[area].suggestedAlerts = [];
-  const list = st.areas[area].suggestedAlerts;
   const locked = st.areas[area].locked;
+  const allGroups = [...new Set(ALERTS.map(a => a.group))];
 
-  const rowStyle = 'display:flex;align-items:center;padding:.45rem 0;border-bottom:1px solid var(--gray-border);gap:.5rem;';
-  const rows = list.map((s, i) => `
-    <div style="${rowStyle}">
-      <span style="flex:1;font-size:.8rem;color:var(--text);">${s}</span>
-      ${locked ? '' : `<button onclick="removeSuggestedAlert('${area}',${i})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:1rem;padding:0 .25rem;line-height:1;" title="Eliminar">×</button>`}
-    </div>`).join('');
+  if (locked) { cont.innerHTML = ''; return; }
 
-  const addControl = locked ? '' : `
-    <div style="margin-top:.5rem;" id="suggest-alert-control-${area}">
-      <select onchange="onSuggestAlertSelect('${area}',this)"
-        style="width:100%;padding:.4rem .625rem;font-size:.75rem;border:1px solid var(--gray-border);border-radius:.375rem;font-family:var(--font);color:var(--text);background:var(--white);cursor:pointer;">
-        <option value="">+ Proponer alerta adicional…</option>
-        <option value="__new__">+ Escribir alerta…</option>
-      </select>
-    </div>
-    <div id="suggest-alert-input-row-${area}" style="display:none;margin-top:.4rem;display:none;">
-      <div style="display:flex;gap:.5rem;">
-        <input id="suggest-alert-input-${area}" type="text" placeholder="Describir qué quieren monitorear…"
-          style="flex:1;padding:.4rem .7rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.8rem;font-family:var(--font);background:var(--white);color:var(--text);outline:none;"
-          onkeydown="if(event.key==='Enter'){event.preventDefault();addSuggestedAlert('${area}');}">
-        <button onclick="addSuggestedAlert('${area}')"
-          style="padding:.4rem .9rem;background:var(--accent);color:white;border:none;border-radius:.5rem;font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font);">
-          Agregar
-        </button>
-        <button onclick="cancelSuggestAlert('${area}')"
-          style="padding:.4rem .7rem;background:var(--gray-light);color:var(--gray);border:none;border-radius:.5rem;font-size:.78rem;cursor:pointer;font-family:var(--font);">
-          Cancelar
-        </button>
-      </div>
-    </div>`;
+  const groupOptions = allGroups.map(g =>
+    `<option value="${g}">${g}</option>`).join('');
 
   cont.innerHTML = `
     <div style="margin-top:.75rem;background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem .875rem;">
       <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.25rem;display:flex;align-items:center;gap:.35rem;">
         <i data-lucide="lightbulb" style="width:.75rem;height:.75rem;stroke-width:2.5;"></i>
-        Alertas adicionales — sugerencias del área
+        Proponer alerta adicional
       </div>
-      <p style="font-size:.72rem;color:var(--gray);margin:0 0 .35rem;line-height:1.4;">¿Hay algo más que quieran monitorear? Plutto lo evaluará para incorporarlo.</p>
-      <div>${rows}</div>
-      ${addControl}
+      <p style="font-size:.72rem;color:var(--gray);margin:0 0 .625rem;line-height:1.4;">¿Hay algo más que quieran monitorear? Plutto lo evaluará. La alerta quedará visible en la sección correspondiente con el badge <strong>Nueva</strong>.</p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <input id="suggest-alert-input-${area}" type="text" placeholder="Ej: Proveedor con deuda con proveedores…"
+          style="flex:2;min-width:180px;padding:.4rem .7rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.8rem;font-family:var(--font);background:var(--white);color:var(--text);outline:none;"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();addSuggestedAlert('${area}');}">
+        <select id="suggest-alert-group-${area}"
+          style="flex:1;min-width:140px;padding:.4rem .625rem;font-size:.78rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-family:var(--font);color:var(--text);background:var(--white);outline:none;">
+          ${groupOptions}
+        </select>
+        <button onclick="addSuggestedAlert('${area}')"
+          style="padding:.4rem .9rem;background:var(--accent);color:white;border:none;border-radius:.5rem;font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;">
+          + Agregar
+        </button>
+      </div>
     </div>`;
   reIcons();
 }
 
-function onSuggestAlertSelect(area, sel) {
-  if (sel.value !== '__new__') return;
-  sel.value = '';
-  const inputRow = document.getElementById('suggest-alert-input-row-' + area);
-  if (inputRow) { inputRow.style.display = 'block'; setTimeout(() => document.getElementById('suggest-alert-input-' + area)?.focus(), 50); }
-}
-
-function cancelSuggestAlert(area) {
-  const inputRow = document.getElementById('suggest-alert-input-row-' + area);
-  if (inputRow) inputRow.style.display = 'none';
-  const inp = document.getElementById('suggest-alert-input-' + area);
-  if (inp) inp.value = '';
-}
-
 function addSuggestedAlert(area) {
   const inp = document.getElementById('suggest-alert-input-' + area);
+  const grp = document.getElementById('suggest-alert-group-' + area);
   if (!inp) return;
   const val = inp.value.trim();
   if (!val) return;
   if (!st.areas[area].suggestedAlerts) st.areas[area].suggestedAlerts = [];
-  st.areas[area].suggestedAlerts.push(val);
+  st.areas[area].suggestedAlerts.push({ label: val, group: grp?.value || '' });
+  inp.value = '';
   save();
-  renderSuggestedAlerts(area);
+  if (area === 'abastecimiento') renderAbastAlerts(); else renderReviewAlerts(area);
 }
 
 function removeSuggestedAlert(area, idx) {
   st.areas[area].suggestedAlerts.splice(idx, 1);
   save();
-  renderSuggestedAlerts(area);
+  if (area === 'abastecimiento') renderAbastAlerts(); else renderReviewAlerts(area);
 }
 
 function renderAbastRecap() {
