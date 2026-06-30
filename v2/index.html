@@ -555,21 +555,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
   </div>
 </div>
-<!-- MODAL: crear documento nuevo -->
-<div id="new-doc-modal" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(20,20,79,.45);backdrop-filter:blur(2px);align-items:center;justify-content:center;">
-  <div style="background:var(--white);border-radius:1rem;padding:1.5rem;width:90%;max-width:420px;box-shadow:0 12px 40px rgba(0,0,0,.3);">
-    <h3 style="font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:.375rem;">Crear documento nuevo</h3>
-    <p style="font-size:.8rem;color:var(--gray);line-height:1.5;margin-bottom:.875rem;">Quedará disponible para proponerlo en cualquier proceso de todas las áreas.</p>
-    <input type="text" id="new-doc-input" placeholder="Nombre del documento"
-      style="width:100%;padding:.625rem .875rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.875rem;font-family:var(--font);color:var(--text);outline:none;"
-      onkeydown="if(event.key==='Enter')confirmNewDoc();if(event.key==='Escape')closeNewDocModal();">
-    <div id="new-doc-error" style="display:none;font-size:.75rem;color:var(--danger);margin-top:.5rem;"></div>
-    <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.25rem;">
-      <button onclick="closeNewDocModal()" style="background:transparent;border:1.5px solid var(--gray-border);color:var(--gray);padding:.5rem 1rem;border-radius:.5rem;font-size:.825rem;font-weight:700;cursor:pointer;font-family:var(--font);">Cancelar</button>
-      <button onclick="confirmNewDoc()" style="background:var(--blue);color:white;border:none;padding:.5rem 1.25rem;border-radius:.5rem;font-size:.825rem;font-weight:800;cursor:pointer;font-family:var(--font);">Guardar</button>
-    </div>
-  </div>
-</div>
 <div id="sent-banner">
   <i data-lucide="check-circle" style="width:.9rem;height:.9rem;margin-right:.3rem;vertical-align:middle;"></i>Esta sesión ya fue enviada el <strong id="sent-date"></strong>. Puedes volver a enviar si necesitas actualizar el reporte.
   <button id="sent-banner-close" onclick="document.getElementById('sent-banner').style.display='none'">✕</button>
@@ -855,6 +840,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div>
         <div class="col-title">Revisión de documentos por proceso</div>
         <div id="doc-review-abastecimiento"></div>
+        <div id="suggested-docs-abastecimiento"></div>
       </div>
       <div>
         <div class="col-title">Configuración de alertas — severidad y monitoreo</div>
@@ -892,6 +878,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div>
         <div class="col-title">Revisión de documentos por proceso</div>
         <div id="doc-review-cumplimiento"></div>
+        <div id="suggested-docs-cumplimiento"></div>
       </div>
       <div>
         <div class="col-title">Alertas — revisa la severidad</div>
@@ -929,6 +916,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div>
         <div class="col-title">Revisión de documentos por proceso</div>
         <div id="doc-review-finanzas"></div>
+        <div id="suggested-docs-finanzas"></div>
       </div>
       <div>
         <div class="col-title">Alertas — revisa la severidad</div>
@@ -966,6 +954,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div>
         <div class="col-title">Revisión de documentos por proceso</div>
         <div id="doc-review-legal"></div>
+        <div id="suggested-docs-legal"></div>
       </div>
       <div>
         <div class="col-title">Alertas — revisa la severidad</div>
@@ -2624,6 +2613,7 @@ function renderAreaDocReview(area) {
   const processes = getAreaActiveDocs(area);
   if (!processes.length) {
     cont.innerHTML = '<div style="font-size:.8rem;color:var(--gray);text-align:center;padding:.75rem 0;">Sin procesos asignados a esta área.</div>';
+    const sd = document.getElementById('suggested-docs-' + area); if (sd) sd.innerHTML = '';
     return;
   }
   const review   = st.areas[area].docReview   || {};
@@ -2708,34 +2698,13 @@ function renderAreaDocReview(area) {
         </div>
       </div>`;
     }).join('');
-    const inProcess = new Set(allDocs.map(d => d.name));
-    const proposed  = new Set(customDocsList);
-    const optionsHtml = getAllCatalogDocs()
-      .filter(d => !inProcess.has(d.name) && !proposed.has(d.name))
-      .map(d => `<option value="${d.name.replace(/"/g,'&quot;')}">${d.name}${d.custom ? ' (personalizado)' : ''}</option>`)
-      .join('');
-    const catalogCustom = st.customCatalogDocs || [];
-    const catalogMgmt = catalogCustom.length ? `<div style="display:flex;flex-wrap:wrap;gap:.3rem;align-items:center;margin-top:.45rem;">
-        <span style="font-size:.62rem;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Creados por el equipo:</span>
-        ${catalogCustom.map((n, ni) => `<span style="display:inline-flex;align-items:center;gap:.25rem;background:var(--gray-light);color:var(--navy);border:1px solid var(--gray-border);border-radius:1rem;padding:.15rem .5rem;font-size:.72rem;font-weight:600;">
-          ${n}<button onclick="deleteCatalogDoc(${ni})" title="Eliminar de la lista" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.75rem;padding:0;line-height:1;">×</button>
-        </span>`).join('')}
-      </div>` : '';
     return `<div class="alert-tab-panel${pk===savedKey?' active':''}" data-group="${pk}">
       ${noDocsMsg}${rows}${customRows}
-      <div style="margin-top:.5rem;">
-        <select onchange="proposeDocFromSelect('${area}','${pk}',this)"
-          style="width:100%;padding:.4rem .625rem;font-size:.75rem;border:1px solid var(--gray-border);border-radius:.375rem;font-family:var(--font);color:var(--text);background:var(--white);cursor:pointer;">
-          <option value="">+ Proponer documento adicional…</option>
-          ${optionsHtml}
-          <option value="__new__">+ Crear documento nuevo…</option>
-        </select>
-        ${catalogMgmt}
-      </div>
     </div>`;
   }).join('');
 
   cont.innerHTML = tabsHtml + panelsHtml;
+  renderSuggestedDocs(area);
   reIcons();
 }
 
@@ -2777,47 +2746,6 @@ function processLabel(pk) {
   return pk;
 }
 
-let _newDocCtx = null;
-
-function proposeDocFromSelect(area, processKey, sel) {
-  const val = sel.value;
-  sel.value = '';
-  if (!val) return;
-  if (val === '__new__') { openNewDocModal(area, processKey); return; }
-  addDocProposal(area, processKey, val);
-}
-
-function openNewDocModal(area, processKey) {
-  _newDocCtx = { area, processKey };
-  const modal = document.getElementById('new-doc-modal');
-  const input = document.getElementById('new-doc-input');
-  const err   = document.getElementById('new-doc-error');
-  input.value = ''; err.style.display = 'none';
-  modal.style.display = 'flex';
-  setTimeout(() => input.focus(), 50);
-}
-
-function closeNewDocModal() {
-  document.getElementById('new-doc-modal').style.display = 'none';
-  _newDocCtx = null;
-}
-
-function confirmNewDoc() {
-  if (!_newDocCtx) return;
-  const input = document.getElementById('new-doc-input');
-  const err   = document.getElementById('new-doc-error');
-  const name  = (input.value || '').trim();
-  if (!name) { err.textContent = 'Ingresa un nombre.'; err.style.display = 'block'; return; }
-  if (getAllCatalogDocs().some(d => d.name.toLowerCase() === name.toLowerCase())) {
-    err.textContent = 'Ese documento ya existe en la lista.'; err.style.display = 'block'; return;
-  }
-  if (!st.customCatalogDocs) st.customCatalogDocs = [];
-  st.customCatalogDocs.push(name);
-  const { area, processKey } = _newDocCtx;
-  closeNewDocModal();
-  addDocProposal(area, processKey, name);
-}
-
 function addDocProposal(area, processKey, name) {
   if (!st.areas[area].customDocs) st.areas[area].customDocs = {};
   if (!st.areas[area].customDocs[processKey]) st.areas[area].customDocs[processKey] = [];
@@ -2826,27 +2754,50 @@ function addDocProposal(area, processKey, name) {
   save();
 }
 
-function deleteCatalogDoc(catalogIdx) {
-  const name = (st.customCatalogDocs || [])[catalogIdx];
-  if (!name) return;
-  const usos = [];
-  Object.entries(st.areas).forEach(([a, data]) => {
-    Object.entries(data.customDocs || {}).forEach(([pk, list]) => {
-      if ((list || []).includes(name)) usos.push(`${AREA_LABELS[a] || a} → ${processLabel(pk)}`);
-    });
-  });
-  const msg = usos.length
-    ? `"${name}" está en uso en:\n• ${usos.join('\n• ')}\n\n¿Eliminarlo de todos modos? Se quitará de esos procesos.`
-    : `¿Eliminar "${name}" de la lista de documentos?`;
-  if (!confirm(msg)) return;
-  st.customCatalogDocs.splice(catalogIdx, 1);
-  Object.values(st.areas).forEach(data => {
-    Object.keys(data.customDocs || {}).forEach(pk => {
-      data.customDocs[pk] = data.customDocs[pk].filter(n => n !== name);
-    });
-  });
-  AREAS.forEach(a => renderAreaDocReview(a));
-  save();
+function renderSuggestedDocs(area) {
+  const cont = document.getElementById('suggested-docs-' + area);
+  if (!cont) return;
+  if (st.areas[area].locked) { cont.innerHTML = ''; return; }
+  const processes = getAreaActiveDocs(area);
+  if (!processes.length) { cont.innerHTML = ''; return; }
+  const processOptions = processes.map(p => `<option value="${p.processKey}">${p.label}</option>`).join('');
+  cont.innerHTML = `
+    <div style="margin-top:.75rem;background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem .875rem;">
+      <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.25rem;display:flex;align-items:center;gap:.35rem;">
+        <i data-lucide="lightbulb" style="width:.75rem;height:.75rem;stroke-width:2.5;"></i>
+        Proponer documento adicional
+      </div>
+      <p style="font-size:.72rem;color:var(--gray);margin:0 0 .625rem;line-height:1.4;">¿Falta algún documento? Indícalo y elige a qué proceso aplica. Quedará visible en ese proceso con el badge <strong>Add</strong>.</p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <input id="suggest-doc-input-${area}" type="text" placeholder="Ej: Certificado de antecedentes…"
+          style="flex:2;min-width:180px;padding:.4rem .7rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.8rem;font-family:var(--font);background:var(--white);color:var(--text);outline:none;"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();addSuggestedDoc('${area}');}">
+        <select id="suggest-doc-process-${area}"
+          style="flex:1;min-width:140px;padding:.4rem .625rem;font-size:.78rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-family:var(--font);color:var(--text);background:var(--white);outline:none;">
+          ${processOptions}
+        </select>
+        <button onclick="addSuggestedDoc('${area}')"
+          style="padding:.4rem .9rem;background:var(--accent);color:white;border:none;border-radius:.5rem;font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;">
+          + Agregar
+        </button>
+      </div>
+    </div>`;
+  reIcons();
+}
+
+function addSuggestedDoc(area) {
+  const inp = document.getElementById('suggest-doc-input-' + area);
+  const sel = document.getElementById('suggest-doc-process-' + area);
+  if (!inp || !sel) return;
+  const name = inp.value.trim();
+  const processKey = sel.value;
+  if (!name || !processKey) return;
+  if (!getAllCatalogDocs().some(d => d.name.toLowerCase() === name.toLowerCase())) {
+    if (!st.customCatalogDocs) st.customCatalogDocs = [];
+    st.customCatalogDocs.push(name);
+  }
+  inp.value = '';
+  addDocProposal(area, processKey, name);
 }
 
 function removeAreaCustomDoc(area, processKey, idx) {
