@@ -308,7 +308,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .role-chip.owner{background:var(--warn-bg);color:var(--warn-tx);}
 .role-chip.team{background:var(--success-bg);color:var(--success);}
 .area-chips{display:flex;flex-wrap:wrap;gap:.3rem;}
-.area-chip{display:inline-flex;align-items:center;background:var(--blue-light);color:var(--blue);
+.area-chip{display:inline-flex;align-items:center;background:var(--accent);color:white;
   font-weight:700;font-size:.72rem;padding:.2rem .55rem;border-radius:.4rem;margin:.15rem .25rem .15rem 0;}
 
 /* RESPONSIBLE PERSON */
@@ -725,7 +725,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem;display:flex;flex-direction:column;gap:.625rem;">
         <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:.375rem;">
           <div style="width:2.125rem;height:2.125rem;border-radius:50%;background:var(--accent);color:white;font-size:1.05rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-          <div style="font-size:.7rem;color:var(--gray);font-weight:600">PANORAMA GENERAL</div>
+          <div style="font-size:.7rem;color:var(--navy);font-weight:600">PANORAMA GENERAL</div>
         </div>
         <div class="role-chip owner" style="margin-bottom:.375rem;width:fit-content;">Comprador del proyecto</div>
         <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.375rem;display:flex;flex-direction:column;">
@@ -740,7 +740,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem;display:flex;flex-direction:column;gap:.625rem;">
         <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:.375rem;">
           <div style="width:2.125rem;height:2.125rem;border-radius:50%;background:var(--accent);color:white;font-size:1.05rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-          <div style="font-size:.7rem;color:var(--gray);font-weight:600">REVISIÓN POR ÁREA</div>
+          <div style="font-size:.7rem;color:var(--navy);font-weight:600">REVISIÓN POR ÁREA</div>
         </div>
         <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.375rem;">Cada área (asincrónica)</div>
         <div id="roles-fase2-areas" style="font-size:.75rem;color:var(--blue);font-weight:600;margin-bottom:.375rem;"></div>
@@ -756,7 +756,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
       <div style="background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1.125rem;display:flex;flex-direction:column;gap:.625rem;">
         <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:.375rem;">
           <div style="width:2.125rem;height:2.125rem;border-radius:50%;background:var(--accent);color:white;font-size:1.05rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-          <div style="font-size:.7rem;color:var(--gray);font-weight:600">ALINEACIÓN FINAL</div>
+          <div style="font-size:.7rem;color:var(--navy);font-weight:600">ALINEACIÓN FINAL</div>
         </div>
         <div class="role-chip team" style="margin-bottom:.375rem;width:fit-content;">Todo el equipo (en vivo)</div>
         <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.375rem;display:flex;flex-direction:column;">
@@ -815,8 +815,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
   </div>
   <div class="area-save-footer">
-    <button class="btn-area-save-main" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')" style="margin-top:0;">Guardar sección de Abastecimiento</button>
-    <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
+    <div style="display:flex;gap:.5rem;margin-top:1rem;">
+      <button class="btn-area-edit" id="edit-btn-abastecimiento" onclick="editarArea('abastecimiento')" style="display:none;margin-top:0;flex-shrink:0;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
+      <button class="btn-area-save-main" id="save-btn-abastecimiento" onclick="guardarArea('abastecimiento')" style="margin-top:0;flex:1;">Guardar sección de Abastecimiento</button>
+    </div>
     <span class="area-save-status" id="save-status-abastecimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
     <div class="area-save-hint" id="save-hint-abastecimiento">Completa tu nombre y correo, luego guarda para avanzar</div>
   </div>
@@ -853,8 +855,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
   </div>
   <div class="area-save-footer">
-    <button class="btn-area-save-main" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')" style="margin-top:0;">Guardar sección de Cumplimiento</button>
-    <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
+    <div style="display:flex;gap:.5rem;margin-top:1rem;">
+      <button class="btn-area-edit" id="edit-btn-cumplimiento" onclick="editarArea('cumplimiento')" style="display:none;margin-top:0;flex-shrink:0;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
+      <button class="btn-area-save-main" id="save-btn-cumplimiento" onclick="guardarArea('cumplimiento')" style="margin-top:0;flex:1;">Guardar sección de Cumplimiento</button>
+    </div>
     <span class="area-save-status" id="save-status-cumplimiento" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
     <div class="area-save-hint" id="save-hint-cumplimiento">Completa tu nombre y correo, luego guarda para avanzar</div>
   </div>
@@ -891,8 +895,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
   </div>
   <div class="area-save-footer">
-    <button class="btn-area-save-main" id="save-btn-finanzas" onclick="guardarArea('finanzas')" style="margin-top:0;">Guardar sección de Finanzas</button>
-    <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
+    <div style="display:flex;gap:.5rem;margin-top:1rem;">
+      <button class="btn-area-edit" id="edit-btn-finanzas" onclick="editarArea('finanzas')" style="display:none;margin-top:0;flex-shrink:0;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
+      <button class="btn-area-save-main" id="save-btn-finanzas" onclick="guardarArea('finanzas')" style="margin-top:0;flex:1;">Guardar sección de Finanzas</button>
+    </div>
     <span class="area-save-status" id="save-status-finanzas" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
     <div class="area-save-hint" id="save-hint-finanzas">Completa tu nombre y correo, luego guarda para avanzar</div>
   </div>
@@ -929,8 +935,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     </div>
   </div>
   <div class="area-save-footer">
-    <button class="btn-area-save-main" id="save-btn-legal" onclick="guardarArea('legal')" style="margin-top:0;">Guardar sección de Legal</button>
-    <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
+    <div style="display:flex;gap:.5rem;margin-top:1rem;">
+      <button class="btn-area-edit" id="edit-btn-legal" onclick="editarArea('legal')" style="display:none;margin-top:0;flex-shrink:0;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
+      <button class="btn-area-save-main" id="save-btn-legal" onclick="guardarArea('legal')" style="margin-top:0;flex:1;">Guardar sección de Legal</button>
+    </div>
     <span class="area-save-status" id="save-status-legal" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
     <div class="area-save-hint" id="save-hint-legal">Completa tu nombre y correo, luego guarda para avanzar</div>
   </div>
@@ -946,8 +954,10 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div id="workflow-reviewers"></div>
   </div>
   <div class="area-save-footer">
-    <button class="btn-area-save-main" id="save-btn-reviewers" onclick="saveReviewersNow()" style="margin-top:0;">Guardar revisores</button>
-    <button class="btn-area-edit" id="edit-btn-reviewers" onclick="editReviewers()" style="display:none;margin-top:.5rem;width:100%;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
+    <div style="display:flex;gap:.5rem;margin-top:1rem;">
+      <button class="btn-area-edit" id="edit-btn-reviewers" onclick="editReviewers()" style="display:none;margin-top:0;flex-shrink:0;text-align:center;"><i data-lucide="pencil" style="width:.8rem;height:.8rem;margin-right:.3rem;vertical-align:middle;"></i>Editar</button>
+      <button class="btn-area-save-main" id="save-btn-reviewers" onclick="saveReviewersNow()" style="margin-top:0;flex:1;">Guardar revisores</button>
+    </div>
     <span id="save-status-reviewers" style="display:block;margin-top:.375rem;font-size:.75rem;color:var(--gray);text-align:center;"></span>
   </div>
 </div>
