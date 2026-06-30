@@ -3307,17 +3307,27 @@ function save() {
 }
 
 let _remoteTimer = null;
+let _retryTimer = null;
 let _savePending = false;
 function saveRemote() {
   if (!st.sessionId) return;
   clearTimeout(_remoteTimer);
+  clearTimeout(_retryTimer);
   _savePending = true;
-  _remoteTimer = setTimeout(() => {
-    fetch(API_URL + '?s=' + encodeURIComponent(st.sessionId), {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(st)
-    }).then(() => { _savePending = false; }).catch(() => { _savePending = false; });
-  }, 300);
+  _remoteTimer = setTimeout(sendRemote, 300);
+}
+function sendRemote() {
+  // _savePending se mantiene en true hasta confirmar éxito, para que el
+  // polling nunca pise un cambio local que aún no llegó al servidor.
+  fetch(API_URL + '?s=' + encodeURIComponent(st.sessionId), {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(st)
+  }).then(res => {
+    if (!res.ok) throw new Error('save failed: ' + res.status);
+    _savePending = false;
+  }).catch(() => {
+    _retryTimer = setTimeout(sendRemote, 1500);
+  });
 }
 
 let _pollInterval = null;
@@ -3346,8 +3356,10 @@ function startPolling() {
         });
         renderProcessAreaMatrix();
         changed = true;
-      } else if (data.state.requiredAreas) {
+      }
+      if (data.state.requiredAreas) {
         Object.assign(st.requiredAreas, data.state.requiredAreas);
+        renderRequiredAreas();
         changed = true;
       }
 
@@ -3542,6 +3554,8 @@ if (st.sentAt) showSentBanner(st.sentAt);
 window.addEventListener('focus', () => {
   const ae = document.activeElement;
   if (ae && ['INPUT','TEXTAREA'].includes(ae.tagName)) return;
+  // No pisar cambios locales que aún no se confirmaron guardados en el servidor.
+  if (_savePending || (Date.now() - _lastLocalChange) < 1200) return;
   loadRemote();
 });
 
