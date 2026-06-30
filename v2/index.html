@@ -1369,15 +1369,15 @@ function renderRequiredAreas() {
         <div class="area-req-name">${AREA_LABELS[a]}</div>
         <div class="area-req-desc">${AREA_DESC[a] || ''}</div>
       </div>
-      <div class="area-req-toggle ${on?'on':''}"></div>
+      <div class="area-req-toggle ${on?'on':''}" id="art-${a}"></div>
     </div>`;
   }).join('');
 }
 function toggleRequiredArea(area) {
   if (!st.requiredAreas) st.requiredAreas = { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true };
   st.requiredAreas[area] = st.requiredAreas[area] === false ? true : false;
+  document.getElementById('art-' + area)?.classList.toggle('on', st.requiredAreas[area]);
   if (!isAreaRequired(area) && cur === AREA_SLIDE[area]) next();
-  renderRequiredAreas();
   updateNav();
   renderAbastRecap();
   AREAS.forEach(a => renderAreaDocReview(a));
