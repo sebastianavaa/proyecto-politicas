@@ -35,15 +35,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 #progress-track{position:fixed;top:0;left:0;right:0;height:4px;z-index:500;}
 #progress{position:absolute;top:0;left:0;height:4px;width:0%;background:linear-gradient(90deg,var(--blue),#B8A6F8);transition:width .4s ease;box-shadow:0 0 8px rgba(113,102,238,.4);}
 
-/* ── PANEL CENTRADO EN DESKTOP ── */
-@media (min-width:900px){
-  .slide{max-width:1200px;max-height:calc(100vh - 4rem);margin:auto;border-radius:1.25rem;
-    overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.45);}
-  #progress-track{max-width:1200px;margin:0 auto;top:2rem;border-radius:1.25rem 1.25rem 0 0;overflow:hidden;}
-  #sent-banner{max-width:1200px;margin:0 auto;top:2rem;border-radius:1.25rem 1.25rem 0 0;}
-  #nav{right:max(1rem,calc((100vw - 1200px) / 2 + 1rem));}
-}
-
 #nav{position:fixed;top:1rem;right:1rem;left:auto;transform:none;display:flex;align-items:center;gap:.5rem;
   background:rgba(20,12,60,.88);backdrop-filter:blur(12px);padding:.375rem .625rem;border-radius:2rem;
   border:1px solid rgba(180,160,248,.2);z-index:400;box-shadow:0 4px 18px rgba(0,0,0,.35);}
@@ -73,14 +64,14 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   font-size:.9375rem;font-weight:800;cursor:pointer;transition:all .2s;white-space:nowrap;}
 .btn-primary:hover{background:var(--accent-dark);transform:translateY(-2px);}
 
-/* STD SLIDE */
+/* STD SLIDE — fondo a pantalla completa, contenido centrado con ancho máximo */
 .slide-std{background:var(--bg);}
-.s-head{background:var(--navy);color:white;padding:1rem 3rem .9rem;flex-shrink:0;
+.s-head{background:var(--navy);color:white;padding:1rem clamp(3rem,calc((100vw - 1200px)/2),100rem) .9rem;flex-shrink:0;
   background:linear-gradient(135deg,var(--navy) 0%,#2A1F7A 70%,#4C3AA8 100%);}
 .s-tag{font-size:.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--blue-light);margin-bottom:.25rem;}
 .s-head h2{font-size:clamp(1.25rem,2.2vw,1.7rem);font-weight:800;line-height:1.12;letter-spacing:-.02em;}
 .s-head p{color:rgba(255,255,255,.5);font-size:.8rem;margin-top:.2rem;max-width:760px;line-height:1.45;}
-.s-body{padding:1rem 3rem;flex:1;overflow-y:auto;}
+.s-body{padding:1rem clamp(3rem,calc((100vw - 1200px)/2),100rem);flex:1;overflow-y:auto;}
 .scrollable{overflow-y:auto;max-height:calc(100vh - 120px);padding-bottom:1.5rem;}
 .divider{height:.625rem;}
 
@@ -98,7 +89,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .wf-reviewer-row{display:flex;gap:.4rem;align-items:center;margin-bottom:.4rem;flex-wrap:nowrap;}
 
 /* ÁREA: botón guardar como footer fijo del slide (no se mueve según filas) */
-.area-save-footer{flex-shrink:0;background:var(--bg);padding:.75rem 3rem 1rem;border-top:1px solid var(--gray-border);}
+.area-save-footer{flex-shrink:0;background:var(--bg);padding:.75rem clamp(3rem,calc((100vw - 1200px)/2),100rem) 1rem;border-top:1px solid var(--gray-border);}
 @media (max-width:640px){ .area-save-footer{padding:.625rem 1rem .75rem;} }
 
 /* ÁREA: alertas | documentos en 2 columnas */
