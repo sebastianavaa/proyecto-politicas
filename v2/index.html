@@ -1710,7 +1710,7 @@ function renderAlertConsolidation() {
 }
 
 // Recolecta responsables únicos ya ingresados en las áreas
-function getReviewerPool() {
+function getReviewerPool(excludeGroup) {
   const seen = new Set();
   const pool = [];
   AREAS.forEach(a => {
@@ -1720,8 +1720,10 @@ function getReviewerPool() {
       if (!seen.has(key)) { seen.add(key); pool.push({ name: r.name.trim(), email: r.email||'' }); }
     }
   });
-  // Revisores manuales ya confirmados en cualquier grupo también quedan disponibles para reutilizar
-  Object.values(st.workflowReviewers || {}).forEach(arr => {
+  // Revisores manuales ya confirmados en OTROS grupos también quedan disponibles para reutilizar
+  // (se excluye el propio grupo para que su chip confirmado no se reclasifique como botón toggle)
+  Object.entries(st.workflowReviewers || {}).forEach(([g, arr]) => {
+    if (g === excludeGroup) return;
     (arr || []).forEach(r => {
       if (r.confirmed && r.name?.trim()) {
         const key = r.name.trim().toLowerCase();
@@ -1738,7 +1740,6 @@ function renderWorkflowReviewers() {
   if (!st.workflowReviewers) st.workflowReviewers = {};
   const graveMap = graveAlertsByGroup();
   const groups = Object.keys(graveMap);
-  const pool = getReviewerPool();
   const inp = 'padding:.3rem .55rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.75rem;font-family:var(--font);box-sizing:border-box;background:white;';
 
   if (!groups.length) {
@@ -1749,6 +1750,7 @@ function renderWorkflowReviewers() {
 
   const rows = groups.map((g, gi) => {
     const esc = (s) => (s||'').replace(/'/g,"\\'");
+    const pool = getReviewerPool(g);
     const assigned = st.workflowReviewers[g] || [];
     const assignedKeys = new Set(assigned.map(r => r.name+'|'+r.email));
     const hasReviewer  = assigned.some(r => r.name || r.email);
@@ -1829,12 +1831,12 @@ function renderAreaReviewers(area) {
   if (!myGroups.length) { cont.innerHTML = ''; return; }
   if (!st.workflowReviewers) st.workflowReviewers = {};
   const graveMap = graveAlertsByGroup();
-  const pool = getReviewerPool();
   const locked = st.areas[area].locked;
   const inp = 'padding:.3rem .55rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.75rem;font-family:var(--font);box-sizing:border-box;background:white;min-width:0;';
 
   const rows = myGroups.map((g, gi) => {
     const esc = s => (s||'').replace(/'/g,"\\'");
+    const pool = getReviewerPool(g);
     const graveAlerts = graveMap[g] || [];
     const assigned = st.workflowReviewers[g] || [];
     const assignedKeys = new Set(assigned.map(r => r.name+'|'+r.email));
