@@ -1784,19 +1784,20 @@ function renderWorkflowReviewers() {
         ${lbl}<button onclick="removeConfirmedManual('${esc(g)}','${esc(r.name)}','${esc(r.email)}')" style="background:transparent;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:.8rem;padding:0;line-height:1;margin-left:.1rem;">×</button>
       </span>`;
     }).join('');
-    const manualInputs = manualPending.map((r, mi) =>
-      `<div style="display:flex;gap:.3rem;align-items:center;margin-top:.3rem;">
+    const manualInputs = manualPending.map((r) => {
+      if (!r._id) r._id = _newReviewerId();
+      return `<div style="display:flex;gap:.3rem;align-items:center;margin-top:.3rem;">
         <input type="text" value="${(r.name||'').replace(/"/g,'&quot;')}" placeholder="Nombre o área"
-          style="${inp}flex:1;min-width:0;" oninput="saveManualReviewer('${esc(g)}',${mi},'name',this.value)"
-          onkeydown="if(event.key==='Enter'){event.preventDefault();confirmManualReviewer('${esc(g)}',${mi});}">
+          style="${inp}flex:1;min-width:0;" oninput="saveManualReviewer('${esc(g)}','${r._id}','name',this.value)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();confirmManualReviewer('${esc(g)}','${r._id}');}">
         <input type="email" value="${(r.email||'').replace(/"/g,'&quot;')}" placeholder="email (opcional)"
-          style="${inp}flex:1;min-width:0;" oninput="saveManualReviewer('${esc(g)}',${mi},'email',this.value)"
-          onkeydown="if(event.key==='Enter'){event.preventDefault();confirmManualReviewer('${esc(g)}',${mi});}">
-        <button onclick="confirmManualReviewer('${esc(g)}',${mi})" title="Confirmar"
+          style="${inp}flex:1;min-width:0;" oninput="saveManualReviewer('${esc(g)}','${r._id}','email',this.value)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();confirmManualReviewer('${esc(g)}','${r._id}');}">
+        <button onclick="confirmManualReviewer('${esc(g)}','${r._id}')" title="Confirmar"
           style="background:var(--navy);border:none;color:white;cursor:pointer;font-size:.7rem;font-weight:700;padding:.28rem .55rem;border-radius:.375rem;font-family:var(--font);flex-shrink:0;white-space:nowrap;">✓</button>
-        <button onclick="removeManualReviewer('${esc(g)}',${mi})" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:.95rem;padding:.1rem .3rem;line-height:1;flex-shrink:0;">×</button>
-      </div>`
-    ).join('');
+        <button onclick="removeManualReviewer('${esc(g)}','${r._id}')" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:.95rem;padding:.1rem .3rem;line-height:1;flex-shrink:0;">×</button>
+      </div>`;
+    }).join('');
 
     const noPool = pool.length === 0
       ? `<span style="font-size:.72rem;color:var(--gray);font-style:italic;">Completa los responsables de cada área para ver sugerencias aquí.</span>`
@@ -1875,18 +1876,19 @@ function renderAreaReviewers(area) {
       `<span style="display:inline-flex;align-items:center;gap:.25rem;background:var(--navy);color:white;border:1.5px solid var(--navy);border-radius:.4rem;padding:.18rem .5rem;font-size:.7rem;font-weight:600;font-family:var(--font);">
         ${r.name||r.email}<button onclick="removeConfirmedManual('${esc(g)}','${esc(r.name)}','${esc(r.email)}')" style="background:transparent;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:.75rem;padding:0;line-height:1;margin-left:.1rem;">×</button>
       </span>`).join('');
-    const manualInputs = manualPending.map((r, mi) =>
-      `<div style="display:flex;gap:.25rem;align-items:center;margin-top:.2rem;">
+    const manualInputs = manualPending.map((r) => {
+      if (!r._id) r._id = _newReviewerId();
+      return `<div style="display:flex;gap:.25rem;align-items:center;margin-top:.2rem;">
         <input type="text" value="${(r.name||'').replace(/"/g,'&quot;')}" placeholder="Nombre o área"
-          style="${inp}flex:1;" oninput="saveManualReviewer('${esc(g)}',${mi},'name',this.value)"
-          onkeydown="if(event.key==='Enter'){event.preventDefault();confirmManualReviewer('${esc(g)}',${mi});}">
+          style="${inp}flex:1;" oninput="saveManualReviewer('${esc(g)}','${r._id}','name',this.value)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();confirmManualReviewer('${esc(g)}','${r._id}');}">
         <input type="email" value="${(r.email||'').replace(/"/g,'&quot;')}" placeholder="email (opc.)"
-          style="${inp}flex:1;" oninput="saveManualReviewer('${esc(g)}',${mi},'email',this.value)"
-          onkeydown="if(event.key==='Enter'){event.preventDefault();confirmManualReviewer('${esc(g)}',${mi});}">
-        <button onclick="confirmManualReviewer('${esc(g)}',${mi})" style="background:var(--navy);border:none;color:white;cursor:pointer;font-size:.68rem;font-weight:700;padding:.25rem .45rem;border-radius:.375rem;font-family:var(--font);flex-shrink:0;">✓</button>
-        <button onclick="removeManualReviewer('${esc(g)}',${mi})" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:.9rem;padding:.1rem .2rem;line-height:1;flex-shrink:0;">×</button>
-      </div>`
-    ).join('');
+          style="${inp}flex:1;" oninput="saveManualReviewer('${esc(g)}','${r._id}','email',this.value)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();confirmManualReviewer('${esc(g)}','${r._id}');}">
+        <button onclick="confirmManualReviewer('${esc(g)}','${r._id}')" style="background:var(--navy);border:none;color:white;cursor:pointer;font-size:.68rem;font-weight:700;padding:.25rem .45rem;border-radius:.375rem;font-family:var(--font);flex-shrink:0;">✓</button>
+        <button onclick="removeManualReviewer('${esc(g)}','${r._id}')" style="background:transparent;border:none;color:var(--gray);cursor:pointer;font-size:.9rem;padding:.1rem .2rem;line-height:1;flex-shrink:0;">×</button>
+      </div>`;
+    }).join('');
     const noPool = !pool.length ? `<span style="font-size:.68rem;color:var(--gray);font-style:italic;">Completa los encargados de cada área para ver sugerencias.</span>` : '';
     const reqBadge = !hasReviewer ? `<span style="font-size:.6rem;font-weight:700;background:#FEF2F2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .3rem;flex-shrink:0;">Pendiente</span>` : '';
 
@@ -1927,18 +1929,19 @@ function togglePoolReviewer(group, name, email) {
   else arr.push({ name, email });
   renderWorkflowReviewers(); renderAllAreaReviewers(); save(); _resetReviewerSaveBtn();
 }
+let _reviewerIdSeq = 0;
+function _newReviewerId() { return 'rv' + Date.now() + '_' + (_reviewerIdSeq++); }
+
 function addManualReviewer(group) {
   if (!st.workflowReviewers) st.workflowReviewers = {};
   if (!st.workflowReviewers[group]) st.workflowReviewers[group] = [];
-  st.workflowReviewers[group].push({ name:'', email:'' });
+  st.workflowReviewers[group].push({ name:'', email:'', _id: _newReviewerId() });
   renderWorkflowReviewers(); renderAllAreaReviewers(); save(); _resetReviewerSaveBtn();
 }
-function removeManualReviewer(group, pendingIdx) {
-  const pool = getReviewerPool();
-  const pending = (st.workflowReviewers[group]||[]).filter(r => !pool.some(p => p.name===r.name && p.email===r.email) && !r.confirmed);
-  const target = pending[pendingIdx]; if (!target) return;
-  const pos = st.workflowReviewers[group].findIndex(r => r === target);
-  if (pos >= 0) st.workflowReviewers[group].splice(pos, 1);
+function removeManualReviewer(group, id) {
+  const arr = st.workflowReviewers[group]; if (!arr) return;
+  const pos = arr.findIndex(r => r._id === id);
+  if (pos >= 0) arr.splice(pos, 1);
   renderWorkflowReviewers(); renderAllAreaReviewers(); save(); _resetReviewerSaveBtn();
 }
 function removeConfirmedManual(group, name, email) {
@@ -1947,24 +1950,20 @@ function removeConfirmedManual(group, name, email) {
   if (pos >= 0) arr.splice(pos, 1);
   renderWorkflowReviewers(); renderAllAreaReviewers(); save(); _resetReviewerSaveBtn();
 }
-function saveManualReviewer(group, pendingIdx, field, val) {
-  const pool = getReviewerPool();
-  const arr  = st.workflowReviewers[group] || [];
-  const pending = arr.filter(r => !pool.some(p => p.name===r.name && p.email===r.email) && !r.confirmed);
-  const target = pending[pendingIdx]; if (!target) return;
+function saveManualReviewer(group, id, field, val) {
+  const arr = st.workflowReviewers[group] || [];
+  const target = arr.find(r => r._id === id); if (!target) return;
   target[field] = val;
   save(); _resetReviewerSaveBtn();
 }
-function confirmManualReviewer(group, pendingIdx) {
+function confirmManualReviewer(group, id) {
   const pool = getReviewerPool();
   const arr  = st.workflowReviewers[group] || [];
+  const target = arr.find(r => r._id === id); if (!target || (!target.name && !target.email)) return;
+
   const isInPool = r => pool.find(p =>
     (p.name && r.name && p.name.toLowerCase()===r.name.toLowerCase()) ||
     (p.email && r.email && p.email.toLowerCase()===r.email.toLowerCase()));
-  const pending = arr.filter(r => !pool.some(p =>
-    (p.name && r.name && p.name===r.name)||(p.email && r.email && p.email===r.email)) && !r.confirmed);
-  const target = pending[pendingIdx]; if (!target || (!target.name && !target.email)) return;
-
   const pos = arr.findIndex(r => r === target);
   const poolMatch = isInPool(target);
   if (poolMatch) {
