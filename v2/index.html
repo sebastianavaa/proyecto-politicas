@@ -235,6 +235,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .alert-cfg:last-of-type{border-bottom:none;}
 .alert-cfg.off{opacity:.45;}
 .alert-cfg-top{display:flex;align-items:center;gap:.75rem;}
+.alert-cfg-clickzone{display:flex;align-items:center;gap:.75rem;flex:1;min-width:0;cursor:pointer;}
 .alert-tip{display:inline-flex;align-items:center;justify-content:center;width:.75rem;height:.75rem;
   color:var(--gray);cursor:default;flex-shrink:0;margin-left:.35rem;vertical-align:middle;}
 .alert-tip svg{width:.75rem;height:.75rem;pointer-events:none;}
@@ -2058,8 +2059,10 @@ function buildAlertTabsHTML(containerId, area, placeholder) {
       ).join('');
       return `<div class="alert-cfg ${a.activa?'on':'off'}" id="acfg-${area}-${i}">
         <div class="alert-cfg-top">
-          <div class="a-toggle" onclick="setAlertActive('${area}',${i})"></div>
-          <span class="a-label">${meta.label}${meta.desc ? `<span class="alert-tip" data-tip="${meta.desc.replace(/"/g,'&quot;')}" onmouseenter="showTip(this)" onmouseleave="hideTip()"><i data-lucide="info"></i></span>` : ''}</span>
+          <div class="alert-cfg-clickzone" onclick="setAlertActive('${area}',${i})">
+            <div class="a-toggle"></div>
+            <span class="a-label">${meta.label}${meta.desc ? `<span class="alert-tip" data-tip="${meta.desc.replace(/"/g,'&quot;')}" onclick="event.stopPropagation()" onmouseenter="showTip(this)" onmouseleave="hideTip()"><i data-lucide="info"></i></span>` : ''}</span>
+          </div>
           <span class="sev-sel">${sevBtns}</span>
         </div>
       </div>`;
