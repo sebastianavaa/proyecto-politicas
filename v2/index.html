@@ -303,6 +303,14 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   padding:.7rem 1rem;font-size:.8rem;color:var(--warn-tx);margin-top:.625rem;line-height:1.55;}
 .warn-box strong{color:#78350F;}
 
+/* CHIPS DE ROL/ÁREA — mismos colores en slide 3 y en cada slide de área */
+.role-chip{display:inline-block;font-weight:800;font-size:.8rem;padding:.3rem .7rem;border-radius:.4rem;}
+.role-chip.owner{background:var(--warn-bg);color:var(--warn-tx);}
+.role-chip.team{background:var(--success-bg);color:var(--success);}
+.area-chips{display:flex;flex-wrap:wrap;gap:.3rem;}
+.area-chip{display:inline-flex;align-items:center;background:var(--blue-light);color:var(--blue);
+  font-weight:700;font-size:.72rem;padding:.2rem .55rem;border-radius:.4rem;margin:.15rem .25rem .15rem 0;}
+
 /* RESPONSIBLE PERSON */
 .resp-row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;}
 .resp-row input{padding:.45rem .75rem;border:1.5px solid var(--gray-border);border-radius:.5rem;
@@ -719,7 +727,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div style="width:2.125rem;height:2.125rem;border-radius:50%;background:var(--accent);color:white;font-size:1.05rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
           <div style="font-size:.7rem;color:var(--gray);font-weight:600">PANORAMA GENERAL</div>
         </div>
-        <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.375rem;">Comprador del proyecto</div>
+        <div class="role-chip owner" style="margin-bottom:.375rem;width:fit-content;">Comprador del proyecto</div>
         <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.375rem;display:flex;flex-direction:column;">
           <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Revisa el panorama general</li>
           <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Activa/desactiva tipos de evaluación</li>
@@ -750,7 +758,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
           <div style="width:2.125rem;height:2.125rem;border-radius:50%;background:var(--accent);color:white;font-size:1.05rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
           <div style="font-size:.7rem;color:var(--gray);font-weight:600">ALINEACIÓN FINAL</div>
         </div>
-        <div style="font-size:.8rem;font-weight:700;color:var(--navy);margin-bottom:.375rem;">Todo el equipo (en vivo)</div>
+        <div class="role-chip team" style="margin-bottom:.375rem;width:fit-content;">Todo el equipo (en vivo)</div>
         <ul style="font-size:.775rem;color:var(--gray);list-style:none;padding:0;gap:.375rem;display:flex;flex-direction:column;">
           <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Revisan cambios acumulados</li>
           <li style="display:flex;align-items:flex-start;gap:.4rem;"><i data-lucide="check" style="width:.85rem;height:.85rem;flex-shrink:0;margin-top:.15rem;color:var(--accent);stroke-width:2.5;"></i>Toman decisiones finales</li>
@@ -1208,7 +1216,9 @@ function renderRolesSummary() {
   const el = document.getElementById('roles-fase2-areas');
   if (!el) return;
   const active = AREAS.filter(a => isAreaRequired(a)).map(a => AREA_LABELS[a]);
-  el.textContent = active.length ? active.join(' · ') : 'Sin áreas seleccionadas';
+  el.innerHTML = active.length
+    ? `<div class="area-chips">${active.map(l => `<span class="area-chip">${l}</span>`).join('')}</div>`
+    : 'Sin áreas seleccionadas';
 }
 
 function renderAreaDescription(area) {
@@ -1217,7 +1227,7 @@ function renderAreaDescription(area) {
   const descEl = document.getElementById('desc-' + area);
   if (!descEl) return;
   if (otherAreas.length > 0) {
-    descEl.textContent = `Participa con: ${otherAreas.join(', ')}`;
+    descEl.innerHTML = `Participa con: ${otherAreas.map(l => `<span class="area-chip">${l}</span>`).join('')}`;
   } else {
     descEl.textContent = 'Es el único área que participa en esta política';
   }
