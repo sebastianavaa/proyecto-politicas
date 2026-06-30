@@ -1720,6 +1720,15 @@ function getReviewerPool() {
       if (!seen.has(key)) { seen.add(key); pool.push({ name: r.name.trim(), email: r.email||'' }); }
     }
   });
+  // Revisores manuales ya confirmados en cualquier grupo también quedan disponibles para reutilizar
+  Object.values(st.workflowReviewers || {}).forEach(arr => {
+    (arr || []).forEach(r => {
+      if (r.confirmed && r.name?.trim()) {
+        const key = r.name.trim().toLowerCase();
+        if (!seen.has(key)) { seen.add(key); pool.push({ name: r.name.trim(), email: r.email||'' }); }
+      }
+    });
+  });
   return pool;
 }
 
@@ -1911,14 +1920,17 @@ function renderAllAreaReviewers() {
 
 function togglePoolReviewer(group, name, email) {
   if (!st.workflowReviewers) st.workflowReviewers = {};
-  const arr = st.workflowReviewers[group] || [];
-  const already = arr.find(r => r.name===name && r.email===email);
-  // Un solo revisor por grupo: reemplazar o deseleccionar
-  st.workflowReviewers[group] = already ? [] : [{ name, email }];
+  if (!st.workflowReviewers[group]) st.workflowReviewers[group] = [];
+  const arr = st.workflowReviewers[group];
+  const idx = arr.findIndex(r => r.name===name && r.email===email);
+  if (idx >= 0) arr.splice(idx, 1);
+  else arr.push({ name, email });
   renderWorkflowReviewers(); renderAllAreaReviewers(); save(); _resetReviewerSaveBtn();
 }
 function addManualReviewer(group) {
-  st.workflowReviewers[group] = [{ name:'', email:'' }];
+  if (!st.workflowReviewers) st.workflowReviewers = {};
+  if (!st.workflowReviewers[group]) st.workflowReviewers[group] = [];
+  st.workflowReviewers[group].push({ name:'', email:'' });
   renderWorkflowReviewers(); renderAllAreaReviewers(); save(); _resetReviewerSaveBtn();
 }
 function removeManualReviewer(group, pendingIdx) {
@@ -1953,11 +1965,15 @@ function confirmManualReviewer(group, pendingIdx) {
     (p.name && r.name && p.name===r.name)||(p.email && r.email && p.email===r.email)) && !r.confirmed);
   const target = pending[pendingIdx]; if (!target || (!target.name && !target.email)) return;
 
+  const pos = arr.findIndex(r => r === target);
   const poolMatch = isInPool(target);
   if (poolMatch) {
-    st.workflowReviewers[group] = [{ name: poolMatch.name, email: poolMatch.email }];
+    // Coincide con alguien del pool: usar esa identidad, sin duplicar la fila
+    const alreadyAssigned = arr.some(r => r !== target && r.name === poolMatch.name && r.email === poolMatch.email);
+    if (alreadyAssigned) arr.splice(pos, 1);
+    else arr[pos] = { name: poolMatch.name, email: poolMatch.email };
   } else {
-    st.workflowReviewers[group] = [{ name: target.name, email: target.email, confirmed: true }];
+    target.confirmed = true;
   }
   renderWorkflowReviewers(); renderAllAreaReviewers(); save(); _resetReviewerSaveBtn();
 }
