@@ -32,7 +32,17 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
 .slide.exit-left{opacity:0;transform:translateX(-60px);}
 
-#progress{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--blue),#B8A6F8);transition:width .4s ease;z-index:500;box-shadow:0 0 8px rgba(113,102,238,.4);}
+#progress-track{position:fixed;top:0;left:0;right:0;height:4px;z-index:500;}
+#progress{position:absolute;top:0;left:0;height:4px;width:0%;background:linear-gradient(90deg,var(--blue),#B8A6F8);transition:width .4s ease;box-shadow:0 0 8px rgba(113,102,238,.4);}
+
+/* ── PANEL CENTRADO EN DESKTOP ── */
+@media (min-width:900px){
+  .slide{max-width:1200px;max-height:calc(100vh - 4rem);margin:auto;border-radius:1.25rem;
+    overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.45);}
+  #progress-track{max-width:1200px;margin:0 auto;top:2rem;border-radius:1.25rem 1.25rem 0 0;overflow:hidden;}
+  #sent-banner{max-width:1200px;margin:0 auto;top:2rem;border-radius:1.25rem 1.25rem 0 0;}
+  #nav{right:max(1rem,calc((100vw - 1200px) / 2 + 1rem));}
+}
 
 #nav{position:fixed;top:1rem;right:1rem;left:auto;transform:none;display:flex;align-items:center;gap:.5rem;
   background:rgba(20,12,60,.88);backdrop-filter:blur(12px);padding:.375rem .625rem;border-radius:2rem;
@@ -564,7 +574,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   <i data-lucide="check-circle" style="width:.9rem;height:.9rem;margin-right:.3rem;vertical-align:middle;"></i>Esta sesión ya fue enviada el <strong id="sent-date"></strong>. Puedes volver a enviar si necesitas actualizar el reporte.
   <button id="sent-banner-close" onclick="document.getElementById('sent-banner').style.display='none'">✕</button>
 </div>
-<div id="progress"></div>
+<div id="progress-track"><div id="progress"></div></div>
 <div id="app">
 
 <!-- ── 1: COVER ── -->
