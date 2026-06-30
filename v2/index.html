@@ -108,8 +108,13 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
   border-radius:.875rem;padding:1rem 1.125rem;box-shadow:0 1px 3px rgba(0,0,0,.04);}
 .q-num{width:1.875rem;height:1.875rem;border-radius:.625rem;background:var(--navy);color:white;font-size:.95rem;
   font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.q-card.answered{border-color:var(--accent);}
 .q-body h4{font-size:.875rem;font-weight:700;color:var(--navy);margin:0 0 .25rem;line-height:1.35;}
-.q-body p{font-size:.78rem;color:var(--gray);line-height:1.55;margin:0;}
+.q-body p{font-size:.78rem;color:var(--gray);line-height:1.55;margin:0 0 .5rem;}
+.q-yn{display:inline-flex;gap:.3rem;}
+.q-yn button{font-size:.7rem;font-weight:700;padding:.2rem .65rem;border-radius:.375rem;border:1.5px solid var(--gray-border);
+  background:var(--white);color:var(--gray);cursor:pointer;font-family:var(--font);transition:all .15s;}
+.q-yn button.on{background:var(--navy);color:white;border-color:var(--navy);}
 @media (max-width:640px){ .q-grid{grid-template-columns:1fr;grid-template-rows:none;grid-auto-flow:row;} }
 
 /* TABLE */
@@ -772,51 +777,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <p>No todos los proveedores requieren la misma profundidad de evaluación. Estas 6 preguntas determinan qué tipo de due diligence corresponde según el riesgo real de cada proveedor.</p>
   </div>
   <div class="s-body scrollable">
-    <div class="q-grid">
-      <div class="q-card">
-        <div class="q-num">1</div>
-        <div class="q-body">
-          <h4>¿El monto anual estimado supera los USD 20.000?</h4>
-          <p>A mayor monto, mayor riesgo económico para la empresa.</p>
-        </div>
-      </div>
-      <div class="q-card">
-        <div class="q-num">2</div>
-        <div class="q-body">
-          <h4>¿El monto anual estimado supera los USD 100.000?</h4>
-          <p>Contratos de este tamaño requieren el máximo nivel de escrutinio.</p>
-        </div>
-      </div>
-      <div class="q-card">
-        <div class="q-num">3</div>
-        <div class="q-body">
-          <h4>¿El servicio está regido por la Ley de Subcontratación (Ley 20.123)?</h4>
-          <p>La empresa responde solidariamente por las deudas laborales del proveedor.</p>
-        </div>
-      </div>
-      <div class="q-card">
-        <div class="q-num">4</div>
-        <div class="q-body">
-          <h4>¿El proveedor custodiará materiales, activos o datos sensibles?</h4>
-          <p>Acceso a activos críticos = riesgo operacional y de seguridad elevado.</p>
-        </div>
-      </div>
-      <div class="q-card">
-        <div class="q-num">5</div>
-        <div class="q-body">
-          <h4>¿El servicio requiere anticipo económico?</h4>
-          <p>Los anticipos exponen a la empresa si el proveedor no cumple o quiebra.</p>
-        </div>
-      </div>
-      <div class="q-card">
-        <div class="q-num">6</div>
-        <div class="q-body">
-          <h4>¿El servicio durará 6 meses o más, o el proveedor tiene domicilio fuera de Chile?</h4>
-          <p>Relaciones largas o internacionales tienen mayor exposición acumulada.</p>
-        </div>
-      </div>
-    </div>
+    <div class="q-grid" id="q-grid"></div>
     <div class="warn-box" style="margin-top:1rem;display:flex;align-items:flex-start;gap:.5rem;"><i data-lucide="info" style="width:.9rem;height:.9rem;flex-shrink:0;margin-top:.1rem;"></i><div><strong>Cómo se traduce:</strong> mientras más respuestas afirmativas, más profundo el proceso — desde <strong>Proveedor Spot</strong> (todo No) hasta <strong>Proveedor Crítico</strong> (dos o más Sí o monto sobre USD 100k). Proveedor Subcontratista e Internacional se activan por sus preguntas específicas.</div></div>
+    <div id="classifier-recommendation"></div>
   </div>
 </div>
 
@@ -1141,6 +1104,7 @@ function nextVisible(from, dir) {
 
 const st = {
   email:'', client:'', sessionId:'',
+  classifierAnswers:{ q1:null, q2:null, q3:null, q4:null, q5:null, q6:null },
   evalTypes:{ express:true, completa:true, reforzada:true, internacional:true, subcontratacion:true },
   requiredAreas:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true },
   processAreas:{
@@ -1511,17 +1475,132 @@ function toggleEvalDocs(event, id) {
 }
 
 // ── EVAL TYPES ──
+function syncEvalTypeUI() {
+  Object.entries(st.evalTypes).forEach(([type, active]) => {
+    document.getElementById('et-'+type)?.classList.toggle('on', active);
+    document.getElementById('ec-'+type)?.classList.toggle('active', active);
+    document.getElementById('ec-'+type)?.classList.toggle('inactive', !active);
+  });
+}
 function toggleEval(type) {
   st.evalTypes[type] = !st.evalTypes[type];
-  document.getElementById('et-'+type).classList.toggle('on', st.evalTypes[type]);
-  document.getElementById('ec-'+type).classList.toggle('active', st.evalTypes[type]);
-  document.getElementById('ec-'+type).classList.toggle('inactive', !st.evalTypes[type]);
+  syncEvalTypeUI();
   renderProcessAreaMatrix();
   updateNav();
   renderAbastRecap();
   AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
   AREAS.forEach(a => renderAreaDocReview(a));
   save();
+}
+
+// ── 6 PREGUNTAS — CLASIFICADOR INTERACTIVO (slide 4) ──
+const CLASSIFIER_QUESTIONS = [
+  { key:'q1', label:'¿El monto anual estimado supera los USD 20.000?', desc:'A mayor monto, mayor riesgo económico para la empresa.' },
+  { key:'q2', label:'¿El monto anual estimado supera los USD 100.000?', desc:'Contratos de este tamaño requieren el máximo nivel de escrutinio.' },
+  { key:'q3', label:'¿El servicio está regido por la Ley de Subcontratación (Ley 20.123)?', desc:'La empresa responde solidariamente por las deudas laborales del proveedor.' },
+  { key:'q4', label:'¿El proveedor custodiará materiales, activos o datos sensibles?', desc:'Acceso a activos críticos = riesgo operacional y de seguridad elevado.' },
+  { key:'q5', label:'¿El servicio requiere anticipo económico?', desc:'Los anticipos exponen a la empresa si el proveedor no cumple o quiebra.' },
+  { key:'q6', label:'¿El servicio durará 6 meses o más, o el proveedor tiene domicilio fuera de Chile?', desc:'Relaciones largas o internacionales tienen mayor exposición acumulada.' },
+];
+
+function renderClassifierQuestions() {
+  const cont = document.getElementById('q-grid');
+  if (!cont) return;
+  if (!st.classifierAnswers) st.classifierAnswers = { q1:null, q2:null, q3:null, q4:null, q5:null, q6:null };
+  cont.innerHTML = CLASSIFIER_QUESTIONS.map((q, i) => {
+    const val = st.classifierAnswers[q.key];
+    return `<div class="q-card${val !== null && val !== undefined ? ' answered' : ''}">
+      <div class="q-num">${i+1}</div>
+      <div class="q-body">
+        <h4>${q.label}</h4>
+        <p>${q.desc}</p>
+        <div class="q-yn">
+          <button class="${val === true ? 'on' : ''}" onclick="setClassifierAnswer('${q.key}',true)">Sí</button>
+          <button class="${val === false ? 'on' : ''}" onclick="setClassifierAnswer('${q.key}',false)">No</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  renderClassifierRecommendation();
+}
+
+function setClassifierAnswer(key, val) {
+  if (!st.classifierAnswers) st.classifierAnswers = {};
+  st.classifierAnswers[key] = val;
+  renderClassifierQuestions();
+  save();
+}
+
+function computeClassifierRecommendation() {
+  const a = st.classifierAnswers || {};
+  const answeredCount = CLASSIFIER_QUESTIONS.filter(q => a[q.key] === true || a[q.key] === false).length;
+  if (answeredCount < CLASSIFIER_QUESTIONS.length) return { complete:false, answeredCount };
+
+  const yesKeys = CLASSIFIER_QUESTIONS.filter(q => a[q.key] === true).map(q => q.key);
+  const yesCount = yesKeys.length;
+
+  const reforzada = a.q2 === true || yesCount >= 2;
+  const completa  = !reforzada && a.q1 === true;
+  const express   = !reforzada && !completa;
+  const subcontratacion = a.q3 === true;
+  const internacional   = a.q6 === true;
+
+  const reasons = {};
+  if (reforzada) reasons.reforzada = a.q2 === true
+    ? 'El monto anual supera los USD 100.000.'
+    : 'Dos o más factores de riesgo presentes en tus respuestas.';
+  if (completa) reasons.completa = 'El monto anual supera los USD 20.000 y requiere revisión estándar.';
+  if (express) reasons.express = 'Monto bajo y sin factores de riesgo adicionales detectados.';
+  if (subcontratacion) reasons.subcontratacion = 'El servicio está regido por la Ley de Subcontratación (Ley 20.123).';
+  if (internacional) reasons.internacional = 'Duración de 6 meses o más, o proveedor con domicilio fuera de Chile.';
+
+  return { complete:true, recommendation:{ express, completa, reforzada, internacional, subcontratacion }, reasons };
+}
+
+function renderClassifierRecommendation() {
+  const cont = document.getElementById('classifier-recommendation');
+  if (!cont) return;
+  const result = computeClassifierRecommendation();
+  if (!result.complete) {
+    const missing = CLASSIFIER_QUESTIONS.length - result.answeredCount;
+    cont.innerHTML = missing === CLASSIFIER_QUESTIONS.length ? '' : `<div style="margin-top:1rem;font-size:.78rem;color:var(--gray);font-style:italic;">Responde las ${CLASSIFIER_QUESTIONS.length} preguntas para ver la recomendación (falta${missing===1?'n':'n'} ${missing}).</div>`;
+    return;
+  }
+  const TYPE_LABEL = { express:'Proveedor Spot', completa:'Proveedor General', reforzada:'Proveedor Crítico', internacional:'Proveedor Internacional', subcontratacion:'Proveedor Subcontratista' };
+  const { recommendation, reasons } = result;
+  const rows = Object.entries(recommendation).filter(([,on]) => on).map(([type]) => `
+    <div style="display:flex;align-items:flex-start;gap:.5rem;padding:.4rem 0;border-bottom:1px solid rgba(0,0,0,.06);">
+      <span style="font-size:.7rem;font-weight:800;background:var(--blue-light);color:var(--accent);border-radius:.3rem;padding:.15rem .5rem;flex-shrink:0;white-space:nowrap;">${TYPE_LABEL[type]}</span>
+      <span style="font-size:.78rem;color:var(--text);line-height:1.4;">${reasons[type]}</span>
+    </div>`).join('');
+  cont.innerHTML = `
+    <div style="margin-top:1rem;background:var(--white);border:1.5px solid var(--accent);border-radius:.875rem;padding:1rem 1.125rem;">
+      <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem;">
+        <i data-lucide="sparkles" style="width:.8rem;height:.8rem;stroke-width:2.5;color:var(--accent);"></i>
+        Según tus respuestas, estos son los procesos que deberíamos trabajar
+      </div>
+      <div>${rows}</div>
+      <button onclick="applyClassifierRecommendation()" style="margin-top:.75rem;padding:.5rem 1rem;background:var(--accent);color:white;border:none;border-radius:.5rem;font-size:.8rem;font-weight:700;cursor:pointer;font-family:var(--font);">
+        Aplicar a procesos activos
+      </button>
+      <span id="classifier-applied-msg" style="margin-left:.6rem;font-size:.75rem;color:var(--success);font-weight:600;display:none;">✓ Aplicado</span>
+    </div>`;
+  reIcons();
+}
+
+function applyClassifierRecommendation() {
+  const result = computeClassifierRecommendation();
+  if (!result.complete) return;
+  Object.entries(result.recommendation).forEach(([type, on]) => { st.evalTypes[type] = on; });
+  syncEvalTypeUI();
+  renderProcessAreaMatrix();
+  updateNav();
+  renderAbastRecap();
+  AREAS.forEach(a => renderScopeChips('scope-procs-' + a));
+  AREAS.forEach(a => renderAreaDocReview(a));
+  save();
+  const msg = document.getElementById('classifier-applied-msg');
+  if (msg) { msg.style.display = 'inline'; setTimeout(() => { msg.style.display = 'none'; }, 2500); }
 }
 
 // ── EXCEPTIONS ──
@@ -3467,6 +3546,7 @@ function mergeState(d) {
     });
   }
   if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
+  if (d.classifierAnswers) Object.assign(st.classifierAnswers, d.classifierAnswers);
   if (d.requiredAreas) Object.assign(st.requiredAreas, d.requiredAreas);
   if (d.areas) AREAS.forEach(a => {
     if (d.areas[a]) {
@@ -3487,11 +3567,8 @@ function applyStateToUI() {
   const ei = document.getElementById('emailInput'); if (ei) ei.value = st.email || '';
   const ci = document.getElementById('clientInput'); if (ci) ci.value = st.client || '';
 
-  Object.entries(st.evalTypes).forEach(([type, active]) => {
-    document.getElementById('et-'+type)?.classList.toggle('on', active);
-    document.getElementById('ec-'+type)?.classList.toggle('active', active);
-    document.getElementById('ec-'+type)?.classList.toggle('inactive', !active);
-  });
+  syncEvalTypeUI();
+  renderClassifierQuestions();
 
   AREAS.forEach(a => {
     const area = st.areas[a];
