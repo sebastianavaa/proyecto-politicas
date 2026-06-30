@@ -319,7 +319,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 /* REQUIRED AREAS TOGGLES (en slide Abastecimiento) */
 .req-areas-section{margin-top:.875rem;background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:1rem 1.125rem;}
 .req-areas-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.625rem;}
-.area-req-row{display:flex;align-items:center;gap:.875rem;padding:.5rem 0;border-bottom:1px solid var(--gray-border);}
+.area-req-row{display:flex;align-items:center;gap:.875rem;padding:.5rem 0;border-bottom:1px solid var(--gray-border);cursor:pointer;}
 .area-req-row:last-child{border-bottom:none;}
 .area-req-info{flex:1;}
 .area-req-name{font-size:.85rem;font-weight:700;color:var(--navy);}
@@ -1364,12 +1364,12 @@ function renderRequiredAreas() {
   if (!st.requiredAreas) st.requiredAreas = { abastecimiento:true, cumplimiento:true, finanzas:true, legal:true };
   cont.innerHTML = AREAS.map(a => {
     const on = st.requiredAreas[a] !== false;
-    return `<div class="area-req-row">
+    return `<div class="area-req-row" onclick="toggleRequiredArea('${a}')">
       <div class="area-req-info">
         <div class="area-req-name">${AREA_LABELS[a]}</div>
         <div class="area-req-desc">${AREA_DESC[a] || ''}</div>
       </div>
-      <div class="area-req-toggle ${on?'on':''}" onclick="toggleRequiredArea('${a}')"></div>
+      <div class="area-req-toggle ${on?'on':''}"></div>
     </div>`;
   }).join('');
 }
