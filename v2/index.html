@@ -2761,17 +2761,23 @@ function renderSuggestedDocs(area) {
   const processes = getAreaActiveDocs(area);
   if (!processes.length) { cont.innerHTML = ''; return; }
   const processOptions = processes.map(p => `<option value="${p.processKey}">${p.label}</option>`).join('');
+  const catalogOptions = getAllCatalogDocs()
+    .map(d => `<option value="${d.name.replace(/"/g,'&quot;')}">${d.name}${d.custom ? ' (personalizado)' : ''}</option>`)
+    .join('');
   cont.innerHTML = `
     <div style="margin-top:.75rem;background:var(--white);border:1px solid var(--gray-border);border-radius:.75rem;padding:.75rem .875rem;">
       <div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.25rem;display:flex;align-items:center;gap:.35rem;">
         <i data-lucide="lightbulb" style="width:.75rem;height:.75rem;stroke-width:2.5;"></i>
         Proponer documento adicional
       </div>
-      <p style="font-size:.72rem;color:var(--gray);margin:0 0 .625rem;line-height:1.4;">¿Falta algún documento? Indícalo y elige a qué proceso aplica. Quedará visible en ese proceso con el badge <strong>Add</strong>.</p>
+      <p style="font-size:.72rem;color:var(--gray);margin:0 0 .625rem;line-height:1.4;">Elige un documento de la lista (o "Otro" para escribirlo) y a qué proceso aplica. Quedará visible en ese proceso con el badge <strong>Add</strong>.</p>
       <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-        <input id="suggest-doc-input-${area}" type="text" placeholder="Ej: Certificado de antecedentes…"
-          style="flex:2;min-width:180px;padding:.4rem .7rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.8rem;font-family:var(--font);background:var(--white);color:var(--text);outline:none;"
-          onkeydown="if(event.key==='Enter'){event.preventDefault();addSuggestedDoc('${area}');}">
+        <select id="suggest-doc-select-${area}" onchange="onSuggestDocSelectChange('${area}')"
+          style="flex:2;min-width:180px;padding:.4rem .625rem;font-size:.78rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-family:var(--font);color:var(--text);background:var(--white);outline:none;">
+          <option value="">Selecciona un documento…</option>
+          ${catalogOptions}
+          <option value="__other__">Otro…</option>
+        </select>
         <select id="suggest-doc-process-${area}"
           style="flex:1;min-width:140px;padding:.4rem .625rem;font-size:.78rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-family:var(--font);color:var(--text);background:var(--white);outline:none;">
           ${processOptions}
@@ -2781,22 +2787,42 @@ function renderSuggestedDocs(area) {
           + Agregar
         </button>
       </div>
+      <div id="suggest-doc-other-row-${area}" style="display:none;margin-top:.5rem;">
+        <input id="suggest-doc-input-${area}" type="text" placeholder="Nombre del documento…"
+          style="width:100%;padding:.4rem .7rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.8rem;font-family:var(--font);background:var(--white);color:var(--text);outline:none;"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();addSuggestedDoc('${area}');}">
+      </div>
     </div>`;
   reIcons();
 }
 
+function onSuggestDocSelectChange(area) {
+  const sel = document.getElementById('suggest-doc-select-' + area);
+  const row = document.getElementById('suggest-doc-other-row-' + area);
+  if (!sel || !row) return;
+  const isOther = sel.value === '__other__';
+  row.style.display = isOther ? 'block' : 'none';
+  if (isOther) setTimeout(() => document.getElementById('suggest-doc-input-' + area)?.focus(), 50);
+}
+
 function addSuggestedDoc(area) {
-  const inp = document.getElementById('suggest-doc-input-' + area);
-  const sel = document.getElementById('suggest-doc-process-' + area);
-  if (!inp || !sel) return;
-  const name = inp.value.trim();
-  const processKey = sel.value;
-  if (!name || !processKey) return;
-  if (!getAllCatalogDocs().some(d => d.name.toLowerCase() === name.toLowerCase())) {
-    if (!st.customCatalogDocs) st.customCatalogDocs = [];
-    st.customCatalogDocs.push(name);
+  const sel  = document.getElementById('suggest-doc-select-' + area);
+  const proc = document.getElementById('suggest-doc-process-' + area);
+  const inp  = document.getElementById('suggest-doc-input-' + area);
+  if (!sel || !proc) return;
+  const processKey = proc.value;
+  if (!processKey || !sel.value) return;
+  let name;
+  if (sel.value === '__other__') {
+    name = (inp?.value || '').trim();
+    if (!name) return;
+    if (!getAllCatalogDocs().some(d => d.name.toLowerCase() === name.toLowerCase())) {
+      if (!st.customCatalogDocs) st.customCatalogDocs = [];
+      st.customCatalogDocs.push(name);
+    }
+  } else {
+    name = sel.value;
   }
-  inp.value = '';
   addDocProposal(area, processKey, name);
 }
 
