@@ -3,7 +3,7 @@
     "sessionId": "acme-spa",
     "empresa": "ACME SpA",
     "email": "compras@acme.cl",
-    "timestamp": "2026-06-05T20:30:00.000Z",
+    "timestamp": "2026-07-20T20:30:00.000Z",
     "sentAt": "",
     "areasParticipantes": ["Abastecimiento", "Cumplimiento", "Finanzas", "Legal"],
     "totalAlertas": 23
@@ -12,43 +12,85 @@
   "modulo_1_configuracion": {
     "slide": "Owner del proyecto",
     "tiposEvaluacion": {
-      "express":        { "activo": true,  "nombre": "Proveedor Spot" },
-      "completa":       { "activo": true,  "nombre": "Proveedor General" },
-      "reforzada":      { "activo": true,  "nombre": "Proveedor Crítico" },
-      "internacional":  { "activo": false, "nombre": "Proveedor Internacional" },
-      "subcontratacion":{ "activo": true,  "nombre": "Subcontratación" }
+      "express":        { "activo": true,  "nombre": "Proveedor Spot", "descripcion": "Compra menor a USD 20.000. Mínima fricción para compras de bajo monto." },
+      "completa":       { "activo": true,  "nombre": "Proveedor General", "descripcion": "Compra entre USD 20.000 y USD 100.000. Revisión legal y financiera estándar." },
+      "reforzada":      { "activo": false, "nombre": "Proveedor Crítico", "descripcion": "Compra mayor a USD 100.000. Evaluación exhaustiva en todas las áreas." },
+      "internacional":  { "activo": false, "nombre": "Proveedor Internacional", "descripcion": "Proveedor con domicilio fuera de Chile." },
+      "subcontratacion":{ "activo": true,  "nombre": "Proveedor Subcontratista", "descripcion": "Proveedor con trabajadores en tus instalaciones (Ley 20.123)." }
     },
     "procesosPersonalizados": [
       {
         "nombre": "Proveedor TI Cloud",
+        "descripcion": "Proveedores de infraestructura cloud y SaaS críticos para la operación.",
         "activo": true,
         "documentos": [
-          { "documento": "Declaración jurada del proveedor", "estado": "req" },
-          { "documento": "Certificado cuenta bancaria", "estado": "opc" }
+          { "documento": "E-RUT", "estado": "req", "firma": false },
+          { "documento": "Certificado cuenta bancaria", "estado": "opc", "firma": false }
+        ],
+        "declaraciones": [
+          { "documento": "Declaración jurada del proveedor", "estado": "req", "firma": true }
         ]
       }
     ],
     "matrizProcesoArea": [
-      { "proceso": "Proveedor Spot",    "tipo": "estandar", "areas": { "abastecimiento": true,  "cumplimiento": false, "finanzas": true,  "legal": false } },
-      { "proceso": "Proveedor General", "tipo": "estandar", "areas": { "abastecimiento": true,  "cumplimiento": true,  "finanzas": true,  "legal": true  } },
-      { "proceso": "Proveedor Crítico", "tipo": "estandar", "areas": { "abastecimiento": true,  "cumplimiento": true,  "finanzas": true,  "legal": true  } },
-      { "proceso": "Subcontratación",   "tipo": "estandar", "areas": { "abastecimiento": true,  "cumplimiento": true,  "finanzas": false, "legal": true  } },
-      { "proceso": "Proveedor TI Cloud","tipo": "custom",   "areas": { "abastecimiento": true,  "cumplimiento": true,  "finanzas": false, "legal": false } }
+      { "proceso": "Proveedor Spot",        "tipo": "estandar", "areas": { "abastecimiento": true,  "cumplimiento": false, "finanzas": true,  "legal": false } },
+      { "proceso": "Proveedor General",     "tipo": "estandar", "areas": { "abastecimiento": true,  "cumplimiento": true,  "finanzas": true,  "legal": true  } },
+      { "proceso": "Proveedor Subcontratista", "tipo": "estandar", "areas": { "abastecimiento": true, "cumplimiento": true, "finanzas": false, "legal": true } },
+      { "proceso": "Proveedor TI Cloud",    "tipo": "custom",   "areas": { "abastecimiento": true,  "cumplimiento": true,  "finanzas": false, "legal": false } }
+    ]
+  },
+
+  "modulo_1b_documentos_por_proceso": {
+    "slide": "Documentos por proceso",
+    "porProceso": [
+      {
+        "proceso": "Proveedor Spot",
+        "tipo": "estandar",
+        "documentos": [
+          { "documento": "E-RUT", "estado": "requerido", "firma": false }
+        ],
+        "declaraciones": [
+          { "documento": "Declaración jurada del proveedor", "estado": "requerido", "firma": true },
+          { "documento": "Declaración vínculo PEP", "estado": "requerido", "firma": false }
+        ]
+      },
+      {
+        "proceso": "Proveedor General",
+        "tipo": "estandar",
+        "documentos": [
+          { "documento": "E-RUT", "estado": "requerido", "firma": false },
+          { "documento": "Certificado cuenta bancaria", "estado": "opcional", "firma": false }
+        ],
+        "declaraciones": [
+          { "documento": "Declaración jurada del proveedor", "estado": "requerido", "firma": true },
+          { "documento": "Declaración Conflicto de Interés", "estado": "requerido", "firma": true }
+        ]
+      },
+      {
+        "proceso": "Proveedor Subcontratista",
+        "tipo": "estandar",
+        "documentos": [
+          { "documento": "Cumplimiento Laboral (F30)", "estado": "requerido", "firma": false }
+        ],
+        "declaraciones": [
+          { "documento": "Declaración jurada del proveedor", "estado": "requerido", "firma": true }
+        ]
+      }
     ]
   },
 
   "modulo_2_alertas": {
     "slide": "Configuración de alertas por área",
     "catalogoReferencia": [
-      { "alerta": "No ha iniciado actividades", "grupo": "Tributario", "areaDuena": "finanzas", "severidadRecomendada": "grave" },
-      { "alerta": "Tiene demandas penales", "grupo": "Legal y Societario", "areaDuena": "legal", "severidadRecomendada": "grave" },
-      { "alerta": "Hallazgos listas OFAC, Interpol u otras", "grupo": "Cumplimiento", "areaDuena": "cumplimiento", "severidadRecomendada": "grave" }
+      { "alerta": "No ha iniciado actividades", "grupo": "Tributario", "areaDuena": "finanzas", "severidadRecomendada": "grave", "descripcion": "El proveedor no registra inicio de actividades ante el SII." },
+      { "alerta": "Tiene demandas penales", "grupo": "Legal y Societario", "areaDuena": "legal", "severidadRecomendada": "grave", "descripcion": "Se detectaron causas penales vigentes asociadas al proveedor o sus representantes." },
+      { "alerta": "Hallazgos listas OFAC, Interpol u otras", "grupo": "Cumplimiento", "areaDuena": "cumplimiento", "severidadRecomendada": "grave", "descripcion": "Coincidencia en listas de sanciones internacionales." }
     ],
     "porArea": {
       "finanzas": {
         "alertas": [
-          { "alerta": "No ha iniciado actividades", "grupo": "Tributario", "activa": true, "severidad": "grave" },
-          { "alerta": "Puntaje riesgoso en Equifax", "grupo": "Financiero", "activa": true, "severidad": "grave" }
+          { "alerta": "No ha iniciado actividades", "grupo": "Tributario", "activa": true, "severidad": "grave", "comentario": "Validar SII antes de onboarding" },
+          { "alerta": "Puntaje riesgoso en Equifax", "grupo": "Financiero", "activa": true, "severidad": "grave", "comentario": "" }
         ],
         "comentariosPorGrupo": {
           "Tributario": "Validar SII antes de onboarding",
@@ -56,11 +98,12 @@
           "Legal y Societario": "",
           "Laboral": "",
           "Cumplimiento": ""
-        }
+        },
+        "alertasSugeridas": []
       },
       "legal": {
         "alertas": [
-          { "alerta": "Tiene demandas penales", "grupo": "Legal y Societario", "activa": true, "severidad": "grave" }
+          { "alerta": "Tiene demandas penales", "grupo": "Legal y Societario", "activa": true, "severidad": "media", "comentario": "Bloqueante si hay demanda penal vigente" }
         ],
         "comentariosPorGrupo": {
           "Tributario": "",
@@ -68,13 +111,26 @@
           "Legal y Societario": "Bloqueante si hay demanda penal vigente",
           "Laboral": "",
           "Cumplimiento": ""
-        }
+        },
+        "alertasSugeridas": []
       }
     }
   },
 
+  "modulo_2b_severidad_consolidada": {
+    "slide": "Severidad final de cada alerta",
+    "criterio": "Cuando las áreas difieren, prevalece la severidad más alta.",
+    "alertas": [
+      { "alerta": "No ha iniciado actividades", "grupo": "Tributario", "severidadFinal": "grave", "porArea": { "finanzas": "grave" }, "conflicto": false },
+      { "alerta": "Puntaje riesgoso en Equifax", "grupo": "Financiero", "severidadFinal": "grave", "porArea": { "finanzas": "grave" }, "conflicto": false },
+      { "alerta": "Tiene demandas penales", "grupo": "Legal y Societario", "severidadFinal": "media", "porArea": { "legal": "media", "abastecimiento": "grave" }, "conflicto": true },
+      { "alerta": "Hallazgos listas OFAC, Interpol u otras", "grupo": "Cumplimiento", "severidadFinal": "grave", "porArea": { "cumplimiento": "grave" }, "conflicto": false }
+    ]
+  },
+
   "modulo_3_revision_documental": {
     "slide": "Revisión de documentos por proceso",
+    "documentosCreadosPorEquipo": [],
     "porArea": {
       "abastecimiento": {
         "porProceso": [
@@ -94,19 +150,29 @@
   },
 
   "modulo_4_responsables": {
-    "slide": "Encargado del área y revisores de alertas graves",
+    "slide": "Encargado del área",
     "porArea": {
       "abastecimiento": {
         "encargado": { "nombre": "Juan Pérez", "email": "juan.perez@acme.cl" },
-        "revisoresAlertasGraves": [
-          { "nombre": "María Soto", "email": "maria.soto@acme.cl", "grupos": ["Tributario", "Financiero"] }
-        ],
         "guardado": true
       },
       "finanzas": {
         "encargado": { "nombre": "Pedro Díaz", "email": "pedro.diaz@acme.cl" },
-        "revisoresAlertasGraves": [],
         "guardado": false
+      }
+    }
+  },
+
+  "modulo_4b_flujos_revision": {
+    "slide": "¿Quién revisa qué? — Revisores de alertas graves por tema",
+    "porTema": {
+      "Tributario": {
+        "alertasGraves": ["No ha iniciado actividades", "Sociedad disuelta", "Término de giro"],
+        "revisores": [{ "nombre": "María Soto", "email": "maria.soto@acme.cl" }]
+      },
+      "Cumplimiento": {
+        "alertasGraves": ["Hallazgos listas OFAC, Interpol u otras", "Hallazgos listas Warning"],
+        "revisores": []
       }
     }
   },

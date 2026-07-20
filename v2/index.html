@@ -981,6 +981,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
     <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
       <button class="btn-copy" id="btn-copy-report" onclick="copySessionLink('btn-copy-report')" style="flex-shrink:0;">Copiar link</button>
       <div style="flex:1;min-width:0;font-size:.75rem;color:var(--gray);">Comparte el link con áreas que faltan</div>
+      <button class="btn-copy" id="btn-copy-json" onclick="copyPayloadJSON('btn-copy-json')" style="flex-shrink:0;" title="Copia el JSON completo que se enviaría al webhook, para testing">Copiar JSON</button>
       <button class="btn-send" id="sendBtn" onclick="enviar()"><i data-lucide="send" style="width:.9rem;height:.9rem;margin-right:.4rem;vertical-align:middle;"></i>Enviar reporte</button>
     </div>
     <div id="send-toast" style="display:none;margin-top:.625rem;padding:.5rem .875rem;background:var(--success-bg);border:1px solid var(--success);border-radius:.5rem;font-size:.8rem;color:var(--success);font-weight:600;">✓ Reporte enviado correctamente</div>
@@ -1060,22 +1061,22 @@ function defaultAlerts() { return ALERTS.map(a => ({ activa:true, severidad:a.se
 
 // Matriz de documentos por tipo de evaluación (para el recap de Abastecimiento).
 const DOCS = [
-  { name:'Declaración jurada del proveedor',        req:['express','completa','reforzada','internacional','subcontratacion'] },
-  { name:'Declaración vínculo PEP',                 req:['express','completa','reforzada','internacional','subcontratacion'] },
-  { name:'Declaración Conflicto de Interés',        req:['completa','reforzada','subcontratacion'] },
-  { name:'Constitución de la Sociedad',             req:['reforzada'], opc:['completa','subcontratacion'] },
-  { name:'E-RUT',                                   req:['express','completa','reforzada','subcontratacion'] },
-  { name:'Certificado de Vigencia de Sociedad',     req:['completa','reforzada'] },
-  { name:'DNI del Representante Legal',             req:['completa','reforzada'] },
-  { name:'Carpeta tributaria SII',                  req:['completa','reforzada','subcontratacion'] },
-  { name:'Certificado de Vigencia de Poderes RRLL', req:['completa','reforzada'] },
-  { name:'Certificado cuenta bancaria',             req:['completa','reforzada'], opc:['express','subcontratacion'] },
-  { name:'Estado Financiero',                       req:['internacional'], opc:['reforzada'] },
-  { name:'Deuda Fiscal TGR',                        req:['reforzada'], opc:['completa','subcontratacion'] },
-  { name:'DICOM',                                   req:['completa','reforzada','subcontratacion'] },
-  { name:'Cumplimiento Laboral (F30)',               req:['subcontratacion'] },
-  { name:'Deuda Previsional (F30-1)',                opc:['subcontratacion'] },
-  { name:'Reporte Accidentabilidad',                req:['subcontratacion'] },
+  { name:'Declaración jurada del proveedor',        tipo:'declaracion', req:['express','completa','reforzada','internacional','subcontratacion'] },
+  { name:'Declaración vínculo PEP',                 tipo:'declaracion', req:['express','completa','reforzada','internacional','subcontratacion'] },
+  { name:'Declaración Conflicto de Interés',        tipo:'declaracion', req:['completa','reforzada','subcontratacion'] },
+  { name:'Constitución de la Sociedad',             tipo:'documento', req:['reforzada'], opc:['completa','subcontratacion'] },
+  { name:'E-RUT',                                   tipo:'documento', req:['express','completa','reforzada','subcontratacion'] },
+  { name:'Certificado de Vigencia de Sociedad',     tipo:'documento', req:['completa','reforzada'] },
+  { name:'DNI del Representante Legal',             tipo:'documento', req:['completa','reforzada'] },
+  { name:'Carpeta tributaria SII',                  tipo:'documento', req:['completa','reforzada','subcontratacion'] },
+  { name:'Certificado de Vigencia de Poderes RRLL', tipo:'documento', req:['completa','reforzada'] },
+  { name:'Certificado cuenta bancaria',             tipo:'documento', req:['completa','reforzada'], opc:['express','subcontratacion'] },
+  { name:'Estado Financiero',                       tipo:'documento', req:['internacional'], opc:['reforzada'] },
+  { name:'Deuda Fiscal TGR',                        tipo:'documento', req:['reforzada'], opc:['completa','subcontratacion'] },
+  { name:'DICOM',                                   tipo:'documento', req:['completa','reforzada','subcontratacion'] },
+  { name:'Cumplimiento Laboral (F30)',               tipo:'documento', req:['subcontratacion'] },
+  { name:'Deuda Previsional (F30-1)',                tipo:'documento', opc:['subcontratacion'] },
+  { name:'Reporte Accidentabilidad',                tipo:'documento', req:['subcontratacion'] },
 ];
 
 function isAreaAssigned(processKey, area) {
@@ -1282,6 +1283,18 @@ function copySessionLink(btnId) {
     btn.textContent = '✓ Copiado';
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  }
+}
+
+function copyPayloadJSON(btnId) {
+  const payload = buildExportPayload();
+  navigator.clipboard.writeText(JSON.stringify(payload, null, 2)).catch(() => {});
+  const btn = document.getElementById(btnId || 'btn-copy-json');
+  if (btn) {
+    const original = btn.textContent;
+    btn.textContent = '✓ JSON copiado';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 2000);
   }
 }
 
@@ -3264,12 +3277,23 @@ function buildExportPayload() {
     // ── MÓDULO 1 — Configuración (Slide: Owner del proyecto) ──
     modulo_1_configuracion: {
       slide: 'Owner del proyecto',
-      tiposEvaluacion: Object.fromEntries(Object.entries(st.evalTypes).map(([k,v]) => [k, { activo:!!v, nombre:TYPE_LABEL[k] }])),
-      procesosPersonalizados: (st.customProcesses || []).filter(p => p.saved).map(p => ({
-        nombre: p.name,
-        activo: p.active !== false,
-        documentos: DOCS.map((d,j) => ({ documento:d.name, estado: p.docConfig?.[j] || 'no' })).filter(x => x.estado !== 'no'),
-      })),
+      tiposEvaluacion: Object.fromEntries(Object.entries(st.evalTypes).map(([k,v]) => [k, {
+        activo:!!v,
+        nombre:TYPE_LABEL[k],
+        descripcion: st.processDescriptions?.[k] || PROCESS_TEMPLATES.find(t => t.id === k)?.desc || '',
+      }])),
+      procesosPersonalizados: (st.customProcesses || []).map((p,i) => {
+        if (!p.saved) return null;
+        const firma = st.processDocFirma?.['cp_'+i] || {};
+        const items = DOCS.map((d,j) => ({ documento:d.name, tipo:d.tipo, estado: p.docConfig?.[j] || 'no', firma: !!firma[j] })).filter(x => x.estado !== 'no');
+        return {
+          nombre: p.name,
+          descripcion: p.description || '',
+          activo: p.active !== false,
+          documentos: items.filter(x => x.tipo === 'documento').map(({tipo, ...x}) => x),
+          declaraciones: items.filter(x => x.tipo === 'declaracion').map(({tipo, ...x}) => x),
+        };
+      }).filter(Boolean),
       matrizProcesoArea: procesos.map(proc => ({
         proceso: proc.nombre,
         tipo: proc.tipo,
@@ -3277,28 +3301,36 @@ function buildExportPayload() {
       })),
     },
 
-    // ── MÓDULO 1b — Documentos requeridos/opcionales por proceso (config global) ──
+    // ── MÓDULO 1b — Documentos y declaraciones requeridos/opcionales por proceso (config global) ──
     modulo_1b_documentos_por_proceso: {
       slide: 'Documentos por proceso',
       porProceso: procesos.map(proc => {
         const cfg = getProcessDocConfig(proc.key);
-        const docs = DOCS.map((d, j) => {
+        const excluded = new Set(st.processDocExcluded?.[proc.key] || []);
+        const firma = st.processDocFirma?.[proc.key] || {};
+        const items = DOCS.map((d, j) => {
+          if (excluded.has(j)) return null;
           const estado = cfg[j] || null;
           if (!estado) return null;
-          return { documento: d.name, estado: estado === 'req' ? 'requerido' : 'opcional' };
+          return { documento: d.name, tipo: d.tipo, estado: estado === 'req' ? 'requerido' : 'opcional', firma: !!firma[j] };
         }).filter(Boolean);
-        return { proceso: proc.nombre, tipo: proc.tipo, documentos: docs };
+        return {
+          proceso: proc.nombre,
+          tipo: proc.tipo,
+          documentos: items.filter(x => x.tipo === 'documento').map(({tipo, ...x}) => x),
+          declaraciones: items.filter(x => x.tipo === 'declaracion').map(({tipo, ...x}) => x),
+        };
       }),
     },
 
     // ── MÓDULO 2 — Alertas (Slides: cada área) ──
     modulo_2_alertas: {
       slide: 'Configuración de alertas por área',
-      catalogoReferencia: ALERTS.map(m => ({ alerta:m.label, grupo:m.group, areaDuena:m.area, severidadRecomendada:m.sev })),
+      catalogoReferencia: ALERTS.map(m => ({ alerta:m.label, grupo:m.group, areaDuena:m.area, severidadRecomendada:m.sev, descripcion:m.desc })),
       porArea: Object.fromEntries(activeAreas.map(a => {
         const al = st.areas[a].alerts || [];
         return [a, {
-          alertas: ALERTS.map((m,i) => ({ alerta:m.label, grupo:m.group, activa: al[i]?.activa ?? false, severidad: al[i]?.severidad ?? m.sev })),
+          alertas: ALERTS.map((m,i) => ({ alerta:m.label, grupo:m.group, activa: al[i]?.activa ?? false, severidad: al[i]?.severidad ?? m.sev, comentario: al[i]?.comentario ?? '' })),
           comentariosPorGrupo: Object.fromEntries(groups.map(g => [g, st.areas[a].alertGroupComments?.[g] || ''])),
           alertasSugeridas: st.areas[a].suggestedAlerts || [],
         }];
