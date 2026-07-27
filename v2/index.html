@@ -1125,10 +1125,10 @@ const st = {
     subcontratacion:{ abastecimiento:true, cumplimiento:true, finanzas:true, legal:true }
   },
   areas:{
-    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},customDocsFirma:{},suggestedAlerts:[]},
-    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},customDocsFirma:{},suggestedAlerts:[]},
-    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},customDocsFirma:{},suggestedAlerts:[]},
-    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docReview:{},docComments:{},customDocs:{},customDocsFirma:{},suggestedAlerts:[]}
+    abastecimiento:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docComments:{},suggestedAlerts:[]},
+    cumplimiento:{notes:'',extraDocs:[],exceptions:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docComments:{},suggestedAlerts:[]},
+    finanzas:{notes:'',extraDocs:[],signals:{},responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docComments:{},suggestedAlerts:[]},
+    legal:{notes:'',extraDocs:[],responsible:{name:'',email:''},locked:false,editCount:0,alerts:defaultAlerts(),alertGroupComments:{},alertReviewers:[],docComments:{},suggestedAlerts:[]}
   },
   customProcesses: [],
   customCatalogDocs: [],
@@ -1137,6 +1137,9 @@ const st = {
   processDocConfig: {},
   processDocFirma: {},
   processDocExcluded: {},
+  // Documentos propuestos manualmente (no-catálogo) por proceso — compartidos entre todas las áreas.
+  processCustomDocs: {},
+  processDocReview: {},
   sentAt:'',
   syncNotes:'',
 };
@@ -2409,11 +2412,12 @@ function toggleStdDocFirma(processKey, j) {
   save();
 }
 
-function toggleCustomDocFirma(area, processKey, name) {
-  if (!st.areas[area].customDocsFirma) st.areas[area].customDocsFirma = {};
-  if (!st.areas[area].customDocsFirma[processKey]) st.areas[area].customDocsFirma[processKey] = {};
-  st.areas[area].customDocsFirma[processKey][name] = !st.areas[area].customDocsFirma[processKey][name];
-  renderAreaDocReview(area);
+function toggleCustomDocFirma(processKey, name) {
+  if (!st.processDocFirma) st.processDocFirma = {};
+  if (!st.processDocFirma[processKey]) st.processDocFirma[processKey] = {};
+  const key = 'c:' + name;
+  st.processDocFirma[processKey][key] = !st.processDocFirma[processKey][key];
+  AREAS.forEach(a => renderAreaDocReview(a));
   save();
 }
 
@@ -2737,7 +2741,7 @@ function renderAreaDocReview(area) {
     const sd = document.getElementById('suggested-docs-' + area); if (sd) sd.innerHTML = '';
     return;
   }
-  const review   = st.areas[area].docReview   || {};
+  const review   = st.processDocReview || {};
   const btnBase = 'font-size:.65rem;font-weight:700;padding:.15rem .45rem;border-radius:.25rem;border:1px solid;cursor:pointer;transition:all .15s;outline:none;';
   const okSel   = 'background:#DCFCE7;color:#166534;border-color:#86EFAC;';
   const obsSel  = 'background:#FFFBEB;color:#D97706;border-color:#FCD34D;';
@@ -2751,7 +2755,7 @@ function renderAreaDocReview(area) {
 
   const tabsHtml = `<div class="alert-tabs">${processes.map(proc => {
     const allDocs = [...proc.docs.filter(d => d.req==='req'), ...proc.docs.filter(d => d.req==='opc')];
-    const customList = (st.areas[area].customDocs?.[proc.processKey]||[]);
+    const customList = (st.processCustomDocs?.[proc.processKey]||[]);
     const total = allDocs.length + customList.length;
     const badge = total || '—';
     const cpIdx = proc.processKey.startsWith('cp_') ? proc.processKey.slice(3) : null;
@@ -2765,8 +2769,9 @@ function renderAreaDocReview(area) {
     const pk          = proc.processKey;
     const procReview  = review[pk] || {};
     const allDocs     = [...proc.docs.filter(d => d.req==='req'), ...proc.docs.filter(d => d.req==='opc')];
+    const customDocsList = (st.processCustomDocs?.[pk] || []);
     const allExcluded = (st.processDocExcluded?.[pk] || []).length > 0 && allDocs.length === 0;
-    const noDocsMsg   = allDocs.length === 0
+    const noDocsMsg   = (allDocs.length === 0 && customDocsList.length === 0)
       ? `<div style="font-size:.75rem;color:var(--gray);padding:.35rem 0;font-style:italic;">
           ${allExcluded
             ? `Todos los documentos fueron eliminados. <button onclick="restoreExcludedDocs('${pk}')" style="font-size:.75rem;color:var(--accent);background:none;border:none;cursor:pointer;font-family:var(--font);font-weight:700;padding:0;text-decoration:underline;">Restaurar</button>`
@@ -2800,22 +2805,24 @@ function renderAreaDocReview(area) {
         </div>
       </div>`;
     }).join('');
-    const customDocsList = (st.areas[area].customDocs?.[pk] || []);
-    const customRows = customDocsList.map((name, ci) => {
+    const addedByTag = a => a && a !== area ? `<span style="font-size:.6rem;font-weight:600;color:var(--gray);flex-shrink:0;">· agregado por ${AREA_LABELS[a]||a}</span>` : '';
+    const customRows = customDocsList.map((entry, ci) => {
+      const name = entry.name;
       const rk = 'c:' + name;
       const s  = procReview[rk] || null;
       const reqSel2 = 'background:#DCFCE7;color:#166534;border-color:#86EFAC;';
       const opcSel2 = 'background:#FFFBEB;color:#D97706;border-color:#FCD34D;';
       const firmaSel2 = 'background:#EDE9FE;color:var(--accent);border-color:#C4B5FD;';
-      const firmaOn2 = !!(st.areas[area].customDocsFirma?.[pk]?.[name]);
+      const firmaOn2 = !!(st.processDocFirma?.[pk]?.[rk]);
       return `<div style="display:flex;align-items:center;gap:.4rem;padding:.2rem 0;border-bottom:1px solid rgba(0,0,0,.05);">
         ${addTag}
         <span style="flex:1;font-size:.75rem;color:var(--text);">${name}</span>
+        ${addedByTag(entry.addedBy)}
         <div style="display:flex;gap:.2rem;align-items:center;">
-          <button onclick="${s==='req'?'':("setDocReview('"+area+"','"+pk+"','"+rk.replace(/'/g,"\\'")+"','req')")}" style="${btnBase}${s==='req'?reqSel2:off}">Req</button>
-          <button onclick="${s==='opc'?'':("setDocReview('"+area+"','"+pk+"','"+rk.replace(/'/g,"\\'")+"','opc')")}" style="${btnBase}${s==='opc'?opcSel2:off}">Opc</button>
-          <button onclick="toggleCustomDocFirma('${area}','${pk}','${name.replace(/'/g,"\\'")}')" style="${btnBase}${firmaOn2?firmaSel2:off}" title="Requiere firma">Firma</button>
-          <button onclick="removeAreaCustomDoc('${area}','${pk}',${ci})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .15rem;line-height:1;outline:none;" title="Quitar de este proceso">×</button>
+          <button onclick="${s==='req'?'':("setDocReview('"+pk+"','"+rk.replace(/'/g,"\\'")+"','req')")}" style="${btnBase}${s==='req'?reqSel2:off}">Req</button>
+          <button onclick="${s==='opc'?'':("setDocReview('"+pk+"','"+rk.replace(/'/g,"\\'")+"','opc')")}" style="${btnBase}${s==='opc'?opcSel2:off}">Opc</button>
+          <button onclick="toggleCustomDocFirma('${pk}','${name.replace(/'/g,"\\'")}')" style="${btnBase}${firmaOn2?firmaSel2:off}" title="Requiere firma">Firma</button>
+          <button onclick="removeCustomDoc('${pk}',${ci})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:.9rem;padding:0 .15rem;line-height:1;outline:none;" title="Quitar de este proceso">×</button>
         </div>
       </div>`;
     }).join('');
@@ -2839,13 +2846,13 @@ function switchDocTab(area, processKey) {
   renderSuggestedDocs(area);
 }
 
-function setDocReview(area, processKey, docIdx, newState) {
-  if (!st.areas[area].docReview) st.areas[area].docReview = {};
-  if (!st.areas[area].docReview[processKey]) st.areas[area].docReview[processKey] = {};
-  const current = st.areas[area].docReview[processKey][docIdx];
-  if (current === newState) delete st.areas[area].docReview[processKey][docIdx];
-  else st.areas[area].docReview[processKey][docIdx] = newState;
-  renderAreaDocReview(area);
+function setDocReview(processKey, docIdx, newState) {
+  if (!st.processDocReview) st.processDocReview = {};
+  if (!st.processDocReview[processKey]) st.processDocReview[processKey] = {};
+  const current = st.processDocReview[processKey][docIdx];
+  if (current === newState) delete st.processDocReview[processKey][docIdx];
+  else st.processDocReview[processKey][docIdx] = newState;
+  AREAS.forEach(a => renderAreaDocReview(a));
   save();
 }
 
@@ -2869,10 +2876,19 @@ function processLabel(pk) {
 }
 
 function addDocProposal(area, processKey, name) {
-  if (!st.areas[area].customDocs) st.areas[area].customDocs = {};
-  if (!st.areas[area].customDocs[processKey]) st.areas[area].customDocs[processKey] = [];
-  if (!st.areas[area].customDocs[processKey].includes(name)) st.areas[area].customDocs[processKey].push(name);
-  renderAreaDocReview(area);
+  if (!st.processCustomDocs) st.processCustomDocs = {};
+  if (!st.processCustomDocs[processKey]) st.processCustomDocs[processKey] = [];
+  if (!st.processCustomDocs[processKey].some(d => d.name === name)) st.processCustomDocs[processKey].push({ name, addedBy: area });
+  AREAS.forEach(a => renderAreaDocReview(a));
+  save();
+}
+
+function removeCustomDoc(processKey, idx) {
+  const entry = st.processCustomDocs?.[processKey]?.[idx];
+  st.processCustomDocs?.[processKey]?.splice(idx, 1);
+  if (entry && st.processDocReview?.[processKey]) delete st.processDocReview[processKey]['c:' + entry.name];
+  if (entry && st.processDocFirma?.[processKey]) delete st.processDocFirma[processKey]['c:' + entry.name];
+  AREAS.forEach(a => renderAreaDocReview(a));
   save();
 }
 
@@ -2880,7 +2896,7 @@ function getExistingDocNames(area, processKey) {
   const proc = getAreaActiveDocs(area).find(p => p.processKey === processKey);
   return new Set([
     ...(proc ? proc.docs.map(d => d.name) : []),
-    ...((st.areas[area].customDocs?.[processKey]) || [])
+    ...((st.processCustomDocs?.[processKey]) || []).map(d => d.name)
   ].map(n => n.toLowerCase()));
 }
 
@@ -2962,14 +2978,6 @@ function addSuggestedDoc(area) {
     name = sel.value;
   }
   addDocProposal(area, processKey, name);
-}
-
-function removeAreaCustomDoc(area, processKey, idx) {
-  const name = st.areas[area].customDocs?.[processKey]?.[idx];
-  st.areas[area].customDocs?.[processKey]?.splice(idx, 1);
-  if (name && st.areas[area].docReview?.[processKey]) delete st.areas[area].docReview[processKey]['c:' + name];
-  renderAreaDocReview(area);
-  save();
 }
 
 function renderAllAlerts() {
@@ -3350,22 +3358,16 @@ function buildExportPayload() {
     },
 
     // ── MÓDULO 3 — Revisión documental (Slides: cada área) ──
+    // Documentos adicionales y su estado son compartidos entre áreas (una sola fuente de verdad por proceso).
     modulo_3_revision_documental: {
       slide: 'Revisión de documentos por proceso',
       documentosCreadosPorEquipo: st.customCatalogDocs || [],
-      porArea: Object.fromEntries(activeAreas.map(a => {
-        const review = st.areas[a].docReview || {};
-        const comments = st.areas[a].docComments || {};
-        const customDocs = st.areas[a].customDocs || {};
-        return [a, {
-          porProceso: procesos.filter(proc => isAreaAssigned(proc.key, a)).map(proc => ({
-            proceso: proc.nombre,
-            documentos: Object.entries(review[proc.key] || {}).map(([idx,estado]) => ({ documento: idx.startsWith('c:') ? idx.slice(2) : (DOCS[+idx]?.name || ('#'+idx)), estado: ESTADO_DOC[estado] || estado })),
-            documentosAdicionales: customDocs[proc.key] || [],
-            comentario: comments[proc.key] || '',
-          })),
-        }];
+      porProceso: procesos.map(proc => ({
+        proceso: proc.nombre,
+        documentosAdicionales: (st.processCustomDocs?.[proc.key] || []).map(d => ({ documento: d.name, agregadoPor: AREA_LABELS[d.addedBy] || d.addedBy || '' })),
+        documentos: Object.entries(st.processDocReview?.[proc.key] || {}).map(([idx,estado]) => ({ documento: idx.startsWith('c:') ? idx.slice(2) : (DOCS[+idx]?.name || ('#'+idx)), estado: ESTADO_DOC[estado] || estado })),
       })),
+      comentariosPorArea: Object.fromEntries(activeAreas.map(a => [a, st.areas[a].docComments || {}])),
     },
 
     // ── MÓDULO 4 — Responsables por área ──
@@ -3500,6 +3502,25 @@ function startPolling() {
         changed = true;
       }
 
+      // 1b. Sincronizar documentos propuestos por proceso (compartidos entre áreas)
+      if (data.state.processCustomDocs) {
+        if (!st.processCustomDocs) st.processCustomDocs = {};
+        Object.entries(data.state.processCustomDocs).forEach(([pk, list]) => {
+          if (!st.processCustomDocs[pk]) st.processCustomDocs[pk] = [];
+          (list || []).forEach(entry => {
+            if (!st.processCustomDocs[pk].some(x => x.name === entry.name)) st.processCustomDocs[pk].push({ ...entry });
+          });
+        });
+      }
+      if (data.state.processDocReview) {
+        if (!st.processDocReview) st.processDocReview = {};
+        Object.assign(st.processDocReview, data.state.processDocReview);
+      }
+      if (data.state.processCustomDocs || data.state.processDocReview) {
+        AREAS.forEach(a => renderAreaDocReview(a));
+        changed = true;
+      }
+
       // 2. Sincronizar tipos de evaluación (definido por Owner/Abastecimiento)
       if (data.state.evalTypes) {
         Object.assign(st.evalTypes, data.state.evalTypes);
@@ -3592,10 +3613,50 @@ function mergeState(d) {
   if (d.evalTypes) Object.assign(st.evalTypes, d.evalTypes);
   if (d.classifierAnswers) Object.assign(st.classifierAnswers, d.classifierAnswers);
   if (d.requiredAreas) Object.assign(st.requiredAreas, d.requiredAreas);
+  if (d.processCustomDocs) {
+    if (!st.processCustomDocs) st.processCustomDocs = {};
+    Object.entries(d.processCustomDocs).forEach(([pk, list]) => {
+      if (!st.processCustomDocs[pk]) st.processCustomDocs[pk] = [];
+      (list || []).forEach(entry => {
+        if (!st.processCustomDocs[pk].some(x => x.name === entry.name)) st.processCustomDocs[pk].push({ ...entry });
+      });
+    });
+  }
+  if (d.processDocReview) { if (!st.processDocReview) st.processDocReview = {}; Object.assign(st.processDocReview, d.processDocReview); }
   if (d.areas) AREAS.forEach(a => {
     if (d.areas[a]) {
       Object.assign(st.areas[a], d.areas[a]);
       if (Array.isArray(d.areas[a].alerts)) st.areas[a].alerts = normalizeAlerts(d.areas[a].alerts);
+    }
+  });
+  // Migración: documentos/estado propuestos bajo el shape viejo (por área) → shape nuevo (por proceso, compartido)
+  AREAS.forEach(a => {
+    const legacyCustom = st.areas[a].customDocs;
+    if (legacyCustom) {
+      Object.entries(legacyCustom).forEach(([pk, names]) => {
+        if (!st.processCustomDocs[pk]) st.processCustomDocs[pk] = [];
+        (names || []).forEach(name => {
+          if (!st.processCustomDocs[pk].some(x => x.name === name)) st.processCustomDocs[pk].push({ name, addedBy: a });
+        });
+      });
+    }
+    const legacyReview = st.areas[a].docReview;
+    if (legacyReview) {
+      Object.entries(legacyReview).forEach(([pk, byDoc]) => {
+        if (!st.processDocReview[pk]) st.processDocReview[pk] = {};
+        Object.entries(byDoc || {}).forEach(([docKey, val]) => {
+          if (st.processDocReview[pk][docKey] === undefined) st.processDocReview[pk][docKey] = val;
+        });
+      });
+    }
+    const legacyFirma = st.areas[a].customDocsFirma;
+    if (legacyFirma) {
+      Object.entries(legacyFirma).forEach(([pk, byName]) => {
+        if (!st.processDocFirma[pk]) st.processDocFirma[pk] = {};
+        Object.entries(byName || {}).forEach(([name, on]) => {
+          if (on) st.processDocFirma[pk]['c:' + name] = true;
+        });
+      });
     }
   });
   if (d.workflowReviewers) st.workflowReviewers = d.workflowReviewers;
