@@ -1939,7 +1939,9 @@ function renderAreaReviewers(area) {
   if (!cont) return;
   if (!st.workflowReviewers) st.workflowReviewers = {};
   const graveMap = graveAlertsByGroup();
-  const allGroups = Object.keys(graveMap);
+  // Los 5 grupos se muestran siempre (no solo los que hoy tienen alerta grave activa),
+  // para poder preasignar revisor antes de que una alerta pase a grave.
+  const allGroups = [...new Set(ALERTS.map(a => a.group))];
   if (!allGroups.length) { cont.innerHTML = ''; return; }
   // La asignación de revisores es transversal a las áreas: no se congela cuando
   // el área actual guarda su propia sección de docs/alertas (ver .reviewer-box en CSS).
@@ -1990,7 +1992,7 @@ function renderAreaReviewers(area) {
       </div>`;
     }).join('');
     const noPool = !pool.length ? `<span style="font-size:.68rem;color:var(--gray);font-style:italic;">Completa los encargados de cada área para ver sugerencias.</span>` : '';
-    const reqBadge = !hasReviewer ? `<span style="font-size:.6rem;font-weight:700;background:#FEF2F2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .3rem;flex-shrink:0;">Pendiente</span>` : '';
+    const reqBadge = (graveAlerts.length && !hasReviewer) ? `<span style="font-size:.6rem;font-weight:700;background:#FEF2F2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .3rem;flex-shrink:0;">Pendiente</span>` : '';
 
     return `<div style="padding:.45rem 0;${border}">
       <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.3rem;">
