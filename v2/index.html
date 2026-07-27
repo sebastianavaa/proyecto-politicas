@@ -102,6 +102,9 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 @media (max-width:860px){ .area-cols{grid-template-columns:1fr;gap:1rem;} .area-cols .col-title{white-space:normal;height:auto;} }
 @media (max-width:680px){ .owner-cols{grid-template-columns:1fr !important;} }
 .locked-content{pointer-events:none;opacity:.6;user-select:none;}
+/* La asignación de revisores es transversal a áreas: no se congela cuando el área
+   actual guarda su propia sección de docs/alertas. */
+.locked-content .reviewer-box{pointer-events:auto;opacity:1;user-select:auto;}
 
 /* 6 PREGUNTAS DEL FILTRO (slide 4) */
 .q-grid{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,auto);grid-auto-flow:column;gap:.75rem;}
@@ -1938,7 +1941,8 @@ function renderAreaReviewers(area) {
   const graveMap = graveAlertsByGroup();
   const allGroups = Object.keys(graveMap);
   if (!allGroups.length) { cont.innerHTML = ''; return; }
-  const locked = st.areas[area].locked;
+  // La asignación de revisores es transversal a las áreas: no se congela cuando
+  // el área actual guarda su propia sección de docs/alertas (ver .reviewer-box en CSS).
   const inp = 'padding:.3rem .55rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.75rem;font-family:var(--font);box-sizing:border-box;background:white;min-width:0;';
 
   const rows = allGroups.map((g, gi) => {
@@ -1953,19 +1957,6 @@ function renderAreaReviewers(area) {
     const alertChips = graveAlerts.length
       ? graveAlerts.map(l => `<span style="background:#FEE2E2;color:var(--danger);border:1px solid #FCA5A5;border-radius:.25rem;padding:.05rem .35rem;font-size:.6rem;font-weight:600;white-space:nowrap;">${l}</span>`).join('')
       : `<span style="font-size:.68rem;color:var(--gray);font-style:italic;">Sin alertas graves activas</span>`;
-
-    if (locked) {
-      const reviewerDisplay = hasReviewer
-        ? assigned.filter(r => r.name || r.email).map(r => `<span style="background:var(--navy);color:white;border-radius:.4rem;padding:.18rem .5rem;font-size:.72rem;font-weight:600;">${r.name||r.email}</span>`).join('')
-        : `<span style="font-size:.7rem;color:var(--gray);font-style:italic;">Sin asignar</span>`;
-      return `<div style="padding:.45rem 0;${border}display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
-        <div style="display:flex;align-items:center;gap:.35rem;min-width:9rem;">
-          <i data-lucide="${GROUP_ICON[g]||''}" style="width:.8rem;height:.8rem;stroke-width:2;flex-shrink:0;color:var(--navy);"></i>
-          <span style="font-size:.77rem;font-weight:700;color:var(--navy);">${g}</span>
-        </div>
-        <div style="display:flex;flex-wrap:wrap;gap:.25rem;align-items:center;flex:1;">${reviewerDisplay}</div>
-      </div>`;
-    }
 
     const poolChips = pool.map(r => {
       const key = r.name+'|'+r.email;
@@ -2017,7 +2008,7 @@ function renderAreaReviewers(area) {
   }).join('');
 
   cont.innerHTML = rows
-    ? `<div style="margin-top:1rem;background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:.625rem 1rem;">
+    ? `<div class="reviewer-box" style="margin-top:1rem;background:var(--white);border:1px solid var(--gray-border);border-radius:.875rem;padding:.625rem 1rem;">
         <div style="font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);margin-bottom:.1rem;display:flex;align-items:center;gap:.35rem;">
           <i data-lucide="user-check" style="width:.7rem;height:.7rem;stroke-width:2.5;"></i>Quién revisa si hay una alerta grave
         </div>${rows}</div>`
