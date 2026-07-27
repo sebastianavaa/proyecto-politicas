@@ -205,11 +205,20 @@ html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--n
 .area-status.rechazado{background:var(--danger-bg);color:var(--danger);border-color:var(--danger);}
 .area-status.observacion{background:var(--warn-bg);color:var(--warn-tx);border-color:var(--warn);}
 
-/* ALERTS */
-.alert-group{margin-bottom:1.125rem;}
-.alert-group-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--navy);
-  margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;}
-.ag-count{background:var(--navy);color:white;padding:.1rem .45rem;border-radius:.25rem;font-size:.65rem;}
+/* ALERTS — acordeón por grupo (todas las alertas visibles a la vez, sin ocultar tras tabs) */
+.alert-accordion{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem;}
+.alert-group{border:1px solid var(--gray-border);border-radius:.625rem;overflow:hidden;background:var(--white);}
+.alert-group-title{display:flex;align-items:center;gap:.5rem;width:100%;padding:.55rem .75rem;
+  background:var(--gray-light);border:none;cursor:pointer;font-family:var(--font);text-align:left;}
+.alert-group-title:hover{background:var(--gray-border);}
+.alert-group-title .ag-name{flex:1;font-size:.76rem;font-weight:700;color:var(--navy);}
+.ag-count{display:inline-flex;align-items:center;justify-content:center;background:var(--gray-border);color:var(--gray);
+  border-radius:.75rem;font-size:.6rem;font-weight:700;padding:.05rem .4rem;min-width:1rem;}
+.alert-group.has-active .ag-count{background:var(--navy);color:white;}
+.ag-chevron{width:.85rem;height:.85rem;color:var(--gray);transition:transform .2s;flex-shrink:0;}
+.alert-group.open .ag-chevron{transform:rotate(180deg);}
+.alert-group-body{display:none;padding:.5rem .75rem .25rem;}
+.alert-group.open .alert-group-body{display:block;}
 .alert-tabs{display:flex;gap:.3rem;margin-bottom:.75rem;flex-wrap:wrap;border-bottom:2px solid var(--gray-border);padding-bottom:.5rem;}
 .alert-tab{padding:.3rem .75rem;border-radius:.375rem .375rem 0 0;border:1px solid transparent;background:transparent;font-size:.72rem;font-weight:600;cursor:pointer;color:var(--gray);transition:all .15s;font-family:var(--font);white-space:nowrap;}
 .alert-tab:hover{background:var(--gray-light);color:var(--navy);}
@@ -1018,15 +1027,6 @@ const AREAS = ['abastecimiento','cumplimiento','finanzas','legal'];
 const AREA_LABELS = { solicitante:'Comprador del proyecto', abastecimiento:'Abastecimiento', cumplimiento:'Cumplimiento', finanzas:'Finanzas', legal:'Legal' };
 const AREA_SLIDE = { owner:5, abastecimiento:6, cumplimiento:7, finanzas:8, legal:9 };
 const SLIDE_AREA = Object.fromEntries(Object.entries(AREA_SLIDE).map(([k,v]) => [v, k]));
-
-// Grupos de alertas que "pertenecen" a cada área (solo esa área asigna revisores para ellos).
-// Abastecimiento no tiene grupos propios — su slide muestra docs + resumen cruzado + VB.
-const AREA_GROUPS = {
-  abastecimiento: ['Proceso de compra'],
-  cumplimiento:   ['Laboral', 'Cumplimiento'],
-  finanzas:       ['Tributario', 'Financiero'],
-  legal:          ['Legal y Societario']
-};
 
 // Metadata de las 23 alertas: etiqueta, grupo, área revisora dueña y severidad recomendada por Plutto.
 const SEV_ORDER = ['leve','media','grave'];
@@ -1934,14 +1934,14 @@ function renderWorkflowReviewers() {
 function renderAreaReviewers(area) {
   const cont = document.getElementById('area-reviewers-' + area);
   if (!cont) return;
-  const myGroups = AREA_GROUPS[area] || [];
-  if (!myGroups.length) { cont.innerHTML = ''; return; }
   if (!st.workflowReviewers) st.workflowReviewers = {};
   const graveMap = graveAlertsByGroup();
+  const allGroups = Object.keys(graveMap);
+  if (!allGroups.length) { cont.innerHTML = ''; return; }
   const locked = st.areas[area].locked;
   const inp = 'padding:.3rem .55rem;border:1.5px solid var(--gray-border);border-radius:.5rem;font-size:.75rem;font-family:var(--font);box-sizing:border-box;background:white;min-width:0;';
 
-  const rows = myGroups.map((g, gi) => {
+  const rows = allGroups.map((g, gi) => {
     const esc = s => (s||'').replace(/'/g,"\\'");
     const pool = getReviewerPool(g);
     const graveAlerts = graveMap[g] || [];
@@ -2151,20 +2151,20 @@ function saveReviewersNow() {
   });
 }
 
-const _activeAlertTab = {};
+// Grupos abiertos por contenedor. Empiezan todos cerrados para ahorrar espacio
+// y dejar visible "Proponer alerta adicional" sin tener que scrollear.
+const _expandedAlertGroups = {};
 
-function buildAlertTabsHTML(containerId, area, placeholder) {
+function buildAlertTabsHTML(containerId, area) {
   const aAlerts = st.areas[area].alerts;
   const groups = [...new Set(ALERTS.map(a => a.group))];
-  const savedGroup = _activeAlertTab[containerId] || groups[0];
-  const tabsHtml = `<div class="alert-tabs">${groups.map(g => {
+  const expanded = _expandedAlertGroups[containerId] || new Set();
+  const sectionsHtml = groups.map(g => {
     const activeCount = ALERTS.filter((meta,i) => meta.group === g && aAlerts[i].activa).length;
     const total = ALERTS.filter(meta => meta.group === g).length;
     const iconName = GROUP_ICON[g] || '';
-    const iconHtml = iconName ? `<i data-lucide="${iconName}" style="width:.75rem;height:.75rem;margin-right:.2rem;vertical-align:middle;flex-shrink:0;"></i>` : '';
-    return `<button class="alert-tab${g===savedGroup?' active':''}" onclick="switchAlertTab('${containerId}','${g}')">${iconHtml}${g}<span class="alert-tab-badge">${activeCount}/${total}</span></button>`;
-  }).join('')}</div>`;
-  const panelsHtml = groups.map(g => {
+    const iconHtml = iconName ? `<i data-lucide="${iconName}" style="width:.8rem;height:.8rem;flex-shrink:0;color:var(--navy);"></i>` : '';
+    const isOpen = expanded.has(g);
     const rows = ALERTS.map((meta,i) => ({meta,i})).filter(({meta}) => meta.group === g).map(({meta,i}) => {
       const a = aAlerts[i];
       const sevBtns = SEV_ORDER.map(s =>
@@ -2189,35 +2189,41 @@ function buildAlertTabsHTML(containerId, area, placeholder) {
           <button onclick="removeSuggestedAlert('${area}',${s.i})" style="background:none;border:none;cursor:pointer;color:var(--gray);font-size:1rem;padding:0 .25rem;line-height:1;flex-shrink:0;" title="Eliminar">×</button>
         </div>
       </div>`).join('');
-    return `<div class="alert-tab-panel${g===savedGroup?' active':''}" data-group="${g}">
-      ${rows}${suggestedRows}
+    return `<div class="alert-group${isOpen?' open':''}${activeCount?' has-active':''}" data-group="${g}">
+      <button type="button" class="alert-group-title" onclick="toggleAlertGroup('${containerId}','${g}')">
+        ${iconHtml}<span class="ag-name">${g}</span>
+        <span class="ag-count">${activeCount}/${total}</span>
+        <i data-lucide="chevron-down" class="ag-chevron"></i>
+      </button>
+      <div class="alert-group-body">
+        ${rows}${suggestedRows}
+      </div>
     </div>`;
   }).join('');
   const bannerHtml = `<div style="margin-top:.75rem;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:.5rem;padding:.5rem .75rem;">
     <span style="font-size:.7rem;color:#B91C1C;line-height:1.5;"><strong>Importante:</strong> Toda alerta marcada como <strong>grave</strong> deberá ser revisada y aprobada por un responsable designado en tu empresa.</span>
   </div>`;
-  return tabsHtml + panelsHtml + bannerHtml;
+  return `<div class="alert-accordion">${sectionsHtml}</div>` + bannerHtml;
 }
 
-function switchAlertTab(containerId, group) {
-  _activeAlertTab[containerId] = group;
+function toggleAlertGroup(containerId, group) {
   const cont = document.getElementById(containerId); if (!cont) return;
-  cont.querySelectorAll('.alert-tab').forEach(btn =>
-    btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${group}'`))
-  );
-  cont.querySelectorAll('.alert-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.group === group));
+  const sec = cont.querySelector(`.alert-group[data-group="${group}"]`); if (!sec) return;
+  const open = sec.classList.toggle('open');
+  if (!_expandedAlertGroups[containerId]) _expandedAlertGroups[containerId] = new Set();
+  if (open) _expandedAlertGroups[containerId].add(group); else _expandedAlertGroups[containerId].delete(group);
 }
 
 function renderAbastAlerts() {
   const cont = document.getElementById('abast-alerts'); if (!cont) return;
-  cont.innerHTML = buildAlertTabsHTML('abast-alerts', 'abastecimiento', 'Comentario sobre esta alerta (opcional)…');
+  cont.innerHTML = buildAlertTabsHTML('abast-alerts', 'abastecimiento');
   renderSuggestedAlerts('abastecimiento');
   reIcons();
 }
 
 function renderReviewAlerts(area) {
   const cont = document.getElementById('alerts-'+area); if (!cont) return;
-  cont.innerHTML = buildAlertTabsHTML('alerts-'+area, area, 'Comentario del área…');
+  cont.innerHTML = buildAlertTabsHTML('alerts-'+area, area);
   renderSuggestedAlerts(area);
   reIcons();
 }
